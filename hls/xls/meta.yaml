@@ -10,7 +10,7 @@ source:
     git_rev: main
     patches:
       - use-llvm-toolchain.patch
-      - bump-python-deps.patch
+      - remove-python-deps.patch
   - url: https://github.com/bazelbuild/bazelisk/releases/download/v1.12.0/bazelisk-linux-amd64
     sha256: 6b0bcb2ea15bca16fffabe6fda75803440375354c085480fe361d2cbf32501db
 
