@@ -1,0 +1,252 @@
+From 3a9d2d10457208d479aea011aee7dd25bcc7a8b2 Mon Sep 17 00:00:00 2001
+From: Johan Euphrosine <proppy@google.com>
+Date: Thu, 28 Sep 2023 17:37:36 +0900
+Subject: [PATCH] dependency_support/z3: bump version
+
+- bump to 4.12.2
+- remove obsolete patches
+- cherrypick gcc build fixes
+- update generated files list
+- update source files list
+---
+ dependency_support/load_external.bzl      | 13 +++---
+ dependency_support/z3/6723.patch          | 10 +++++
+ dependency_support/z3/build_defs.bzl      | 50 +++++++++++------------
+ dependency_support/z3/bundled.BUILD.bazel | 24 +++++++++++
+ dependency_support/z3/mpz_cpp.patch       | 17 --------
+ 5 files changed, 65 insertions(+), 49 deletions(-)
+ create mode 100644 dependency_support/z3/6723.patch
+ delete mode 100644 dependency_support/z3/mpz_cpp.patch
+
+diff --git a/dependency_support/load_external.bzl b/dependency_support/load_external.bzl
+index 3ab7fe4f8a..dbef0dc77a 100644
+--- a/dependency_support/load_external.bzl
++++ b/dependency_support/load_external.bzl
+@@ -146,14 +146,13 @@ def load_external_repositories():
+ 
+     http_archive(
+         name = "z3",
+-        urls = ["https://github.com/Z3Prover/z3/archive/z3-4.8.8.tar.gz"],
+-        sha256 = "6962facdcdea287c5eeb1583debe33ee23043144d0e5308344e6a8ee4503bcff",
+-        strip_prefix = "z3-z3-4.8.8",
++        urls = ["https://github.com/Z3Prover/z3/archive/z3-4.12.2.tar.gz"],
++        sha256 = "9f58f3710bd2094085951a75791550f547903d75fe7e2fcb373c5f03fc761b8f",
++        strip_prefix = "z3-z3-4.12.2",
+         build_file = "@com_google_xls//dependency_support/z3:bundled.BUILD.bazel",
+-        # Fix Undefined Behavior (UB) of overflow in mpz::bitwise_not by cherry picking
+-        # https://github.com/Z3Prover/z3/commit/a96f5a9b425b6f5ba7e8ce1c1a75db6683c4bdc9 and
+-        # https://github.com/Z3Prover/z3/commit/9ebacd87e2ee8a79adfe128021fbfd444db7857a.
+-        patches = ["@com_google_xls//dependency_support/z3:mpz_cpp.patch"],
++        # Fix gcc 13.x build failure
++        # https://github.com/Z3Prover/z3/issues/6722
++        patches = ["@com_google_xls//dependency_support/z3:6723.patch"],
+     )
+ 
+     http_archive(
+diff --git a/dependency_support/z3/6723.patch b/dependency_support/z3/6723.patch
+new file mode 100644
+index 0000000000..1de9c172c6
+--- /dev/null
++++ b/dependency_support/z3/6723.patch
+@@ -0,0 +1,10 @@
++--- src/util/tptr.h
+++++ src/util/tptr.h
++@@ -20,6 +20,7 @@ Revision History:
++ #pragma once
++ 
++ #include "util/machine.h"
+++#include <cstdint>
++ 
++ #define TAG_SHIFT        PTR_ALIGNMENT
++ #define ALIGNMENT_VALUE  (1 << PTR_ALIGNMENT)
+diff --git a/dependency_support/z3/build_defs.bzl b/dependency_support/z3/build_defs.bzl
+index 41cfba55d3..873898676c 100644
+--- a/dependency_support/z3/build_defs.bzl
++++ b/dependency_support/z3/build_defs.bzl
+@@ -28,39 +28,39 @@ MK_MAKE_HDRS = [
+ ]
+ 
+ PARAMS_HDRS = [
+-    "src/ackermannization/ackermannization_params.hpp",
+-    "src/ackermannization/ackermannize_bv_tactic_params.hpp",
+-    "src/ast/fpa/fpa2bv_rewriter_params.hpp",
++    "src/model/model_evaluator_params.hpp",
++    "src/model/model_params.hpp",
+     "src/ast/normal_forms/nnf_params.hpp",
+-    "src/ast/pattern/pattern_inference_params_helper.hpp",
+     "src/ast/pp_params.hpp",
+-    "src/ast/rewriter/arith_rewriter_params.hpp",
+-    "src/ast/rewriter/array_rewriter_params.hpp",
+-    "src/ast/rewriter/bool_rewriter_params.hpp",
+-    "src/ast/rewriter/bv_rewriter_params.hpp",
+-    "src/ast/rewriter/fpa_rewriter_params.hpp",
+-    "src/ast/rewriter/poly_rewriter_params.hpp",
+-    "src/ast/rewriter/rewriter_params.hpp",
+-    "src/ast/rewriter/seq_rewriter_params.hpp",
+-    "src/math/polynomial/algebraic_params.hpp",
++    "src/ackermannization/ackermannize_bv_tactic_params.hpp",
++    "src/ackermannization/ackermannization_params.hpp",
+     "src/math/realclosure/rcf_params.hpp",
+-    "src/model/model_params.hpp",
+-    "src/model/model_evaluator_params.hpp",
+-    "src/muz/base/fp_params.hpp",
+-    "src/nlsat/nlsat_params.hpp",
++    "src/math/polynomial/algebraic_params.hpp",
++    "src/tactic/sls/sls_params.hpp",
++    "src/tactic/smtlogics/qfufbv_tactic_params.hpp",
++    "src/params/poly_rewriter_params.hpp",
++    "src/params/array_rewriter_params.hpp",
++    "src/params/seq_rewriter_params.hpp",
++    "src/params/fpa_rewriter_params.hpp",
++    "src/params/arith_rewriter_params.hpp",
++    "src/params/rewriter_params.hpp",
++    "src/params/bv_rewriter_params.hpp",
++    "src/params/tactic_params.hpp",
++    "src/params/pattern_inference_params_helper.hpp",
++    "src/params/solver_params.hpp",
++    "src/params/fpa2bv_rewriter_params.hpp",
++    "src/params/bool_rewriter_params.hpp",
++    "src/solver/combined_solver_params.hpp",
++    "src/solver/parallel_params.hpp",
+     "src/opt/opt_params.hpp",
+     "src/parsers/util/parser_params.hpp",
+-    "src/sat/sat_asymm_branch_params.hpp",
++    "src/muz/base/fp_params.hpp",
+     "src/sat/sat_params.hpp",
+-    "src/sat/sat_scc_params.hpp",
++    "src/sat/sat_asymm_branch_params.hpp",
+     "src/sat/sat_simplifier_params.hpp",
++    "src/sat/sat_scc_params.hpp",
++    "src/nlsat/nlsat_params.hpp",
+     "src/smt/params/smt_params_helper.hpp",
+-    "src/solver/parallel_params.hpp",
+-    "src/solver/solver_params.hpp",
+-    "src/solver/combined_solver_params.hpp",
+-    "src/tactic/smtlogics/qfufbv_tactic_params.hpp",
+-    "src/tactic/sls/sls_params.hpp",
+-    "src/tactic/tactic_params.hpp",
+ ]
+ 
+ DB_HDRS = [
+diff --git a/dependency_support/z3/bundled.BUILD.bazel b/dependency_support/z3/bundled.BUILD.bazel
+index 945145f788..9adeb4ca0b 100644
+--- a/dependency_support/z3/bundled.BUILD.bazel
++++ b/dependency_support/z3/bundled.BUILD.bazel
+@@ -60,6 +60,8 @@ cc_library(
+         "src/ackermannization/*.cpp",
+         "src/api/*.cpp",
+         "src/ast/*.cpp",
++        "src/ast/converters/*.cpp",
++        "src/ast/euf/*.cpp",
+         "src/ast/fpa/*.cpp",
+         "src/ast/macros/*.cpp",
+         "src/ast/normal_forms/*.cpp",
+@@ -67,6 +69,7 @@ cc_library(
+         "src/ast/proofs/*.cpp",
+         "src/ast/rewriter/*.cpp",
+         "src/ast/rewriter/bit_blaster/*.cpp",
++        "src/ast/simplifiers/*.cpp",
+         "src/ast/substitution/*.cpp",
+         "src/cmd_context/*.cpp",
+         "src/cmd_context/extra_cmds/*.cpp",
+@@ -96,17 +99,22 @@ cc_library(
+         "src/nlsat/*.cpp",
+         "src/nlsat/tactic/*.cpp",
+         "src/opt/*.cpp",
++        "src/params/*.cpp",
+         "src/parsers/smt2/*.cpp",
+         "src/parsers/util/*.cpp",
+         "src/qe/*.cpp",
++        "src/qe/lite/*.cpp",
++        "src/qe/mbp/*.cpp",
+         "src/sat/*.cpp",
+         "src/sat/sat_solver/*.cpp",
++        "src/sat/smt/*.cpp",
+         "src/sat/tactic/*.cpp",
+         "src/smt/*.cpp",
+         "src/smt/params/*.cpp",
+         "src/smt/proto_model/*.cpp",
+         "src/smt/tactic/*.cpp",
+         "src/solver/*.cpp",
++        "src/solver/assertions/*.cpp",
+         "src/tactic/*.cpp",
+         "src/tactic/aig/*.cpp",
+         "src/tactic/arith/*.cpp",
+@@ -129,6 +137,10 @@ cc_library(
+         "src/api/*.hpp",
+         "src/ast/*.h",
+         "src/ast/*.hpp",
++        "src/ast/converters/*.h",
++        "src/ast/converters/*.hpp",
++        "src/ast/euf/*.h",
++        "src/ast/euf/*.hpp",
+         "src/ast/fpa/*.h",
+         "src/ast/fpa/*.hpp",
+         "src/ast/macros/*.h",
+@@ -143,6 +155,8 @@ cc_library(
+         "src/ast/rewriter/*.hpp",
+         "src/ast/rewriter/bit_blaster/*.h",
+         "src/ast/rewriter/bit_blaster/*.hpp",
++        "src/ast/simplifiers/*.h",
++        "src/ast/simplifiers/*.hpp",
+         "src/ast/substitution/*.h",
+         "src/ast/substitution/*.hpp",
+         "src/cmd_context/*.h",
+@@ -201,16 +215,24 @@ cc_library(
+         "src/nlsat/tactic/*.hpp",
+         "src/opt/*.h",
+         "src/opt/*.hpp",
++        "src/params/*.h",
++        "src/params/*.hpp",
+         "src/parsers/smt2/*.h",
+         "src/parsers/smt2/*.hpp",
+         "src/parsers/util/*.h",
+         "src/parsers/util/*.hpp",
+         "src/qe/*.h",
+         "src/qe/*.hpp",
++        "src/qe/lite/*.h",
++        "src/qe/lite/*.hpp",
++        "src/qe/mbp/*.h",
++        "src/qe/mbp/*.hpp",
+         "src/sat/*.h",
+         "src/sat/*.hpp",
+         "src/sat/sat_solver/*.h",
+         "src/sat/sat_solver/*.hpp",
++        "src/sat/smt/*.h",
++        "src/sat/smt/*.hpp",
+         "src/sat/tactic/*.h",
+         "src/sat/tactic/*.hpp",
+         "src/smt/*.h",
+@@ -220,6 +242,8 @@ cc_library(
+         "src/smt/tactic/*.hpp",
+         "src/solver/*.h",
+         "src/solver/*.hpp",
++        "src/solver/assertions/*.h",
++        "src/solver/assertions/*.hpp",
+         "src/tactic/*.h",
+         "src/tactic/*.hpp",
+         "src/tactic/aig/*.h",
+diff --git a/dependency_support/z3/mpz_cpp.patch b/dependency_support/z3/mpz_cpp.patch
+deleted file mode 100644
+index be5ed95b9d..0000000000
+--- a/dependency_support/z3/mpz_cpp.patch
++++ /dev/null
+@@ -1,17 +0,0 @@
+---- src/util/mpz.cpp
+-+++ src/util/mpz.cpp
+-@@ -1460,9 +1460,11 @@ void mpz_manager<SYNCH>::bitwise_xor(mpz const & a, mpz const & b, mpz & c) {
+- template<bool SYNCH>
+- void mpz_manager<SYNCH>::bitwise_not(unsigned sz, mpz const & a, mpz & c) {
+-     SASSERT(is_nonneg(a));
+--    if (is_small(a) && sz <= 63) {
+--        int64_t mask = (static_cast<int64_t>(1) << sz) - static_cast<int64_t>(1);
+--        set_i64(c, (~ i64(a)) & mask);
+-+    if (is_small(a) && sz <= 64) {
+-+        uint64_t v = ~get_uint64(a);
+-+        unsigned zero_out = 64 - sz;
+-+        v = (v << zero_out) >> zero_out;
+-+        set(c, v);
+-     }
+-     else {
+-         mpz a1, a2, m, tmp;
+\ No newline at end of file
