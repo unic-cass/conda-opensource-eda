@@ -39,9 +39,35 @@ jobs:
 
       - uses: ./ci
 
+  openroad:
+    runs-on: 'ubuntu-20.04'
+    env:
+      PACKAGE: 'pnr/openroad'
+      OS_NAME: 'linux'
+
+    steps:
+      - name: checkout conda-eda
+        uses: actions/checkout@v3
+
+      - uses: conda-incubator/setup-miniconda@v2
+        with:
+          activate-environment: installer-env
+
+      - name: restore openroad cache
+        uses: actions/cache@v3
+        with:
+          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/openroad-*.tar.bz2
+          key: ${{ runner.os }}-openroad-${{ github.run_id }}
+
+      - name: checkout conda-eda
+        uses: actions/checkout@v3
+
+      - uses: ./ci
+
   digital-sky130a-installer:
     needs:
       - xls
+      - openroad
     runs-on: 'ubuntu-20.04'
     defaults:
       run:
@@ -60,11 +86,18 @@ jobs:
           path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/xls-*.tar.bz2
           key: ${{ runner.os }}-xls-${{ github.run_id }}
 
+      - name: restore openroad cache
+        uses: actions/cache@v3
+        with:
+          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/openroad-*.tar.bz2
+          key: ${{ runner.os }}-openroad-${{ github.run_id }}
+
       - name: construct installer
         run: |
           conda install ctools::constructor>=3.4.3 conda-build
           mkdir -p /tmp/conda-bld/linux-64
           cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/xls-*.tar.bz2 /tmp/conda-bld/linux-64/
+          cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/openroad-*.tar.bz2 /tmp/conda-bld/linux-64/
           conda index /tmp/conda-bld
           constructor installer/digital.sky130a/
 
@@ -120,6 +153,7 @@ jobs:
   mixed-signal-sky130a-installer:
     needs:
       - xls
+      - openroad
     runs-on: 'ubuntu-20.04'
     defaults:
       run:
@@ -138,11 +172,18 @@ jobs:
           path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/xls-*.tar.bz2
           key: ${{ runner.os }}-xls-${{ github.run_id }}
 
+      - name: restore openroad cache
+        uses: actions/cache@v3
+        with:
+          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/openroad-*.tar.bz2
+          key: ${{ runner.os }}-openroad-${{ github.run_id }}
+
       - name: construct installer
         run: |
           conda install ctools::constructor>=3.4.3 conda-build
           mkdir -p /tmp/conda-bld/linux-64
           cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/xls-*.tar.bz2 /tmp/conda-bld/linux-64/
+          cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/openroad-*.tar.bz2 /tmp/conda-bld/linux-64/
           conda index /tmp/conda-bld
           constructor installer/mixed-signal.sky130a/
 
@@ -152,7 +193,7 @@ jobs:
 
       - name: smoke test
         run: |
-          rm -fR /tmp/conda-bld/linux-64/          
+          rm -fR /tmp/conda-bld/linux-64/
           bash mixed-signal.sky130a-0-Linux-x86_64.sh -b -p /tmp/env
 
       - name: archive installer
@@ -165,6 +206,7 @@ jobs:
   digital-gf180mcuc-installer:
     needs:
       - xls
+      - openroad
     runs-on: 'ubuntu-20.04'
     defaults:
       run:
@@ -178,17 +220,23 @@ jobs:
           activate-environment: installer-env
 
       - name: restore xls cache
-        id: cache-xls
         uses: actions/cache@v3
         with:
           path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/xls-*.tar.bz2
           key: ${{ runner.os }}-xls-${{ github.run_id }}
+
+      - name: restore openroad cache
+        uses: actions/cache@v3
+        with:
+          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/openroad-*.tar.bz2
+          key: ${{ runner.os }}-openroad-${{ github.run_id }}
 
       - name: construct installer
         run: |
           conda install ctools::constructor>=3.4.3 conda-build
           mkdir -p /tmp/conda-bld/linux-64
           cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/xls-*.tar.bz2 /tmp/conda-bld/linux-64/
+          cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/openroad-*.tar.bz2 /tmp/conda-bld/linux-64/
           conda index /tmp/conda-bld
           constructor installer/digital.gf180mcuc/
 
@@ -198,7 +246,7 @@ jobs:
 
       - name: smoke test
         run: |
-          rm -fR /tmp/conda-bld/linux-64/          
+          rm -fR /tmp/conda-bld/linux-64/
           bash digital.gf180mcuc-0-Linux-x86_64.sh -b -p /tmp/env
 
       - name: archive installer
@@ -245,6 +293,7 @@ jobs:
   mixed-signal-gf180mcuc-installer:
     needs:
       - xls
+      - openroad
     runs-on: 'ubuntu-20.04'
     defaults:
       run:
@@ -258,17 +307,23 @@ jobs:
           activate-environment: installer-env
 
       - name: restore xls cache
-        id: cache-xls
         uses: actions/cache@v3
         with:
           path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/xls-*.tar.bz2
           key: ${{ runner.os }}-xls-${{ github.run_id }}
+
+      - name: restore openroad cache
+        uses: actions/cache@v3
+        with:
+          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/openroad-*.tar.bz2
+          key: ${{ runner.os }}-openroad-${{ github.run_id }}
 
       - name: construct installer
         run: |
           conda install ctools::constructor>=3.4.3 conda-build
           mkdir -p /tmp/conda-bld/linux-64
           cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/xls-*.tar.bz2 /tmp/conda-bld/linux-64/
+          cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/openroad-*.tar.bz2 /tmp/conda-bld/linux-64/
           conda index /tmp/conda-bld
           constructor installer/mixed-signal.gf180mcuc/
 
@@ -278,7 +333,7 @@ jobs:
 
       - name: smoke test
         run: |
-          rm -fR /tmp/conda-bld/linux-64/          
+          rm -fR /tmp/conda-bld/linux-64/
           bash mixed-signal.gf180mcuc-0-Linux-x86_64.sh -b -p /tmp/env
 
       - name: archive installer
@@ -292,6 +347,7 @@ jobs:
     continue-on-error: true
     needs:
       - xls
+      - openroad
     runs-on: 'ubuntu-20.04'
     defaults:
       run:
@@ -310,11 +366,18 @@ jobs:
           path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/xls-*.tar.bz2
           key: ${{ runner.os }}-xls-${{ github.run_id }}
 
+      - name: restore openroad cache
+        uses: actions/cache@v3
+        with:
+          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/openroad-*.tar.bz2
+          key: ${{ runner.os }}-openroad-${{ github.run_id }}
+
       - name: construct installer
         run: |
           conda install ctools::constructor>=3.4.3 conda-build
           mkdir -p /tmp/conda-bld/linux-64
           cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/xls-*.tar.bz2 /tmp/conda-bld/linux-64/
+          cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/openroad-*.tar.bz2 /tmp/conda-bld/linux-64/
           conda index /tmp/conda-bld
           constructor installer/mixed-signal/
 
@@ -324,7 +387,7 @@ jobs:
 
       - name: smoke test
         run: |
-          rm -fR /tmp/conda-bld/linux-64/          
+          rm -fR /tmp/conda-bld/linux-64/
           bash mixed-signal-0-Linux-x86_64.sh -b -p /tmp/env
 
       - name: archive installer
