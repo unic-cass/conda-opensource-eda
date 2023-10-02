@@ -17,7 +17,7 @@ specs:
   - ngspice
   - pandas
   - openlane
-  - xls=0.0.0_0000_g255d8b71
+  - xls
   - iverilog
   - symbiyosys
 
