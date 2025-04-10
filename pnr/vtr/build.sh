@@ -1,1 +1,0 @@
-../vtr-gui/build.sh
