@@ -21,6 +21,7 @@ build:
   string: {{ environ.get('DATE_STR') }}
   script_env:
     - CI
+    - LD_LIBRARY_PATH
     - CONDA_OUT
     - TEST_PACKAGE
 
