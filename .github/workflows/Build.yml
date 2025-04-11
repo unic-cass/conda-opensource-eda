@@ -449,25 +449,21 @@ jobs:
   #     - run: apt -qqy update && apt -qqy install ${{ env.APT_REQUIREMENTS }}
   #     - uses: ./ci
 
-  # klayout-linux:
-  #   runs-on: 'ubuntu-20.04'
-  #   env:
-  #     PACKAGE: "misc/klayout"
-  #     OS_NAME: "linux"
-  #     PYTHON_VERSION: "3.10"
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #     - run: sudo apt -qqy update && sudo apt -qqy install ${{ env.APT_REQUIREMENTS }}
-  #     - name: install nodejs for cache
-  #       if: ${{ env.ACT }}
-  #       run: curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && apt -qqy install nodejs
-  #     - uses: ./ci
-  #     - uses: actions/cache/save@v4
-  #       id: cache-klayout
-  #       with:
-  #         path: |
-  #           ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/klayout-*.conda
-  #         key: ${{ runner.os }}-cache-klayout
+  klayout-linux:
+    runs-on: 'ubuntu-20.04'
+    env:
+      PACKAGE: "misc/klayout"
+      OS_NAME: "linux"
+    steps:
+      - uses: actions/checkout@v3
+      - run: sudo apt -qqy update && sudo apt -qqy install ${{ env.APT_REQUIREMENTS }}
+      - uses: ./ci
+      - uses: actions/cache/save@v4
+        id: cache-klayout
+        with:
+          path: |
+            ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/klayout-*.conda
+          key: ${{ runner.os }}-cache-klayout
 
   # klayout-osx:
   #   runs-on: "macos-latest"
