@@ -1,9 +1,6 @@
 name: Build installers
 
 on:
-  push:
-    branches:
-      - master
   workflow_dispatch:
     inputs:
       logLevel:
@@ -496,7 +493,7 @@ jobs:
 
       - name: dump checksums
         run: |
-          md5sum digital*-installer/*.sh
+          md5sum mixed-signal-tools-installer/*.sh
 
       - run: |
           git config --local user.name conda-eda@bot
