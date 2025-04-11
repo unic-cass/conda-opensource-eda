@@ -17,9 +17,9 @@ esac
 echo "Build started for ${OS}..."
 
 if [[ $OS == "Linux" ]]; then
-	make config-conda-linux
+	make config-gcc
 elif [[ $OS == "Mac" ]]; then
-	make config-conda-mac
+	make config-mac
 fi
 
 echo "PREFIX := $PREFIX" >> Makefile.conf

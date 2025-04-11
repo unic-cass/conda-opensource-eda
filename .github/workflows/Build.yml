@@ -79,24 +79,21 @@ jobs:
   #     - run: apt -qqy update && apt -qqy install ${{ env.APT_REQUIREMENTS }}
   #     - uses: ./ci
 
-  # yosys-linux:
-  #   runs-on: 'ubuntu-20.04'
-  #   env:
-  #     PACKAGE: "syn/yosys"
-  #     OS_NAME: "linux"
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #     - name: install nodejs for cache
-  #       if: ${{ env.ACT }}
-  #       run: curl -fsSL https://deb.nodesource.com/setup_20.x | sudo bash - && sudo apt -qqy install nodejs
-  #     - run: sudo apt -qqy update && sudo apt -qqy install ${{ env.APT_REQUIREMENTS }}
-  #     - uses: ./ci
-  #     - uses: actions/cache/save@v4
-  #       id: cache-yosys
-  #       with:
-  #         path: |
-  #           ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/yosys-*.conda
-  #         key: ${{ runner.os }}-cache-yosys
+  yosys-linux:
+    runs-on: 'ubuntu-20.04'
+    env:
+      PACKAGE: "syn/yosys"
+      OS_NAME: "linux"
+    steps:
+      - uses: actions/checkout@v3
+      - run: sudo apt -qqy update && sudo apt -qqy install ${{ env.APT_REQUIREMENTS }}
+      - uses: ./ci
+      - uses: actions/cache/save@v4
+        id: cache-yosys
+        with:
+          path: |
+            ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/yosys-*.conda
+          key: ${{ runner.os }}-cache-yosys
 
   # verible-linux:
   #   runs-on: "ubuntu-20.04"
