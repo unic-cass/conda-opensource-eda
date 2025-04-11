@@ -1,9 +1,6 @@
 name: Build installers
 
 on:
-  push:
-    branch:
-      - 'main'
   workflow_dispatch:
   workflow_run:
     workflows: [Build packages]
