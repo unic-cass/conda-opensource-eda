@@ -36,6 +36,86 @@ jobs:
           path: |
             ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/magic-*.conda
           key: ${{ runner.os }}-cache-magic
+  netgen-linux:
+    runs-on: 'ubuntu-20.04'
+    env:
+      PACKAGE: "misc/netgen"
+      OS_NAME: "linux"
+    steps:
+      - uses: actions/checkout@v3
+      - run: sudo apt -qqy update && sudo apt -qqy install ${{ env.APT_REQUIREMENTS }}
+      - uses: ./ci
+      - uses: actions/cache/save@v4
+        id: cache-netgen
+        with:
+          path: |
+            ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/netgen-*.conda
+          key: ${{ runner.os }}-cache-netgen
+  yosys-linux:
+    runs-on: 'ubuntu-20.04'
+    env:
+      PACKAGE: "syn/yosys"
+      OS_NAME: "linux"
+    steps:
+      - uses: actions/checkout@v3
+      - run: sudo apt -qqy update && sudo apt -qqy install ${{ env.APT_REQUIREMENTS }}
+      - uses: ./ci
+      - uses: actions/cache/save@v4
+        id: cache-yosys
+        with:
+          path: |
+            ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/yosys-*.conda
+          key: ${{ runner.os }}-cache-yosys
+  openroad-linux:
+    runs-on: 'ubuntu-20.04'
+    env:
+      PACKAGE: "pnr/openroad"
+      OS_NAME: "linux"
+    steps:
+      - uses: actions/checkout@v3
+      - run: sudo apt -qqy update && sudo apt -qqy install ${{ env.APT_REQUIREMENTS }} libxml2
+      - uses: ./ci
+      - uses: actions/cache/save@v4
+        id: cache-openroad
+        with:
+          path: |
+            ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/openroad-*.conda
+          key: ${{ runner.os }}-cache-openroad
+  ngspice-linux:
+    runs-on: 'ubuntu-20.04'
+    env:
+      PACKAGE: "sim/ngspice"
+      OS_NAME: "linux"
+    steps:
+      - uses: actions/checkout@v3
+      - run: sudo apt -qqy update && sudo apt -qqy install ${{ env.APT_REQUIREMENTS }}
+      - uses: ./ci
+      - uses: actions/cache/save@v4
+        id: cache-ngspice
+        with:
+          path: |
+            ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/ngspice-*.conda
+          key: ${{ runner.os }}-cache-ngspice
+  xschem-linux:
+    runs-on: 'ubuntu-20.04'
+    env:
+      PACKAGE: "misc/xschem"
+      OS_NAME: "linux"
+    steps:
+      - uses: actions/checkout@v3
+      - run: sudo apt -qqy update && sudo apt -qqy install ${{ env.APT_REQUIREMENTS }} xorg-dev tcl-dev
+      - name: install nodejs for cache
+        if: ${{ env.ACT }}
+        run: curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && apt -qqy install nodejs
+      - uses: ./ci
+      - uses: actions/cache/save@v4
+        id: cache-xschem
+        with:
+          path: |
+            ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/xschem-*.conda
+          key: ${{ runner.os }}-cache-xschem
+
+
 
   # icarus-linux:
   #   runs-on: 'ubuntu-20.04'
@@ -78,22 +158,6 @@ jobs:
   #     - uses: actions/checkout@v3
   #     - run: apt -qqy update && apt -qqy install ${{ env.APT_REQUIREMENTS }}
   #     - uses: ./ci
-
-  yosys-linux:
-    runs-on: 'ubuntu-20.04'
-    env:
-      PACKAGE: "syn/yosys"
-      OS_NAME: "linux"
-    steps:
-      - uses: actions/checkout@v3
-      - run: sudo apt -qqy update && sudo apt -qqy install ${{ env.APT_REQUIREMENTS }}
-      - uses: ./ci
-      - uses: actions/cache/save@v4
-        id: cache-yosys
-        with:
-          path: |
-            ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/yosys-*.conda
-          key: ${{ runner.os }}-cache-yosys
 
   # verible-linux:
   #   runs-on: "ubuntu-20.04"
@@ -276,17 +340,6 @@ jobs:
   #     - run: apt -qqy update && apt -qqy install ${{ env.APT_REQUIREMENTS }} default-jre
   #     - uses: ./ci
 
-  # netgen-linux:
-  #   runs-on: [self-hosted, Linux, X64]
-  #   container: ubuntu:20.04
-  #   env:
-  #     PACKAGE: "misc/netgen"
-  #     OS_NAME: "linux"
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #     - run: apt -qqy update && apt -qqy install ${{ env.APT_REQUIREMENTS }}
-  #     - uses: ./ci
-
   # zachjs-sv2v-linux:
   #   runs-on: [self-hosted, Linux, X64]
   #   container: ubuntu:20.04
@@ -333,22 +386,6 @@ jobs:
   #     - uses: actions/checkout@v3
   #     - run: apt -qqy update && apt -qqy install ${{ env.APT_REQUIREMENTS }}
   #     - uses: ./ci
-
-  openroad-linux:
-    runs-on: 'ubuntu-20.04'
-    env:
-      PACKAGE: "pnr/openroad"
-      OS_NAME: "linux"
-    steps:
-      - uses: actions/checkout@v3
-      - run: sudo apt -qqy update && sudo apt -qqy install ${{ env.APT_REQUIREMENTS }} libxml2
-      - uses: ./ci
-      - uses: actions/cache/save@v4
-        id: cache-openroad
-        with:
-          path: |
-            ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/openroad-*.conda
-          key: ${{ runner.os }}-cache-openroad
 
 
   # openlane-linux-py38:
@@ -397,27 +434,6 @@ jobs:
   #           ${{ github.workspace }}/workdir/conda-env/conda-bld/noarch/tcllib-*.conda
   #         key: ${{ runner.os }}-cache-tcllib
 
-  xschem-linux:
-    runs-on: 'ubuntu-20.04'
-    env:
-      PACKAGE: "misc/xschem"
-      OS_NAME: "linux"
-      PYTHON_VERSION: "3.10"
-    steps:
-      - uses: actions/checkout@v3
-      - run: sudo apt -qqy update && sudo apt -qqy install ${{ env.APT_REQUIREMENTS }} xorg-dev tcl-dev
-      - name: install nodejs for cache
-        if: ${{ env.ACT }}
-        run: curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && apt -qqy install nodejs
-      - uses: ./ci
-      - uses: actions/cache/save@v4
-        id: cache-xschem
-        with:
-          path: |
-            ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/xschem-*.conda
-          key: ${{ runner.os }}-cache-xschem
-          
-
   # klayout-linux-py38:
   #   runs-on: [self-hosted, Linux, X64]
   #   container: ubuntu:20.04
@@ -449,26 +465,6 @@ jobs:
   #         path: |
   #           ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/klayout-*.conda
   #         key: ${{ runner.os }}-cache-klayout
-
-  ngspice-linux:
-    runs-on: 'ubuntu-20.04'
-    env:
-      PACKAGE: "sim/ngspice"
-      OS_NAME: "linux"
-      PYTHON_VERSION: "3.10"
-    steps:
-      - uses: actions/checkout@v3
-      - run: sudo apt -qqy update && sudo apt -qqy install ${{ env.APT_REQUIREMENTS }}
-      - name: install nodejs for cache
-        if: ${{ env.ACT }}
-        run: curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && apt -qqy install nodejs
-      - uses: ./ci
-      - uses: actions/cache/save@v4
-        id: cache-ngspice
-        with:
-          path: |
-            ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/ngspice-*.conda
-          key: ${{ runner.os }}-cache-ngspice
 
   # klayout-osx:
   #   runs-on: "macos-latest"

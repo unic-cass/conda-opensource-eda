@@ -5,6 +5,16 @@ on:
     branch:
       - 'main'
   workflow_dispatch:
+  workflow_run:
+    workflows:
+      - xschem-linux
+      - magic-linux
+      - netgen-linux
+      - ngspice-linux
+      - openroad-linux
+      - yosys-linux
+    type:
+      - completed
 
 permissions:
   contents: write
@@ -14,60 +24,377 @@ defaults:
     shell: bash
 
 jobs:
-  xls:
-    runs-on: 'ubuntu-20.04'
-    env:
-      PACKAGE: 'hls/xls'
-      OS_NAME: 'linux'
+  # openroad:
+  #   runs-on: 'ubuntu-20.04'
+  #   env:
+  #     PACKAGE: 'pnr/openroad'
+  #     OS_NAME: 'linux'
 
-    steps:
-      - name: checkout conda-eda
-        uses: actions/checkout@v3
+  #   steps:
+  #     - name: checkout conda-eda
+  #       uses: actions/checkout@v3
 
-      - uses: conda-incubator/setup-miniconda@v2
-        with:
-          activate-environment: installer-env
+  #     - uses: conda-incubator/setup-miniconda@v2
+  #       with:
+  #         activate-environment: installer-env
+  #         miniconda-version: lastest
 
-      - name: restore xls cache
-        uses: actions/cache@v3
-        with:
-          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/xls-*.tar.bz2
-          key: ${{ runner.os }}-xls-${{ github.run_id }}
+  #     - name: restore openroad cache
+  #       uses: actions/cache@v3
+  #       with:
+  #         path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/openroad-*.tar.bz2
+  #         key: ${{ runner.os }}-openroad-${{ github.run_id }}
 
-      - name: checkout conda-eda
-        uses: actions/checkout@v3
+  #     - name: checkout conda-eda
+  #       uses: actions/checkout@v3
 
-      - uses: ./ci
+  #     - uses: ./ci
 
-  openroad:
-    runs-on: 'ubuntu-20.04'
-    env:
-      PACKAGE: 'pnr/openroad'
-      OS_NAME: 'linux'
+  # digital-sky130a-installer:
+  #   needs:
+  #     - openroad
+  #   runs-on: 'ubuntu-20.04'
+  #   defaults:
+  #     run:
+  #       shell: bash -l {0}
+  #   steps:
+  #     - name: checkout conda-eda
+  #       uses: actions/checkout@v3
 
-    steps:
-      - name: checkout conda-eda
-        uses: actions/checkout@v3
+  #     - uses: conda-incubator/setup-miniconda@v2
+  #       with:
+  #         activate-environment: installer-env
+  #         miniconda-version: lastest
 
-      - uses: conda-incubator/setup-miniconda@v2
-        with:
-          activate-environment: installer-env
+  #     - name: restore xls cache
+  #       uses: actions/cache@v3
+  #       with:
+  #         path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/xls-*.tar.bz2
+  #         key: ${{ runner.os }}-xls-${{ github.run_id }}
 
-      - name: restore openroad cache
-        uses: actions/cache@v3
-        with:
-          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/openroad-*.tar.bz2
-          key: ${{ runner.os }}-openroad-${{ github.run_id }}
+  #     - name: restore openroad cache
+  #       uses: actions/cache@v3
+  #       with:
+  #         path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/openroad-*.tar.bz2
+  #         key: ${{ runner.os }}-openroad-${{ github.run_id }}
 
-      - name: checkout conda-eda
-        uses: actions/checkout@v3
+  #     - name: construct installer
+  #       run: |
+  #         conda install ctools::constructor>=3.4.3 conda-build
+  #         mkdir -p /tmp/conda-bld/linux-64
+  #         cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/xls-*.conda /tmp/conda-bld/linux-64/
+  #         cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/openroad-*.conda /tmp/conda-bld/linux-64/
+  #         conda index /tmp/conda-bld
+  #         constructor installer/digital.sky130a/
 
-      - uses: ./ci
+  #     - name: dump checksum
+  #       run: |
+  #         md5sum digital.sky130a-0-Linux-x86_64.sh
 
-  digital-sky130a-installer:
-    needs:
-      - xls
-      - openroad
+  #     - name: smoke test
+  #       run: |
+  #         rm -fR /tmp/conda-bld/linux-64/
+  #         bash digital.sky130a-0-Linux-x86_64.sh -b -p /tmp/env
+
+  #     - name: archive installer
+  #       uses: actions/upload-artifact@v3
+  #       with:
+  #         name: 'digital.sky130a-installer'
+  #         path: |
+  #           /home/runner/work/conda-eda/conda-eda/digital.sky130a-0-Linux-x86_64.sh
+
+  # analog-sky130a-installer:
+  #   runs-on: 'ubuntu-20.04'
+  #   defaults:
+  #     run:
+  #       shell: bash -l {0}
+  #   steps:
+  #     - name: checkout conda-eda
+  #       uses: actions/checkout@v3
+
+  #     - uses: conda-incubator/setup-miniconda@v2
+  #       with:
+  #         activate-environment: installer-env
+  #         miniconda-version: latest
+
+  #     - name: construct installer
+  #       run: |
+  #         conda install ctools::constructor>=3.4.3 conda-build
+  #         constructor installer/analog.sky130a/
+
+  #     - name: dump checksum
+  #       run: |
+  #         md5sum analog.sky130a-0-Linux-x86_64.sh
+
+  #     - name: smoke test
+  #       run: |
+  #         bash analog.sky130a-0-Linux-x86_64.sh -b -p /tmp/env
+
+  #     - name: archive installer
+  #       uses: actions/upload-artifact@v4
+  #       with:
+  #         name: 'analog.sky130a-installer'
+  #         path: |
+  #           ${{ vars.GITHUB_WORKSPACE }}/conda-eda/analog.sky130a-0-Linux-x86_64.sh
+
+  # mixed-signal-sky130a-installer:
+  #   needs:
+  #     - xls
+  #     - openroad
+  #   runs-on: 'ubuntu-20.04'
+  #   defaults:
+  #     run:
+  #       shell: bash -l {0}
+  #   steps:
+  #     - name: checkout conda-eda
+  #       uses: actions/checkout@v3
+
+  #     - uses: conda-incubator/setup-miniconda@v2
+  #       with:
+  #         activate-environment: installer-env
+  #         miniconda-version: lastest
+
+  #     - name: restore xls cache
+  #       uses: actions/cache@v3
+  #       with:
+  #         path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/xls-*.tar.bz2
+  #         key: ${{ runner.os }}-xls-${{ github.run_id }}
+
+  #     - name: restore openroad cache
+  #       uses: actions/cache@v3
+  #       with:
+  #         path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/openroad-*.tar.bz2
+  #         key: ${{ runner.os }}-openroad-${{ github.run_id }}
+
+  #     - name: construct installer
+  #       run: |
+  #         conda install ctools::constructor>=3.4.3 conda-build
+  #         mkdir -p /tmp/conda-bld/linux-64
+  #         cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/xls-*.tar.bz2 /tmp/conda-bld/linux-64/
+  #         cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/openroad-*.tar.bz2 /tmp/conda-bld/linux-64/
+  #         conda index /tmp/conda-bld
+  #         constructor installer/mixed-signal.sky130a/
+
+  #     - name: dump checksum
+  #       run: |
+  #         md5sum mixed-signal.sky130a-0-Linux-x86_64.sh
+
+  #     - name: smoke test
+  #       run: |
+  #         rm -fR /tmp/conda-bld/linux-64/
+  #         bash mixed-signal.sky130a-0-Linux-x86_64.sh -b -p /tmp/env
+
+  #     - name: archive installer
+  #       uses: actions/upload-artifact@v3
+  #       with:
+  #         name: 'mixed-signal.sky130a-installer'
+  #         path: |
+  #           /home/runner/work/conda-eda/conda-eda/mixed-signal.sky130a-0-Linux-x86_64.sh
+
+  # digital-gf180mcuc-installer:
+  #   needs:
+  #     - xls
+  #     - openroad
+  #   runs-on: 'ubuntu-20.04'
+  #   defaults:
+  #     run:
+  #       shell: bash -l {0}
+  #   steps:
+  #     - name: checkout conda-eda
+  #       uses: actions/checkout@v3
+
+  #     - uses: conda-incubator/setup-miniconda@v2
+  #       with:
+  #         activate-environment: installer-env
+  #         miniconda-version: lastest
+
+  #     - name: restore xls cache
+  #       uses: actions/cache@v3
+  #       with:
+  #         path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/xls-*.tar.bz2
+  #         key: ${{ runner.os }}-xls-${{ github.run_id }}
+
+  #     - name: restore openroad cache
+  #       uses: actions/cache@v3
+  #       with:
+  #         path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/openroad-*.tar.bz2
+  #         key: ${{ runner.os }}-openroad-${{ github.run_id }}
+
+  #     - name: construct installer
+  #       run: |
+  #         conda install ctools::constructor>=3.4.3 conda-build
+  #         mkdir -p /tmp/conda-bld/linux-64
+  #         cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/xls-*.tar.bz2 /tmp/conda-bld/linux-64/
+  #         cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/openroad-*.tar.bz2 /tmp/conda-bld/linux-64/
+  #         conda index /tmp/conda-bld
+  #         constructor installer/digital.gf180mcuc/
+
+  #     - name: dump checksum
+  #       run: |
+  #         md5sum digital.gf180mcuc-0-Linux-x86_64.sh
+
+  #     - name: smoke test
+  #       run: |
+  #         rm -fR /tmp/conda-bld/linux-64/
+  #         bash digital.gf180mcuc-0-Linux-x86_64.sh -b -p /tmp/env
+
+  #     - name: archive installer
+  #       uses: actions/upload-artifact@v3
+  #       with:
+  #         name: 'digital.gf180mcuc-installer'
+  #         path: |
+  #           /home/runner/work/conda-eda/conda-eda/digital.gf180mcuc-0-Linux-x86_64.sh
+
+  # analog-gf180mcuc-installer:
+  #   runs-on: 'ubuntu-20.04'
+  #   defaults:
+  #     run:
+  #       shell: bash -l {0}
+  #   steps:
+  #     - name: checkout conda-eda
+  #       uses: actions/checkout@v3
+
+  #     - uses: conda-incubator/setup-miniconda@v2
+  #       with:
+  #         activate-environment: installer-env
+  #         miniconda-version: lastest
+
+
+  #     - name: construct installer
+  #       run: |
+  #         conda install ctools::constructor>=3.4.3 conda-build
+  #         constructor installer/analog.gf180mcuc/
+
+  #     - name: dump checksum
+  #       run: |
+  #         md5sum analog.gf180mcuc-0-Linux-x86_64.sh
+
+  #     - name: smoke test
+  #       run: |
+  #         bash analog.gf180mcuc-0-Linux-x86_64.sh -b -p /tmp/env
+
+  #     - name: archive installer
+  #       uses: actions/upload-artifact@v3
+  #       with:
+  #         name: 'analog.gf180mcuc-installer'
+  #         path: |
+  #           /home/runner/work/conda-eda/conda-eda/analog.gf180mcuc-0-Linux-x86_64.sh
+
+  # mixed-signal-gf180mcuc-installer:
+  #   needs:
+  #     - xls
+  #     - openroad
+  #   runs-on: 'ubuntu-20.04'
+  #   defaults:
+  #     run:
+  #       shell: bash -l {0}
+  #   steps:
+  #     - name: checkout conda-eda
+  #       uses: actions/checkout@v3
+
+  #     - uses: conda-incubator/setup-miniconda@v2
+  #       with:
+  #         activate-environment: installer-env
+
+  #     - name: restore xls cache
+  #       uses: actions/cache@v3
+  #       with:
+  #         path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/xls-*.tar.bz2
+  #         key: ${{ runner.os }}-xls-${{ github.run_id }}
+
+  #     - name: restore openroad cache
+  #       uses: actions/cache@v3
+  #       with:
+  #         path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/openroad-*.tar.bz2
+  #         key: ${{ runner.os }}-openroad-${{ github.run_id }}
+
+  #     - name: construct installer
+  #       run: |
+  #         conda install ctools::constructor>=3.4.3 conda-build
+  #         mkdir -p /tmp/conda-bld/linux-64
+  #         cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/xls-*.tar.bz2 /tmp/conda-bld/linux-64/
+  #         cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/openroad-*.tar.bz2 /tmp/conda-bld/linux-64/
+  #         conda index /tmp/conda-bld
+  #         constructor installer/mixed-signal.gf180mcuc/
+
+  #     - name: dump checksum
+  #       run: |
+  #         md5sum mixed-signal.gf180mcuc-0-Linux-x86_64.sh
+
+  #     - name: smoke test
+  #       run: |
+  #         rm -fR /tmp/conda-bld/linux-64/
+  #         bash mixed-signal.gf180mcuc-0-Linux-x86_64.sh -b -p /tmp/env
+
+  #     - name: archive installer
+  #       uses: actions/upload-artifact@v3
+  #       with:
+  #         name: 'mixed-signal.gf180mcuc-installer'
+  #         path: |
+  #           /home/runner/work/conda-eda/conda-eda/mixed-signal.gf180mcuc-0-Linux-x86_64.sh
+
+  # mixed-signal-installer:
+  #   continue-on-error: true
+  #   needs:
+  #     - xls
+  #     - openroad
+  #   runs-on: 'ubuntu-20.04'
+  #   defaults:
+  #     run:
+  #       shell: bash -l {0}
+  #   steps:
+  #     - name: checkout conda-eda
+  #       uses: actions/checkout@v3
+
+  #     - uses: conda-incubator/setup-miniconda@v2
+  #       with:
+  #         activate-environment: installer-env
+  #         miniconda-version: lastest
+
+  #     - name: restore xls cache
+  #       uses: actions/cache@v3
+  #       with:
+  #         path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/xls-*.tar.bz2
+  #         key: ${{ runner.os }}-xls-${{ github.run_id }}
+
+  #     - name: restore openroad cache
+  #       uses: actions/cache@v3
+  #       with:
+  #         path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/openroad-*.tar.bz2
+  #         key: ${{ runner.os }}-openroad-${{ github.run_id }}
+
+  #     - name: construct installer
+  #       run: |
+  #         conda install ctools::constructor>=3.4.3 conda-build
+  #         mkdir -p /tmp/conda-bld/linux-64
+  #         cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/xls-*.tar.bz2 /tmp/conda-bld/linux-64/
+  #         cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/openroad-*.tar.bz2 /tmp/conda-bld/linux-64/
+  #         conda index /tmp/conda-bld
+  #         constructor installer/mixed-signal/
+
+  #     - name: dump checksum
+  #       run: |
+  #         md5sum mixed-signal-0-Linux-x86_64.sh
+
+  #     - name: smoke test
+  #       run: |
+  #         rm -fR /tmp/conda-bld/linux-64/
+  #         bash mixed-signal-0-Linux-x86_64.sh -b -p /tmp/env
+
+  #     - name: archive installer
+  #       uses: actions/upload-artifact@v3
+  #       with:
+  #         name: 'mixed-signal-installer'
+  #         path: |
+  #           /home/runner/work/conda-eda/conda-eda/mixed-signal-0-Linux-x86_64.sh
+  mixed-signal-tools-installer:
+    # needs:
+    #   - magic-linux
+    #   - xschem-linux
+    #   - netgen-linux
+    #   - ngspice-linux
+    #   - yosys-linux
+    #   - openroad-linux
     runs-on: 'ubuntu-20.04'
     defaults:
       run:
@@ -79,333 +406,78 @@ jobs:
       - uses: conda-incubator/setup-miniconda@v2
         with:
           activate-environment: installer-env
+          miniconda-version: latest
 
-      - name: restore xls cache
+      - name: restore magic cache
         uses: actions/cache@v3
         with:
-          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/xls-*.tar.bz2
-          key: ${{ runner.os }}-xls-${{ github.run_id }}
-
+          path: |
+            ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/magic-*.conda
+          key: ${{ runner.os }}-cache-magic
+      - name: restore netgen cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/netgen-*.conda
+          key: ${{ runner.os }}-cache-netgen
+      - name: restore yosys cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/yosys-*.conda
+          key: ${{ runner.os }}-cache-yosys
+      - name: restore xschem cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/xschem-*.conda
+          key: ${{ runner.os }}-cache-xschem
+      - name: restore ngspice cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/ngspice-*.conda
+          key: ${{ runner.os }}-cache-ngspice
       - name: restore openroad cache
         uses: actions/cache@v3
         with:
-          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/openroad-*.tar.bz2
-          key: ${{ runner.os }}-openroad-${{ github.run_id }}
+          path: |
+            ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/openroad-*.conda
+          key: ${{ runner.os }}-cache-openroad
 
       - name: construct installer
         run: |
-          conda install ctools::constructor>=3.4.3 conda-build
+          conda install "constructor>=3.4.3" conda-build conda-index
           mkdir -p /tmp/conda-bld/linux-64
-          cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/xls-*.tar.bz2 /tmp/conda-bld/linux-64/
-          cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/openroad-*.tar.bz2 /tmp/conda-bld/linux-64/
-          conda index /tmp/conda-bld
-          constructor installer/digital.sky130a/
+          cp ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/*.conda /tmp/conda-bld/linux-64/
+          python -m conda_index /tmp/conda-bld
+          constructor installer/mixed-signal.tools
 
       - name: dump checksum
         run: |
-          md5sum digital.sky130a-0-Linux-x86_64.sh
+          md5sum mixed-signal-tools-0-Linux-x86_64.sh
 
       - name: smoke test
         run: |
           rm -fR /tmp/conda-bld/linux-64/
-          bash digital.sky130a-0-Linux-x86_64.sh -b -p /tmp/env
+          bash mixed-signal-tools-0-Linux-x86_64.sh -b -p /tmp/env
 
       - name: archive installer
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: 'digital.sky130a-installer'
+          name: 'mixed-signal-tools-installer'
           path: |
-            /home/runner/work/conda-eda/conda-eda/digital.sky130a-0-Linux-x86_64.sh
-
-  analog-sky130a-installer:
-    runs-on: 'ubuntu-20.04'
-    defaults:
-      run:
-        shell: bash -l {0}
-    steps:
-      - name: checkout conda-eda
-        uses: actions/checkout@v3
-
-      - uses: conda-incubator/setup-miniconda@v2
-        with:
-          activate-environment: installer-env
-
-      - name: construct installer
-        run: |
-          conda install ctools::constructor>=3.4.3 conda-build
-          constructor installer/analog.sky130a/
-
-      - name: dump checksum
-        run: |
-          md5sum analog.sky130a-0-Linux-x86_64.sh
-
-      - name: smoke test
-        run: |
-          bash analog.sky130a-0-Linux-x86_64.sh -b -p /tmp/env
-
-      - name: archive installer
-        uses: actions/upload-artifact@v3
-        with:
-          name: 'analog.sky130a-installer'
-          path: |
-            /home/runner/work/conda-eda/conda-eda/analog.sky130a-0-Linux-x86_64.sh
-
-  mixed-signal-sky130a-installer:
-    needs:
-      - xls
-      - openroad
-    runs-on: 'ubuntu-20.04'
-    defaults:
-      run:
-        shell: bash -l {0}
-    steps:
-      - name: checkout conda-eda
-        uses: actions/checkout@v3
-
-      - uses: conda-incubator/setup-miniconda@v2
-        with:
-          activate-environment: installer-env
-
-      - name: restore xls cache
-        uses: actions/cache@v3
-        with:
-          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/xls-*.tar.bz2
-          key: ${{ runner.os }}-xls-${{ github.run_id }}
-
-      - name: restore openroad cache
-        uses: actions/cache@v3
-        with:
-          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/openroad-*.tar.bz2
-          key: ${{ runner.os }}-openroad-${{ github.run_id }}
-
-      - name: construct installer
-        run: |
-          conda install ctools::constructor>=3.4.3 conda-build
-          mkdir -p /tmp/conda-bld/linux-64
-          cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/xls-*.tar.bz2 /tmp/conda-bld/linux-64/
-          cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/openroad-*.tar.bz2 /tmp/conda-bld/linux-64/
-          conda index /tmp/conda-bld
-          constructor installer/mixed-signal.sky130a/
-
-      - name: dump checksum
-        run: |
-          md5sum mixed-signal.sky130a-0-Linux-x86_64.sh
-
-      - name: smoke test
-        run: |
-          rm -fR /tmp/conda-bld/linux-64/
-          bash mixed-signal.sky130a-0-Linux-x86_64.sh -b -p /tmp/env
-
-      - name: archive installer
-        uses: actions/upload-artifact@v3
-        with:
-          name: 'mixed-signal.sky130a-installer'
-          path: |
-            /home/runner/work/conda-eda/conda-eda/mixed-signal.sky130a-0-Linux-x86_64.sh
-
-  digital-gf180mcuc-installer:
-    needs:
-      - xls
-      - openroad
-    runs-on: 'ubuntu-20.04'
-    defaults:
-      run:
-        shell: bash -l {0}
-    steps:
-      - name: checkout conda-eda
-        uses: actions/checkout@v3
-
-      - uses: conda-incubator/setup-miniconda@v2
-        with:
-          activate-environment: installer-env
-
-      - name: restore xls cache
-        uses: actions/cache@v3
-        with:
-          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/xls-*.tar.bz2
-          key: ${{ runner.os }}-xls-${{ github.run_id }}
-
-      - name: restore openroad cache
-        uses: actions/cache@v3
-        with:
-          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/openroad-*.tar.bz2
-          key: ${{ runner.os }}-openroad-${{ github.run_id }}
-
-      - name: construct installer
-        run: |
-          conda install ctools::constructor>=3.4.3 conda-build
-          mkdir -p /tmp/conda-bld/linux-64
-          cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/xls-*.tar.bz2 /tmp/conda-bld/linux-64/
-          cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/openroad-*.tar.bz2 /tmp/conda-bld/linux-64/
-          conda index /tmp/conda-bld
-          constructor installer/digital.gf180mcuc/
-
-      - name: dump checksum
-        run: |
-          md5sum digital.gf180mcuc-0-Linux-x86_64.sh
-
-      - name: smoke test
-        run: |
-          rm -fR /tmp/conda-bld/linux-64/
-          bash digital.gf180mcuc-0-Linux-x86_64.sh -b -p /tmp/env
-
-      - name: archive installer
-        uses: actions/upload-artifact@v3
-        with:
-          name: 'digital.gf180mcuc-installer'
-          path: |
-            /home/runner/work/conda-eda/conda-eda/digital.gf180mcuc-0-Linux-x86_64.sh
-
-  analog-gf180mcuc-installer:
-    runs-on: 'ubuntu-20.04'
-    defaults:
-      run:
-        shell: bash -l {0}
-    steps:
-      - name: checkout conda-eda
-        uses: actions/checkout@v3
-
-      - uses: conda-incubator/setup-miniconda@v2
-        with:
-          activate-environment: installer-env
-
-
-      - name: construct installer
-        run: |
-          conda install ctools::constructor>=3.4.3 conda-build
-          constructor installer/analog.gf180mcuc/
-
-      - name: dump checksum
-        run: |
-          md5sum analog.gf180mcuc-0-Linux-x86_64.sh
-
-      - name: smoke test
-        run: |
-          bash analog.gf180mcuc-0-Linux-x86_64.sh -b -p /tmp/env
-
-      - name: archive installer
-        uses: actions/upload-artifact@v3
-        with:
-          name: 'analog.gf180mcuc-installer'
-          path: |
-            /home/runner/work/conda-eda/conda-eda/analog.gf180mcuc-0-Linux-x86_64.sh
-
-  mixed-signal-gf180mcuc-installer:
-    needs:
-      - xls
-      - openroad
-    runs-on: 'ubuntu-20.04'
-    defaults:
-      run:
-        shell: bash -l {0}
-    steps:
-      - name: checkout conda-eda
-        uses: actions/checkout@v3
-
-      - uses: conda-incubator/setup-miniconda@v2
-        with:
-          activate-environment: installer-env
-
-      - name: restore xls cache
-        uses: actions/cache@v3
-        with:
-          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/xls-*.tar.bz2
-          key: ${{ runner.os }}-xls-${{ github.run_id }}
-
-      - name: restore openroad cache
-        uses: actions/cache@v3
-        with:
-          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/openroad-*.tar.bz2
-          key: ${{ runner.os }}-openroad-${{ github.run_id }}
-
-      - name: construct installer
-        run: |
-          conda install ctools::constructor>=3.4.3 conda-build
-          mkdir -p /tmp/conda-bld/linux-64
-          cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/xls-*.tar.bz2 /tmp/conda-bld/linux-64/
-          cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/openroad-*.tar.bz2 /tmp/conda-bld/linux-64/
-          conda index /tmp/conda-bld
-          constructor installer/mixed-signal.gf180mcuc/
-
-      - name: dump checksum
-        run: |
-          md5sum mixed-signal.gf180mcuc-0-Linux-x86_64.sh
-
-      - name: smoke test
-        run: |
-          rm -fR /tmp/conda-bld/linux-64/
-          bash mixed-signal.gf180mcuc-0-Linux-x86_64.sh -b -p /tmp/env
-
-      - name: archive installer
-        uses: actions/upload-artifact@v3
-        with:
-          name: 'mixed-signal.gf180mcuc-installer'
-          path: |
-            /home/runner/work/conda-eda/conda-eda/mixed-signal.gf180mcuc-0-Linux-x86_64.sh
-
-  mixed-signal-installer:
-    continue-on-error: true
-    needs:
-      - xls
-      - openroad
-    runs-on: 'ubuntu-20.04'
-    defaults:
-      run:
-        shell: bash -l {0}
-    steps:
-      - name: checkout conda-eda
-        uses: actions/checkout@v3
-
-      - uses: conda-incubator/setup-miniconda@v2
-        with:
-          activate-environment: installer-env
-
-      - name: restore xls cache
-        uses: actions/cache@v3
-        with:
-          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/xls-*.tar.bz2
-          key: ${{ runner.os }}-xls-${{ github.run_id }}
-
-      - name: restore openroad cache
-        uses: actions/cache@v3
-        with:
-          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/openroad-*.tar.bz2
-          key: ${{ runner.os }}-openroad-${{ github.run_id }}
-
-      - name: construct installer
-        run: |
-          conda install ctools::constructor>=3.4.3 conda-build
-          mkdir -p /tmp/conda-bld/linux-64
-          cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/xls-*.tar.bz2 /tmp/conda-bld/linux-64/
-          cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/openroad-*.tar.bz2 /tmp/conda-bld/linux-64/
-          conda index /tmp/conda-bld
-          constructor installer/mixed-signal/
-
-      - name: dump checksum
-        run: |
-          md5sum mixed-signal-0-Linux-x86_64.sh
-
-      - name: smoke test
-        run: |
-          rm -fR /tmp/conda-bld/linux-64/
-          bash mixed-signal-0-Linux-x86_64.sh -b -p /tmp/env
-
-      - name: archive installer
-        uses: actions/upload-artifact@v3
-        with:
-          name: 'mixed-signal-installer'
-          path: |
-            /home/runner/work/conda-eda/conda-eda/mixed-signal-0-Linux-x86_64.sh
+            ${{ github.workspace }}/mixed-signal-tools-0-Linux-x86_64.sh
 
   release:
     needs:
-      - digital-sky130a-installer
-      - analog-sky130a-installer
-      - mixed-signal-sky130a-installer
-      - digital-gf180mcuc-installer
-      - analog-gf180mcuc-installer
-      - mixed-signal-gf180mcuc-installer
-      - mixed-signal-installer
+      - mixed-signal-tools-installer
+  #     - analog-sky130a-installer
+  #     - mixed-signal-sky130a-installer
+  #     - digital-gf180mcuc-installer
+  #     - analog-gf180mcuc-installer
+  #     - mixed-signal-gf180mcuc-installer
+  #     - mixed-signal-installer
     runs-on: 'ubuntu-20.04'
     steps:
       - name: checkout conda-eda
@@ -413,16 +485,16 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
 
       - name: dump checksums
         run: |
-          md5sum digital*-installer/*.sh analog*-installer/*.sh mixed-signal*-installer/*.sh
+          md5sum digital*-installer/*.sh
 
       - run: |
           git config --local user.name conda-eda@bot
           git config --local user.email conda-eda@bot
-          TAG=$(git describe)
+          TAG=$(git describe --tags)
           git tag $TAG
           git push origin "HEAD:refs/tags/$TAG"
           echo "TAG=$TAG" >> $GITHUB_ENV
@@ -430,21 +502,14 @@ jobs:
       - run: |
           cat << EOF > release-notes.md
           \`\`\`
-          bash ~/Downloads/mixed-signal.gf180mcuc-0-Linux-x86_64.sh -b -p silicon-env/
+          bash ~/Downloads/mixed-signal-tools-0-Linux-x86_64.sh -b -p silicon-env/
           source silicon-env/bin/activate
           xschem -v
           ngspice -v
-          klayout -v
-          codegen_main --version # xls
           yosys --version
-          sby --help
-          iverilog -V
           openroad -version
           netgen -batch quit
           magic -dnull -noconsole --version
-          echo exit | flow.tcl -interactive # openlane
-          echo \$PDK_ROOT
-          echo \$PDK
           \`\`\`
           EOF
 
@@ -455,5 +520,3 @@ jobs:
           body_path: release-notes.md
           files: |
             digital*-installer/*.sh
-            analog*-installer/*.sh
-            mixed-signal*-installer/*.sh

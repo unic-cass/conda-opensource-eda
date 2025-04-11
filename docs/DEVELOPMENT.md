@@ -20,7 +20,7 @@ While the goal is for the conda environment to be totally self contained, there 
 happens.
 
 The commands from the following subsections were tested to be enough to build a package in a clean container based on
-`ubuntu` (`16.04`-`20.04`) or `debian` (`8`-`10`) Docker image.
+`ubuntu 20.04` or `debian 10` Docker image.
 
 ### Prerequisites
 
@@ -49,11 +49,11 @@ chmod a+x Miniconda3-latest-Linux-x86_64.sh
 eval "$("$CONDA_PATH/bin/conda" "shell.bash" 'hook' 2> /dev/null)"
 
 # Install `conda-build-prepare`
-python3 -m pip install git+https://github.com/litex-hub/conda-build-prepare@v0.1.1#egg=conda-build-prepare
+python3 -m pip install git+https://github.com/litex-hub/conda-build-prepare@v0.1.2#egg=conda-build-prepare
 
 # Clone the `conda-eda` repository
-git clone https://github.com/hdl/conda-eda.git
-cd conda-eda
+git clone https://github.com/unic-cass/conda-opensource-eda.git
+cd conda-opensource-eda
 ```
 
 ### Required environment variables
@@ -103,7 +103,7 @@ To build a package similarly to how the packages are built in the CI it is recom
 arguments:
 * `--channels litex-hub` – to search for build dependencies in the LiteX-Hub channel in addition to the recipe-specific
   channels (from its `condarc` file),
-* `--packages python=3.7` – to use the same versions of packages that influence building as in the CI.
+* `--packages python=3.10` – to use the same versions of packages that influence building as in the CI.
 
 After preparing, the output `DIRECTORY` will contain subdirectories:
 
@@ -140,7 +140,7 @@ PREPARED_RECIPE_OUTPUTDIR=${PREPARED_RECIPE_OUTPUTDIR:-cbp-outdir}
 RECIPE_PATH=${RECIPE_PATH:-syn/yosys}
 
 # Prepare the RECIPE with `conda-build-prepare`
-ADDITIONAL_PACKAGES="python=3.7"
+ADDITIONAL_PACKAGES="python=3.10"
 python3 -m conda_build_prepare               \
             --channels litex-hub             \
             --packages $ADDITIONAL_PACKAGES  \
