@@ -6,13 +6,7 @@ on:
       - 'main'
   workflow_dispatch:
   workflow_run:
-    workflows:
-      - xschem-linux
-      - magic-linux
-      - netgen-linux
-      - ngspice-linux
-      - openroad-linux
-      - yosys-linux
+    workflows: [Build packages]
     type:
       - completed
 
