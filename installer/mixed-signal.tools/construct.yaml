@@ -1,0 +1,23 @@
+name: mixed-signal-tools
+version: 0
+
+channels:
+  - https://conda.anaconda.org/litex-hub
+  - https://repo.anaconda.com/pkgs/main/
+  - file:///tmp/conda-bld
+
+specs:
+  - python
+  - conda
+  - xschem
+  - magic
+  - ngspice
+  - netgen
+  - yosys
+  - openroad
+
+channels_remap:
+  - src: file:///tmp/conda-bld
+    dest: https://conda.anaconda.org/litex-hub
+
+post_install: post_install.sh
