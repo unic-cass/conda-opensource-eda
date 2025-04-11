@@ -510,4 +510,4 @@ jobs:
           tag_name: ${{ env.TAG }}
           body_path: release-notes.md
           files: |
-            digital*-installer/*.sh
+            mixed-signal-tools-installer/*.sh
