@@ -22,7 +22,7 @@ defaults:
 
 jobs:
   magic-linux:
-    runs-on: 'ubuntu-20.04'
+    runs-on: 'ubuntu-22.04'
     env:
       PACKAGE: "misc/magic"
       OS_NAME: "linux"
@@ -39,7 +39,7 @@ jobs:
             ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/magic-*.conda
           key: ${{ runner.os }}-cache-magic
   netgen-linux:
-    runs-on: 'ubuntu-20.04'
+    runs-on: 'ubuntu-22.04'
     env:
       PACKAGE: "misc/netgen"
       OS_NAME: "linux"
@@ -56,7 +56,7 @@ jobs:
             ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/netgen-*.conda
           key: ${{ runner.os }}-cache-netgen
   yosys-linux:
-    runs-on: 'ubuntu-20.04'
+    runs-on: 'ubuntu-22.04'
     env:
       PACKAGE: "syn/yosys"
       OS_NAME: "linux"
@@ -73,7 +73,7 @@ jobs:
             ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/yosys-*.conda
           key: ${{ runner.os }}-cache-yosys
   openroad-linux:
-    runs-on: 'ubuntu-20.04'
+    runs-on: 'ubuntu-22.04'
     env:
       PACKAGE: "pnr/openroad"
       OS_NAME: "linux"
@@ -90,7 +90,7 @@ jobs:
             ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/openroad-*.conda
           key: ${{ runner.os }}-cache-openroad
   ngspice-linux:
-    runs-on: 'ubuntu-20.04'
+    runs-on: 'ubuntu-22.04'
     env:
       PACKAGE: "sim/ngspice"
       OS_NAME: "linux"
@@ -107,7 +107,7 @@ jobs:
             ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/ngspice-*.conda
           key: ${{ runner.os }}-cache-ngspice
   xschem-linux:
-    runs-on: 'ubuntu-20.04'
+    runs-on: 'ubuntu-22.04'
     env:
       PACKAGE: "misc/xschem"
       OS_NAME: "linux"
@@ -130,7 +130,7 @@ jobs:
 
 
   # icarus-linux:
-  #   runs-on: 'ubuntu-20.04'
+  #   runs-on: 'ubuntu-22.04'
   #   env:
   #     PACKAGE: "sim/icarus"
   #     OS_NAME: "linux"
@@ -172,7 +172,7 @@ jobs:
   #     - uses: ./ci
 
   # verible-linux:
-  #   runs-on: "ubuntu-20.04"
+  #   runs-on: "ubuntu-22.04"
   #   env:
   #     PACKAGE: "sv-front/verible"
   #     USE_SYSTEM_GCC_VERSION: "9"
@@ -193,7 +193,7 @@ jobs:
   #     - uses: ./ci
 
   # slang-linux:
-  #   runs-on: "ubuntu-20.04"
+  #   runs-on: "ubuntu-22.04"
   #   env:
   #     PACKAGE: "sv-front/slang"
   #     OS_NAME: "linux"
@@ -306,7 +306,7 @@ jobs:
   #     - uses: ./ci
 
   # libunwind:
-  #   runs-on: 'ubuntu-20.04'
+  #   runs-on: 'ubuntu-22.04'
   #   env:
   #     PACKAGE: "misc/libunwind"
   #     OS_NAME: "linux"
@@ -323,7 +323,7 @@ jobs:
 
   # gperftools:
   #   # needs: ["libunwind"]
-  #   runs-on: 'ubuntu-20.04'
+  #   runs-on: 'ubuntu-22.04'
   #   env:
   #     PACKAGE: "misc/gperftools"
   #     OS_NAME: "linux"
@@ -363,7 +363,7 @@ jobs:
   #     - uses: ./ci
 
   open_pdks-sky130a-linux:
-    runs-on: 'ubuntu-20.04'
+    runs-on: 'ubuntu-22.04'
     # needs: magic-linux
     env:
       PACKAGE: "misc/open_pdks/sky130a"
@@ -399,7 +399,7 @@ jobs:
           key: ${{ runner.os }}-cache-sky130a
 
   open_pdks-gf180mcuc-linux:
-    runs-on: 'ubuntu-20.04'
+    runs-on: 'ubuntu-22.04'
     # needs: magic-linux
     env:
       PACKAGE: "misc/open_pdks/gf180mcuc"
@@ -435,7 +435,7 @@ jobs:
           key: ${{ runner.os }}-cache-gf180mcuc
 
   # openlane-linux:
-  #   runs-on: 'ubuntu-20.04'
+  #   runs-on: 'ubuntu-22.04'
   #   env:
   #     PACKAGE: "misc/openlane"
   #     OS_NAME: "linux"
@@ -466,7 +466,7 @@ jobs:
   #     - uses: ./ci
 
   # tcllib-linux:
-  #   runs-on: 'ubuntu-20.04'
+  #   runs-on: 'ubuntu-22.04'
   #   env:
   #     PACKAGE: "misc/tcllib"
   #     OS_NAME: "linux"
@@ -497,7 +497,7 @@ jobs:
   #     - uses: ./ci
 
   klayout-linux:
-    runs-on: 'ubuntu-20.04'
+    runs-on: 'ubuntu-22.04'
     env:
       PACKAGE: "misc/klayout"
       OS_NAME: "linux"
