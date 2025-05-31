@@ -26,9 +26,9 @@ python -m pip install git+https://github.com/hdl/conda-build-prepare@${_cbp_rev}
 if [ "$ANACONDA_USER" != "" ]; then
     branch="$(git rev-parse --abbrev-ref HEAD)"
     # The last channel will be on top of the environment's channel list
-    ADDITIONAL_CHANNELS="litex-hub $ANACONDA_USER $ANACONDA_USER/label/ci-$branch-$GITHUB_RUN_ID"
+    ADDITIONAL_CHANNELS="$ANACONDA_USER $ANACONDA_USER/label/ci-$branch-$GITHUB_RUN_ID"
 else
-    ADDITIONAL_CHANNELS="litex-hub"
+    ADDITIONAL_CHANNELS="defaults"
 fi
 
 ADDITIONAL_PACKAGES="conda-build conda-verify jinja2 pexpect python"
