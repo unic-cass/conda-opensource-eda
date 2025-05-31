@@ -364,7 +364,7 @@ jobs:
 
   open_pdks-sky130a-linux:
     runs-on: 'ubuntu-22.04'
-    # needs: magic-linux
+    needs: magic-linux
     env:
       PACKAGE: "misc/open_pdks/sky130a"
       OS_NAME: "linux"
@@ -400,7 +400,7 @@ jobs:
 
   open_pdks-gf180mcuc-linux:
     runs-on: 'ubuntu-22.04'
-    # needs: magic-linux
+    needs: magic-linux
     env:
       PACKAGE: "misc/open_pdks/gf180mcuc"
       OS_NAME: "linux"
