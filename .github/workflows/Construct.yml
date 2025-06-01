@@ -55,7 +55,7 @@ jobs:
       - name: Maximize build space
         uses: easimon/maximize-build-space@master
         with:
-          root-reserve-mb: 5120
+          root-reserve-mb: 10240
           swap-size-mb: 1024
           remove-dotnet: 'true'
           remove-android: 'true'
@@ -100,7 +100,7 @@ jobs:
       - name: Maximize build space
         uses: easimon/maximize-build-space@master
         with:
-          root-reserve-mb: 5120
+          root-reserve-mb: 10240
           swap-size-mb: 1024
           remove-dotnet: 'true'
           remove-android: 'true'
@@ -306,7 +306,7 @@ jobs:
           bash mixed-signal.sky130a-0-Linux-x86_64.sh -b -p /tmp/env
 
       - name: archive installer
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: 'mixed-signal.sky130a-installer'
           path: |
@@ -484,7 +484,7 @@ jobs:
           bash mixed-signal.gf180mcuc-0-Linux-x86_64.sh -b -p /tmp/env
 
       - name: archive installer
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: 'mixed-signal.gf180mcuc-installer'
           path: |
