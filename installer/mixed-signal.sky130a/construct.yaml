@@ -2,7 +2,6 @@ name: mixed-signal.sky130a
 version: 0
 
 channels:
-  - https://conda.anaconda.org/litex-hub
   - https://repo.anaconda.com/pkgs/main/
   - file:///tmp/conda-bld
 
@@ -15,10 +14,8 @@ specs:
   - klayout
   - ngspice
   - pandas
-  - openlane
-  - xls
-  - iverilog
-  - symbiyosys
+  - yosys
+  - openroad
 
 channels_remap:
   - src: file:///tmp/conda-bld

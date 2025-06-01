@@ -13,7 +13,7 @@ env:
   ANACONDA_TOKEN: ${{ secrets.ANACONDA_TOKEN }}
   ANACONDA_USER: ${{ secrets.ANACONDA_USER }}
   DEBIAN_FRONTEND: noninteractive
-  GHA_MACHINE_TYPE: "n2-standard-4"
+  # GHA_MACHINE_TYPE: "n2-standard-4"
   APT_REQUIREMENTS: binutils build-essential csh curl git libgl1 pkg-config sudo wget
 
 defaults:
@@ -362,77 +362,6 @@ jobs:
   #     - run: apt -qqy update && apt -qqy install ${{ env.APT_REQUIREMENTS }} libgmp-dev
   #     - uses: ./ci
 
-  open_pdks-sky130a-linux:
-    runs-on: 'ubuntu-22.04'
-    needs: magic-linux
-    env:
-      PACKAGE: "misc/open_pdks/sky130a"
-      OS_NAME: "linux"
-    steps:
-      - uses: actions/checkout@v3
-      - run: |
-          sudo apt -qqy update &&
-          sudo apt -qqy install ${{ env.APT_REQUIREMENTS }} libxrender1
-      - uses: conda-incubator/setup-miniconda@v2
-        with:
-          activate-environment: installer-env
-          miniconda-version: latest
-      - name: restore magic cache
-        uses: actions/cache@v3
-        with:
-          path: |
-            ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/magic-*.conda
-          key: ${{ runner.os }}-cache-magic
-      - name: create local repository
-        run: |
-          conda install conda-index
-          mkdir -p /tmp/conda-bld/linux-64
-          cp ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/magic-*.conda /tmp/conda-bld/linux-64/
-          conda index /tmp/conda-bld
-          rm -rf ${{ github.workspace }}/workdir
-      - uses: ./ci
-      - uses: actions/cache/save@v4
-        id: cache-sky130a
-        with:
-          path: |
-            ${{ github.workspace }}/workdir/conda-env/conda-bld/noarch/open_pdks.sky130a-*.conda
-          key: ${{ runner.os }}-cache-sky130a
-
-  open_pdks-gf180mcuc-linux:
-    runs-on: 'ubuntu-22.04'
-    needs: magic-linux
-    env:
-      PACKAGE: "misc/open_pdks/gf180mcuc"
-      OS_NAME: "linux"
-    steps:
-      - uses: actions/checkout@v3
-      - run: |
-          sudo apt -qqy update &&
-          sudo apt -qqy install ${{ env.APT_REQUIREMENTS }} libxrender1
-      - uses: conda-incubator/setup-miniconda@v2
-        with:
-          activate-environment: installer-env
-          miniconda-version: latest
-      - name: restore magic cache
-        uses: actions/cache@v3
-        with:
-          path: |
-            ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/magic-*.conda
-          key: ${{ runner.os }}-cache-magic
-      - name: create local repository
-        run: |
-          conda install conda-index
-          mkdir -p /tmp/conda-bld/linux-64
-          cp ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/magic-*.conda /tmp/conda-bld/linux-64/
-          conda index /tmp/conda-bld
-          rm -rf ${{ github.workspace }}/workdir
-      - uses: ./ci
-      - uses: actions/cache/save@v4
-        id: cache-gf180mcuc
-        with:
-          path: |
-            ${{ github.workspace }}/workdir/conda-env/conda-bld/noarch/open_pdks.gf180mcuc-*.conda
-          key: ${{ runner.os }}-cache-gf180mcuc
 
   # openlane-linux:
   #   runs-on: 'ubuntu-22.04'

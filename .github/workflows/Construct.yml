@@ -28,6 +28,97 @@ defaults:
     shell: bash
 
 jobs:
+  open_pdks-sky130a-linux:
+    runs-on: 'ubuntu-22.04'
+    needs: magic-linux
+    env:
+      PACKAGE: "misc/open_pdks/sky130a"
+      OS_NAME: "linux"
+    steps:
+      - name: Maximize build space
+        uses: easimon/maximize-build-space@master
+        with:
+          root-reserve-mb: 1024
+          swap-size-mb: 1024
+          remove-dotnet: 'true'
+          remove-android: 'true'
+          remove-haskell: 'true'
+          remove-codeql: 'true'
+      - uses: actions/checkout@v3
+      - run: |
+          sudo apt -qqy update &&
+          sudo apt -qqy install ${{ env.APT_REQUIREMENTS }} libxrender1
+      - uses: conda-incubator/setup-miniconda@v2
+        with:
+          activate-environment: installer-env
+          miniconda-version: latest
+      - name: restore magic cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/magic-*.conda
+          key: ${{ runner.os }}-cache-magic
+      - name: create local repository
+        run: |
+          conda install conda-index
+          mkdir -p /tmp/conda-bld/linux-64
+          cp ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/magic-*.conda /tmp/conda-bld/linux-64/
+          conda index /tmp/conda-bld
+          rm -rf ${{ github.workspace }}/workdir
+      - uses: ./ci
+      - uses: actions/cache/save@v4
+        id: cache-sky130a
+        with:
+          path: |
+            ${{ github.workspace }}/workdir/conda-env/conda-bld/noarch/open_pdks.sky130a-*.conda
+          key: ${{ runner.os }}-cache-sky130a
+
+  open_pdks-gf180mcuc-linux:
+    runs-on: 'ubuntu-22.04'
+    needs: magic-linux
+    env:
+      PACKAGE: "misc/open_pdks/gf180mcuc"
+      OS_NAME: "linux"
+    steps:
+      - name: Maximize build space
+        uses: easimon/maximize-build-space@master
+        with:
+          root-reserve-mb: 1024
+          swap-size-mb: 1024
+          remove-dotnet: 'true'
+          remove-android: 'true'
+          remove-haskell: 'true'
+          remove-codeql: 'true'
+      - uses: actions/checkout@v3
+      - run: |
+          echo "Free space:"
+          df -h
+          sudo apt -qqy update &&
+          sudo apt -qqy install ${{ env.APT_REQUIREMENTS }} libxrender1
+      - uses: conda-incubator/setup-miniconda@v2
+        with:
+          activate-environment: installer-env
+          miniconda-version: latest
+      - name: restore magic cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/magic-*.conda
+          key: ${{ runner.os }}-cache-magic
+      - name: create local repository
+        run: |
+          conda install conda-index
+          mkdir -p /tmp/conda-bld/linux-64
+          cp ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/magic-*.conda /tmp/conda-bld/linux-64/
+          conda index /tmp/conda-bld
+          rm -rf ${{ github.workspace }}/workdir
+      - uses: ./ci
+      - uses: actions/cache/save@v4
+        id: cache-gf180mcuc
+        with:
+          path: |
+            ${{ github.workspace }}/workdir/conda-env/conda-bld/noarch/open_pdks.gf180mcuc-*.conda
+          key: ${{ runner.os }}-cache-gf180mcuc
   # digital-sky130a-installer:
   #   needs:
   #     - openroad
@@ -115,59 +206,100 @@ jobs:
   #         path: |
   #           ${{ vars.GITHUB_WORKSPACE }}/conda-eda/analog.sky130a-0-Linux-x86_64.sh
 
-  # mixed-signal-sky130a-installer:
-  #   needs:
-  #     - xls
-  #     - openroad
-  #   runs-on: 'ubuntu-22.04'
-  #   defaults:
-  #     run:
-  #       shell: bash -l {0}
-  #   steps:
-  #     - name: checkout conda-eda
-  #       uses: actions/checkout@v3
+  mixed-signal-sky130a-installer:
+    runs-on: 'ubuntu-22.04'
+    needs:
+      - magic-linux
+      - xschem-linux
+      - netgen-linux
+      - ngspice-linux
+      - yosys-linux
+      - openroad-linux
+      - open_pdks-sky130a-linux
+    defaults:
+      run:
+        shell: bash -l {0}
+    steps:
+      - name: checkout conda-eda
+        uses: actions/checkout@v3
 
-  #     - uses: conda-incubator/setup-miniconda@v2
-  #       with:
-  #         activate-environment: installer-env
-  #         miniconda-version: lastest
+      - uses: conda-incubator/setup-miniconda@v2
+        with:
+          activate-environment: installer-env
+      - name: restore magic cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/magic-*.conda
+          key: ${{ runner.os }}-cache-magic
+      - name: restore netgen cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/netgen-*.conda
+          key: ${{ runner.os }}-cache-netgen
+      - name: restore yosys cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/yosys-*.conda
+          key: ${{ runner.os }}-cache-yosys
+      - name: restore xschem cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/xschem-*.conda
+          key: ${{ runner.os }}-cache-xschem
+      - name: restore ngspice cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/ngspice-*.conda
+          key: ${{ runner.os }}-cache-ngspice
+      - name: restore openroad cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/openroad-*.conda
+          key: ${{ runner.os }}-cache-openroad
+      - name: restore klayout cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/klayout-*.conda
+          key: ${{ runner.os }}-cache-klayout
+      - name: restore sky130a cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ${{ github.workspace }}/workdir/conda-env/conda-bld/noarch/open_pdks.sky130a-*.conda
+          key: ${{ runner.os }}-cache-sky130a
 
-  #     - name: restore xls cache
-  #       uses: actions/cache@v3
-  #       with:
-  #         path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/xls-*.tar.bz2
-  #         key: ${{ runner.os }}-xls-${{ github.run_id }}
+      - name: construct installer
+        run: |
+          conda install constructor conda-build conda-index
+          mkdir -p /tmp/conda-bld/linux-64
+          mkdir -p /tmp/conda-bld/noarch
+          cp ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/*.conda /tmp/conda-bld/linux-64/
+          cp ${{ github.workspace }}/workdir/conda-env/conda-bld/noarch/*.conda /tmp/conda-bld/noarch/
+          conda index /tmp/conda-bld
+          constructor installer/mixed-signal.gf180mcuc/
 
-  #     - name: restore openroad cache
-  #       uses: actions/cache@v3
-  #       with:
-  #         path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/openroad-*.tar.bz2
-  #         key: ${{ runner.os }}-openroad-${{ github.run_id }}
+      - name: dump checksum
+        run: |
+          md5sum mixed-signal.sky130a-0-Linux-x86_64.sh
 
-  #     - name: construct installer
-  #       run: |
-  #         conda install ctools::constructor>=3.4.3 conda-build
-  #         mkdir -p /tmp/conda-bld/linux-64
-  #         cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/xls-*.tar.bz2 /tmp/conda-bld/linux-64/
-  #         cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/openroad-*.tar.bz2 /tmp/conda-bld/linux-64/
-  #         conda index /tmp/conda-bld
-  #         constructor installer/mixed-signal.sky130a/
+      - name: smoke test
+        run: |
+          rm -fR /tmp/conda-bld/linux-64/
+          bash mixed-signal.sky130a-0-Linux-x86_64.sh -b -p /tmp/env
 
-  #     - name: dump checksum
-  #       run: |
-  #         md5sum mixed-signal.sky130a-0-Linux-x86_64.sh
-
-  #     - name: smoke test
-  #       run: |
-  #         rm -fR /tmp/conda-bld/linux-64/
-  #         bash mixed-signal.sky130a-0-Linux-x86_64.sh -b -p /tmp/env
-
-  #     - name: archive installer
-  #       uses: actions/upload-artifact@v3
-  #       with:
-  #         name: 'mixed-signal.sky130a-installer'
-  #         path: |
-  #           /home/runner/work/conda-eda/conda-eda/mixed-signal.sky130a-0-Linux-x86_64.sh
+      - name: archive installer
+        uses: actions/upload-artifact@v3
+        with:
+          name: 'mixed-signal.sky130a-installer'
+          path: |
+            /home/runner/work/conda-eda/conda-eda/mixed-signal.sky130a-0-Linux-x86_64.sh
 
   # digital-gf180mcuc-installer:
   #   needs:
@@ -260,6 +392,14 @@ jobs:
 
   mixed-signal-gf180mcuc-installer:
     runs-on: 'ubuntu-22.04'
+    need:
+      - magic-linux
+      - xschem-linux
+      - netgen-linux
+      - ngspice-linux
+      - yosys-linux
+      - openroad-linux
+      - open_pdks-gf180mcuc-linux
     defaults:
       run:
         shell: bash -l {0}
@@ -400,13 +540,13 @@ jobs:
   #         path: |
   #           /home/runner/work/conda-eda/conda-eda/mixed-signal-0-Linux-x86_64.sh
   mixed-signal-tools-installer:
-    # needs:
-    #   - magic-linux
-    #   - xschem-linux
-    #   - netgen-linux
-    #   - ngspice-linux
-    #   - yosys-linux
-    #   - openroad-linux
+    needs:
+      - magic-linux
+      - xschem-linux
+      - netgen-linux
+      - ngspice-linux
+      - yosys-linux
+      - openroad-linux
     runs-on: 'ubuntu-22.04'
     defaults:
       run:
@@ -491,7 +631,7 @@ jobs:
     needs:
       - mixed-signal-tools-installer
   #     - analog-sky130a-installer
-  #     - mixed-signal-sky130a-installer
+      - mixed-signal-sky130a-installer
   #     - digital-gf180mcuc-installer
   #     - analog-gf180mcuc-installer
       - mixed-signal-gf180mcuc-installer

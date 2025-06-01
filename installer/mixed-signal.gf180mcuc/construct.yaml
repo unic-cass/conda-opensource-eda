@@ -14,9 +14,7 @@ specs:
   - klayout
   - ngspice
   - pandas
-  - openlane
-  - xls
-  - iverilog
-  - symbiyosys
+  - openroad
+  - yosys
 
 post_install: post_install.sh
