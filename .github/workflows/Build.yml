@@ -8,6 +8,8 @@ on:
         description: 'Anaconda Token'
       ANACONDA_USER:
         description: 'Anaconda User'
+permissions:
+  contents: write
 
 env:
   ANACONDA_TOKEN: ${{ secrets.ANACONDA_TOKEN }}
@@ -126,8 +128,6 @@ jobs:
           path: |
             ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/xschem-*.conda
           key: ${{ runner.os }}-cache-xschem
-
-
 
   # icarus-linux:
   #   runs-on: 'ubuntu-22.04'
