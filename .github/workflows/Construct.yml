@@ -28,9 +28,26 @@ defaults:
     shell: bash
 
 jobs:
+  # magic-linux:
+  #   runs-on: 'ubuntu-22.04'
+  #   env:
+  #     PACKAGE: "misc/magic"
+  #     OS_NAME: "linux"
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #     - run: |
+  #         sudo apt -qqy update &&
+  #         sudo apt -qqy install ${{ env.APT_REQUIREMENTS }} libxrender1
+  #     - uses: ./ci
+  #     - uses: actions/cache/save@v4
+  #       id: cache-magic
+  #       with:
+  #         path: |
+  #           ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/magic-*.conda
+  #         key: ${{ runner.os }}-cache-magic
   open_pdks-sky130a-linux:
     runs-on: 'ubuntu-22.04'
-    needs: magic-linux
+    # needs: magic-linux
     env:
       PACKAGE: "misc/open_pdks/sky130a"
       OS_NAME: "linux"
@@ -75,7 +92,7 @@ jobs:
 
   open_pdks-gf180mcuc-linux:
     runs-on: 'ubuntu-22.04'
-    needs: magic-linux
+    # needs: magic-linux
     env:
       PACKAGE: "misc/open_pdks/gf180mcuc"
       OS_NAME: "linux"
@@ -209,12 +226,6 @@ jobs:
   mixed-signal-sky130a-installer:
     runs-on: 'ubuntu-22.04'
     needs:
-      - magic-linux
-      - xschem-linux
-      - netgen-linux
-      - ngspice-linux
-      - yosys-linux
-      - openroad-linux
       - open_pdks-sky130a-linux
     defaults:
       run:
@@ -393,12 +404,6 @@ jobs:
   mixed-signal-gf180mcuc-installer:
     runs-on: 'ubuntu-22.04'
     needs:
-      - magic-linux
-      - xschem-linux
-      - netgen-linux
-      - ngspice-linux
-      - yosys-linux
-      - openroad-linux
       - open_pdks-gf180mcuc-linux
     defaults:
       run:
@@ -540,13 +545,6 @@ jobs:
   #         path: |
   #           /home/runner/work/conda-eda/conda-eda/mixed-signal-0-Linux-x86_64.sh
   mixed-signal-tools-installer:
-    needs:
-      - magic-linux
-      - xschem-linux
-      - netgen-linux
-      - ngspice-linux
-      - yosys-linux
-      - openroad-linux
     runs-on: 'ubuntu-22.04'
     defaults:
       run:
