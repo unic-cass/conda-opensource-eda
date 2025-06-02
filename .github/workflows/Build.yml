@@ -79,6 +79,7 @@ jobs:
     env:
       PACKAGE: "pnr/openroad"
       OS_NAME: "linux"
+      PYTHON_VERSION: "3.13"
     steps:
       - uses: actions/checkout@v3
       - run: |
@@ -430,6 +431,7 @@ jobs:
     env:
       PACKAGE: "misc/klayout"
       OS_NAME: "linux"
+      PYTHON_VERSION: "3.13"
     steps:
       - uses: actions/checkout@v3
       - run: |

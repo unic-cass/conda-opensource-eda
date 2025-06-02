@@ -15,7 +15,6 @@ source:
    #   - makefile-conda-config.patch
 
 build:
-  python_version_independent: true
   # number: 201803050325
   number: {{ environ.get('DATE_NUM') }}
   # string: 20180305_0325_py37
@@ -66,10 +65,8 @@ requirements:
     - pkg-config           [not win]
     - tk                   [not win]
     - zlib                 [not win]
-    - python >=3.8
     - gawk [osx]
   run:
-    - python >=3.8
     - gawk     [osx]
     - iverilog [osx]
 

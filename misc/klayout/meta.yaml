@@ -15,7 +15,6 @@ source:
     - force-python-dynamic-link.patch
 
 build:
-  python_version_independent: true
   # number: 201803050325
   number: {{ environ.get('DATE_NUM') }}
   # string: 20180305_0325_py37
@@ -42,16 +41,14 @@ requirements:
     - {{ cdt('expat') }}              [linux]
     - {{ cdt('libpng') }}             [linux]
   host:
-    # - python {{ python_version }}
-    - python >=3.8
+    - python {{ python_version }}
     - ruby
     - qt >=5.0,<6.0
     - zlib
     - libgit2
   run:
-    # - {{ pin_compatible('python', min_pin='x.x', max_pin='x.x') }}
+    - {{ pin_compatible('python', min_pin='x.x', max_pin='x.x') }}
     - ruby
-    - qt >=5.0,<6.0
     - zlib
 
 test:
@@ -59,7 +56,7 @@ test:
     - klayout -v
   requires:
     - ruby
-    - python >=3.8
+    - python
 
 about:
   home: https://www.klayout.de/
