@@ -80,7 +80,7 @@ jobs:
           conda install conda-index
           mkdir -p /tmp/conda-bld/linux-64
           cp ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/magic-*.conda /tmp/conda-bld/linux-64/
-          conda index /tmp/conda-bld
+          python -m conda_index /tmp/conda-bld
           rm -rf ${{ github.workspace }}/workdir
       - uses: ./ci
       - uses: actions/cache/save@v4
@@ -127,7 +127,7 @@ jobs:
           conda install conda-index
           mkdir -p /tmp/conda-bld/linux-64
           cp ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/magic-*.conda /tmp/conda-bld/linux-64/
-          conda index /tmp/conda-bld
+          python -m conda_index /tmp/conda-bld
           rm -rf ${{ github.workspace }}/workdir
       - uses: ./ci
       - uses: actions/cache/save@v4
@@ -170,7 +170,7 @@ jobs:
   #         mkdir -p /tmp/conda-bld/linux-64
   #         cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/xls-*.conda /tmp/conda-bld/linux-64/
   #         cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/openroad-*.conda /tmp/conda-bld/linux-64/
-  #         conda index /tmp/conda-bld
+  #         python -m conda_index /tmp/conda-bld
   #         constructor installer/digital.sky130a/
 
   #     - name: dump checksum
@@ -293,7 +293,7 @@ jobs:
           mkdir -p /tmp/conda-bld/noarch
           cp ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/*.conda /tmp/conda-bld/linux-64/
           cp ${{ github.workspace }}/workdir/conda-env/conda-bld/noarch/*.conda /tmp/conda-bld/noarch/
-          conda index /tmp/conda-bld
+          python -m conda_index /tmp/conda-bld
           constructor installer/mixed-signal.gf180mcuc/
 
       - name: dump checksum
@@ -347,7 +347,7 @@ jobs:
   #         mkdir -p /tmp/conda-bld/linux-64
   #         cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/xls-*.tar.bz2 /tmp/conda-bld/linux-64/
   #         cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/openroad-*.tar.bz2 /tmp/conda-bld/linux-64/
-  #         conda index /tmp/conda-bld
+  #         python -m conda_index /tmp/conda-bld
   #         constructor installer/digital.gf180mcuc/
 
   #     - name: dump checksum
@@ -471,7 +471,7 @@ jobs:
           mkdir -p /tmp/conda-bld/noarch
           cp ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/*.conda /tmp/conda-bld/linux-64/
           cp ${{ github.workspace }}/workdir/conda-env/conda-bld/noarch/*.conda /tmp/conda-bld/noarch/
-          conda index /tmp/conda-bld
+          python -m conda-index /tmp/conda-bld
           constructor installer/mixed-signal.gf180mcuc/
 
       - name: dump checksum
@@ -526,7 +526,7 @@ jobs:
   #         mkdir -p /tmp/conda-bld/linux-64
   #         cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/xls-*.tar.bz2 /tmp/conda-bld/linux-64/
   #         cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/openroad-*.tar.bz2 /tmp/conda-bld/linux-64/
-  #         conda index /tmp/conda-bld
+  #         python -m conda_index /tmp/conda-bld
   #         constructor installer/mixed-signal/
 
   #     - name: dump checksum
