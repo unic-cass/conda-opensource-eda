@@ -16,6 +16,8 @@ package:
 source:
   - git_url: https://github.com/The-OpenROAD-Project/OpenROAD.git
     git_rev: master
+    patches:
+      - openroad-fmt-9.1.patch
   - url: https://github.com/The-OpenROAD-Project/lemon-graph/archive/refs/tags/{{ lemon_version }}.tar.gz
     md5: {{ lemon_md5 }}
     folder: third_party/lemon
@@ -58,18 +60,21 @@ requirements:
     - python {{ python_version }}
     - libboost 1.82
     - eigen 3.3
-    - spdlog 1.9
+    - spdlog 1.11
     - tk
     - zlib
-    - fmt
+    - fmt 9.1
     - libgomp                 [not osx]
     - llvm-openmp             [osx]
     - qt >=5.7,<6
+    - libxcb
   run:
     # missing run_exports
     - {{ pin_compatible('libboost', min_pin='x.x', max_pin='x.x') }}
     - {{ pin_compatible('python', min_pin='x.x', max_pin='x.x') }}
-    - spdlog >=1.9,<1.10
+    - qt-main >=5.7,<6
+    - spdlog >=1.11,<1.12
+    - libxcb
 
 test:
   commands:
