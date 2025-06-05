@@ -48,6 +48,12 @@ requirements:
     - libgit2
   run:
     - {{ pin_compatible('python', min_pin='x.x', max_pin='x.x') }}
+    - libxcb
+    - xcb-util
+    - xcb-util-image
+    - xcb-util-keysyms
+    - xcb-util-renderutil
+    - xcb-util-wm
     - ruby
     - zlib
 
