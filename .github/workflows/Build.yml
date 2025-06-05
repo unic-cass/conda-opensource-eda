@@ -20,7 +20,7 @@ env:
   ANACONDA_USER: ${{ secrets.ANACONDA_USER }}
   DEBIAN_FRONTEND: noninteractive
   # GHA_MACHINE_TYPE: "n2-standard-4"
-  APT_REQUIREMENTS: binutils build-essential csh curl git libgl1 pkg-config sudo wget
+  APT_REQUIREMENTS: binutils build-essential csh curl git libgl1 pkg-config sudo wget libc6-dev
 
 defaults:
   run:
@@ -44,7 +44,7 @@ jobs:
           path: |
             ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/magic-*.conda
           key: ${{ runner.os }}-cache-magic-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/linux-64/magic-*.conda', github.workspace)) }}
-          restore-keys: ${{ runner.os }}-cache-magic
+
   netgen-linux:
     runs-on: 'ubuntu-22.04'
     env:
@@ -62,7 +62,7 @@ jobs:
           path: |
             ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/netgen-*.conda
           key: ${{ runner.os }}-cache-netgen-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/linux-64/netgen-*.conda', github.workspace)) }}
-          restore-keys: ${{ runner.os }}-cache-netgen
+
   yosys-linux:
     runs-on: 'ubuntu-22.04'
     env:
@@ -80,7 +80,7 @@ jobs:
           path: |
             ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/yosys-*.conda
           key: ${{ runner.os }}-cache-yosys-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/linux-64/yosys-*.conda', github.workspace)) }}
-          restore-keys: ${{ runner.os }}-cache-yosys
+
   openroad-linux:
     runs-on: 'ubuntu-22.04'
     env:
@@ -99,7 +99,7 @@ jobs:
           path: |
             ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/openroad-*.conda
           key: ${{ runner.os }}-cache-openroad-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/linux-64/openroad-*.conda', github.workspace)) }}
-          restore-keys: ${{ runner.os }}-cache-openroad
+
   openroad-linux-py310:
     runs-on: 'ubuntu-22.04'
     env:
@@ -118,7 +118,6 @@ jobs:
           path: |
             ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/openroad-*.conda
           key: ${{ runner.os }}-cache-openroad-py310-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/linux-64/openroad-*.conda', github.workspace)) }}
-          restore-keys: ${{ runner.os }}-cache-openroad-py310
 
   openroad-linux-py311:
     runs-on: 'ubuntu-22.04'
@@ -138,7 +137,7 @@ jobs:
           path: |
             ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/openroad-*.conda
           key: ${{ runner.os }}-cache-openroad-py311-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/linux-64/openroad-*.conda', github.workspace)) }}
-          restore-keys: ${{ runner.os }}-cache-openroad-py311
+
   openroad-linux-py312:
     runs-on: 'ubuntu-22.04'
     env:
@@ -157,7 +156,6 @@ jobs:
           path: |
             ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/openroad-*.conda
           key: ${{ runner.os }}-cache-openroad-py312-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/linux-64/openroad-*.conda', github.workspace)) }}
-          restore-keys: ${{ runner.os }}-cache-openroad-py312
 
   ngspice-linux:
     runs-on: 'ubuntu-22.04'
@@ -176,7 +174,6 @@ jobs:
           path: |
             ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/ngspice-*.conda
           key: ${{ runner.os }}-cache-ngspice-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/linux-64/ngspice-*.conda', github.workspace)) }}
-          restore-keys: ${{ runner.os }}-cache-ngspice
 
   xschem-linux:
     runs-on: 'ubuntu-22.04'
@@ -198,7 +195,6 @@ jobs:
           path: |
             ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/xschem-*.conda
           key: ${{ runner.os }}-cache-xschem-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/linux-64/xschem-*.conda', github.workspace)) }}
-          restore-keys: ${{ runner.os }}-cache-xschem
 
   xyce-linux:
     runs-on: 'ubuntu-22.04'
@@ -220,8 +216,6 @@ jobs:
           path: |
             ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/xschem-*.conda
           key: ${{ runner.os }}-cache-xyce-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/linux-64/xyce-*.conda', github.workspace)) }}
-          restore-keys: ${{ runner.os }}-cache-xyce
-
 
   # icarus-linux:
   #   runs-on: 'ubuntu-22.04'
@@ -537,7 +531,6 @@ jobs:
           path: |
             ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/klayout-*.conda
           key: ${{ runner.os }}-cache-klayout-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/linux-64/klayout-*.conda', github.workspace)) }}
-          restore-keys: ${{ runner.os }}-cache-klayout
 
   klayout-linux-py310:
     runs-on: 'ubuntu-22.04'
@@ -557,7 +550,6 @@ jobs:
           path: |
             ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/klayout-*.conda
           key: ${{ runner.os }}-cache-klayout-py310-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/linux-64/klayout-*.conda', github.workspace)) }}
-          restore-keys: ${{ runner.os }}-cache-klayout-py310
 
   klayout-linux-py311:
     runs-on: 'ubuntu-22.04'
@@ -577,7 +569,6 @@ jobs:
           path: |
             ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/klayout-*.conda
           key: ${{ runner.os }}-cache-klayout-py311-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/linux-64/klayout-*.conda', github.workspace)) }}
-          restore-keys: ${{ runner.os }}-cache-klayout-py311
 
   klayout-linux-py312:
     runs-on: 'ubuntu-22.04'
@@ -597,7 +588,6 @@ jobs:
           path: |
             ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/klayout-*.conda
           key: ${{ runner.os }}-cache-klayout-py312-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/linux-64/klayout-*.conda', github.workspace)) }}
-          restore-keys: ${{ runner.os }}-cache-klayout-py312
 
   # klayout-osx:
   #   runs-on: "macos-latest"
