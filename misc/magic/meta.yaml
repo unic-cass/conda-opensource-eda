@@ -10,7 +10,6 @@ source:
    git_rev: master
 
 build:
-  python_version_independent: true
   # number: 201803050325
   number: {{ environ.get('DATE_NUM') }}
   # string: 20180305_0325
@@ -25,7 +24,7 @@ requirements:
     - autoconf
     - automake
     - make
-    - python >=3.8
+    - python
     - {{ compiler('c') }}
     - {{ cdt('xorg-x11-proto-devel') }}  # [linux]
     - {{ cdt('libx11-devel') }}  # [linux]
