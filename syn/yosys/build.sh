@@ -15,17 +15,19 @@ case "${UNAME_OUT}" in
                 exit;;
 esac
 echo "Build started for ${OS}..."
-
-if [[ $OS == "Linux" ]]; then
-	make config-gcc
-elif [[ $OS == "Mac" ]]; then
-	make config-mac
-fi
-
 echo "PREFIX := $PREFIX" >> Makefile.conf
 echo "ENABLE_READLINE := 0" >> Makefile.conf
+echo "ENABLE_TCL := 0" >> Makefile.conf
 
-make V=1 -j$CPU_COUNT
+if [[ $OS == "Linux" ]]; then
+    ln -s $GCC $BUILD_PREFIX/bin/gcc
+    make config=gcc-static V=1 -j$CPU_COUNT
+elif [[ $OS == "Mac" ]]; then
+    make config-mac
+fi
+
+
+# make V=1 -j$CPU_COUNT
 make install
 
 $PREFIX/bin/yosys -V
