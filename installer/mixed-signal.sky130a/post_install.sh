@@ -30,4 +30,4 @@ ln -s $PREFIX/share/pdk/sky130A/libs.tech/magic/sky130A.magicrc $PREFIX/lib/magi
 ln -sf $PREFIX/share/pdk/sky130A/libs.tech/xschem/xschemrc $PREFIX/share/xschem/xschemrc
 
 # fix up yosys dep
-(cd $PREFIX/lib && ln -s libffi.so.7 libffi.so.6)
+# (cd $PREFIX/lib && ln -s libffi.so.7 libffi.so.6)

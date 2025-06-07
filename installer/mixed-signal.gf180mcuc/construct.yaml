@@ -16,5 +16,6 @@ specs:
   - pandas
   - openroad
   - yosys
+  - xyce
 
 post_install: post_install.sh

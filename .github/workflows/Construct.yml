@@ -3,8 +3,6 @@ name: Build installers
 on:
   push:
     paths:
-    - 'misc/open_pdks/gf180mcuc/*'
-    - 'misc/open_pdks/sky130a/*'
     - 'installer/mixed-signal.tools/*'
     - 'installer/mixed-signal.sky130a/*'
     - 'installer/mixed-signal.gf180mcuc/*'
@@ -36,110 +34,6 @@ jobs:
   #         path: |
   #           ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/magic-*.conda
   #         key: ${{ runner.os }}-cache-magic
-  open_pdks-sky130a-linux:
-    runs-on: 'ubuntu-22.04'
-    # needs: magic-linux
-    env:
-      PACKAGE: "misc/open_pdks/sky130a"
-      OS_NAME: "linux"
-      PYTHON_VERSION: "3.13"
-    defaults:
-      run:
-        shell: bash -l {0}
-    steps:
-      - name: Maximize build space
-        if: ${{ !env.ACT }}
-        uses: easimon/maximize-build-space@master
-        with:
-          root-reserve-mb: 20480
-          swap-size-mb: 1024
-          remove-dotnet: 'true'
-          remove-android: 'true'
-          remove-haskell: 'true'
-          remove-codeql: 'true'
-      - uses: actions/checkout@v3
-      - run: |
-          sudo apt -qqy update &&
-          sudo apt -qqy install ${{ env.APT_REQUIREMENTS }} libxrender1
-      - uses: conda-incubator/setup-miniconda@v3
-        with:
-          activate-environment: installer-env
-          miniconda-version: latest
-      - name: restore magic cache
-        uses: actions/cache/restore@v4
-        with:
-          path: |
-            ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/magic-*.conda
-          key: ${{ runner.os }}-cache-magic-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/linux-64/magic-*.conda', github.workspace)) }}
-          restore-keys: ${{ runner.os }}-cache-magic-
-      - name: create local repository
-        shell: bash -el {0}
-        run: |
-          conda install constructor conda-build conda-index
-          mkdir -p /tmp/conda-bld/linux-64
-          cp ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/magic-*.conda /tmp/conda-bld/linux-64/
-          python -m conda_index /tmp/conda-bld
-          rm -rf ${{ github.workspace }}/workdir
-      - uses: ./ci
-      - uses: actions/cache/save@v4
-        id: cache-sky130a
-        with:
-          path: |
-            ${{ github.workspace }}/workdir/conda-env/conda-bld/noarch/open_pdks.sky130a-*.conda
-          key: ${{ runner.os }}-cache-sky130a-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/noarch/open_pdks.sky130a-*.conda', github.workspace)) }}
-
-  open_pdks-gf180mcuc-linux:
-    runs-on: 'ubuntu-22.04'
-    # needs: magic-linux
-    env:
-      PACKAGE: "misc/open_pdks/gf180mcuc"
-      OS_NAME: "linux"
-      PYTHON_VERSION: "3.13"
-    defaults:
-      run:
-        shell: bash -l {0}
-    steps:
-      - name: Maximize build space
-        if: ${{ !env.ACT }}
-        uses: easimon/maximize-build-space@master
-        with:
-          root-reserve-mb: 20480
-          swap-size-mb: 1024
-          remove-dotnet: 'true'
-          remove-android: 'true'
-          remove-haskell: 'true'
-          remove-codeql: 'true'
-      - uses: actions/checkout@v3
-      - run: |
-          df -h
-          sudo apt -qqy update &&
-          sudo apt -qqy install ${{ env.APT_REQUIREMENTS }} libxrender1
-      - uses: conda-incubator/setup-miniconda@v3
-        with:
-          activate-environment: installer-env
-          miniconda-version: latest
-      - name: restore magic cache
-        uses: actions/cache@v3
-        with:
-          path: |
-            ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/magic-*.conda
-          key: ${{ runner.os }}-cache-magic-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/linux-64/magic-*.conda', github.workspace)) }}
-          restore-keys: ${{ runner.os }}-cache-magic-
-      - name: create local repository
-        shell: bash -el {0}
-        run: |
-          conda install constructor conda-build conda-index
-          mkdir -p /tmp/conda-bld/linux-64
-          cp ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/magic-*.conda /tmp/conda-bld/linux-64/
-          python3 -m conda_index /tmp/conda-bld
-          rm -rf ${{ github.workspace }}/workdir
-      - uses: ./ci
-      - uses: actions/cache/save@v4
-        id: cache-gf180mcuc
-        with:
-          path: |
-            ${{ github.workspace }}/workdir/conda-env/conda-bld/noarch/open_pdks.gf180mcuc-*.conda
-          key: ${{ runner.os }}-cache-gf180mcuc-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/noarch/open_pdks.gf180mcuc-*.conda', github.workspace)) }}
   # digital-sky130a-installer:
   #   needs:
   #     - openroad
@@ -229,8 +123,6 @@ jobs:
 
   mixed-signal-sky130a-installer:
     runs-on: 'ubuntu-22.04'
-    needs:
-      - open_pdks-sky130a-linux
     env:
       PYTHON_VERSION: "3.13"
     defaults:
@@ -284,15 +176,15 @@ jobs:
         with:
           path: |
             ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/openroad-*.conda
-          key: ${{ runner.os }}-cache-openroad-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/linux-64/openroad-*.conda', github.workspace)) }}
-          restore-keys: ${{ runner.os }}-cache-openroad-
+          key: ${{ runner.os }}-cache-openroad-latest-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/linux-64/openroad-*.conda', github.workspace)) }}
+          restore-keys: ${{ runner.os }}-cache-openroad-latest-
       - name: restore klayout cache
         uses: actions/cache/restore@v4
         with:
           path: |
             ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/klayout-*.conda
-          key: ${{ runner.os }}-cache-klayout-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/linux-64/klayout-*.conda', github.workspace)) }}
-          restore-keys: ${{ runner.os }}-cache-klayout-
+          key: ${{ runner.os }}-cache-klayout-latest-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/linux-64/klayout-*.conda', github.workspace)) }}
+          restore-keys: ${{ runner.os }}-cache-klayout-latest-
       - name: restore sky130a cache
         uses: actions/cache@v3
         with:
@@ -418,8 +310,6 @@ jobs:
 
   mixed-signal-gf180mcuc-installer:
     runs-on: 'ubuntu-22.04'
-    needs:
-      - open_pdks-gf180mcuc-linux
     defaults:
       run:
         shell: bash -l {0}
@@ -471,15 +361,15 @@ jobs:
         with:
           path: |
             ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/openroad-*.conda
-          key: ${{ runner.os }}-cache-openroad-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/linux-64/openroad-*.conda', github.workspace)) }}
-          restore-keys: ${{ runner.os }}-cache-openroad-
+          key: ${{ runner.os }}-cache-openroad-latest-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/linux-64/openroad-*.conda', github.workspace)) }}
+          restore-keys: ${{ runner.os }}-cache-openroad-latest-
       - name: restore klayout cache
         uses: actions/cache/restore@v4
         with:
           path: |
             ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/klayout-*.conda
-          key: ${{ runner.os }}-cache-klayout-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/linux-64/klayout-*.conda', github.workspace)) }}
-          restore-keys: ${{ runner.os }}-cache-klayout-
+          key: ${{ runner.os }}-cache-klayout-latest-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/linux-64/klayout-*.conda', github.workspace)) }}
+          restore-keys: ${{ runner.os }}-cache-klayout-latest-
       - name: restore gf180mcuc cache
         uses: actions/cache/restore@v4
         with:
@@ -578,7 +468,7 @@ jobs:
       - name: checkout conda-eda
         uses: actions/checkout@v3
 
-      - uses: conda-incubator/setup-miniconda@v2
+      - uses: conda-incubator/setup-miniconda@v3
         with:
           activate-environment: installer-env
           miniconda-version: latest
@@ -623,15 +513,15 @@ jobs:
         with:
           path: |
             ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/openroad-*.conda
-          key: ${{ runner.os }}-cache-openroad-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/linux-64/openroad-*.conda', github.workspace)) }}
-          restore-keys: ${{ runner.os }}-cache-openroad-
+          key: ${{ runner.os }}-cache-openroad-latest-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/linux-64/openroad-*.conda', github.workspace)) }}
+          restore-keys: ${{ runner.os }}-cache-openroad-latest-
       - name: restore klayout cache
         uses: actions/cache/restore@v4
         with:
           path: |
             ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/klayout-*.conda
-          key: ${{ runner.os }}-cache-klayout-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/linux-64/klayout-*.conda', github.workspace)) }}
-          restore-keys: ${{ runner.os }}-cache-klayout-
+          key: ${{ runner.os }}-cache-klayout-latest-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/linux-64/klayout-*.conda', github.workspace)) }}
+          restore-keys: ${{ runner.os }}-cache-klayout-latest-
 
       - name: construct installer
         run: |

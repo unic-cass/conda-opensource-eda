@@ -14,5 +14,7 @@ specs:
   - netgen
   - yosys
   - openroad
+  - klayout
+  - xyce
 
 post_install: post_install.sh
