@@ -185,6 +185,13 @@ jobs:
             ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/klayout-*.conda
           key: ${{ runner.os }}-cache-klayout-latest-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/linux-64/klayout-*.conda', github.workspace)) }}
           restore-keys: ${{ runner.os }}-cache-klayout-latest-
+      - name: restore xyce cache
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/xyce-*.conda
+          key: ${{ runner.os }}-cache-klayout-latest-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/linux-64/xyce-*.conda', github.workspace)) }}
+          restore-keys: ${{ runner.os }}-cache-xyce-
       - name: restore sky130a cache
         uses: actions/cache@v3
         with:
@@ -370,6 +377,13 @@ jobs:
             ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/klayout-*.conda
           key: ${{ runner.os }}-cache-klayout-latest-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/linux-64/klayout-*.conda', github.workspace)) }}
           restore-keys: ${{ runner.os }}-cache-klayout-latest-
+      - name: restore xyce cache
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/xyce-*.conda
+          key: ${{ runner.os }}-cache-klayout-latest-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/linux-64/xyce-*.conda', github.workspace)) }}
+          restore-keys: ${{ runner.os }}-cache-xyce-
       - name: restore gf180mcuc cache
         uses: actions/cache/restore@v4
         with:
@@ -523,6 +537,13 @@ jobs:
           key: ${{ runner.os }}-cache-klayout-latest-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/linux-64/klayout-*.conda', github.workspace)) }}
           restore-keys: ${{ runner.os }}-cache-klayout-latest-
 
+      - name: restore xyce cache
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/xyce-*.conda
+          key: ${{ runner.os }}-cache-klayout-latest-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/linux-64/xyce-*.conda', github.workspace)) }}
+          restore-keys: ${{ runner.os }}-cache-xyce-
       - name: construct installer
         run: |
           conda install constructor conda-build conda-index
