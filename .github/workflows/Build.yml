@@ -28,6 +28,7 @@ defaults:
 
 jobs:
   tool-build:
+    runs-on: 'ubuntu-22.04'
     needs:
       - magic-linux
       - openroad-linux
