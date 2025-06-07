@@ -38,6 +38,8 @@ jobs:
       - ngspice-linux
       - xschem-linux
       - xyce-linux
+    steps:
+      - run: echo "Tool Build done."
 
   magic-linux:
     runs-on: 'ubuntu-22.04'
