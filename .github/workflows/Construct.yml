@@ -228,7 +228,7 @@ jobs:
       - name: smoke test
         run: |
           rm -fR /tmp/conda-bld/linux-64/
-          bash mixed-signal.sky130a-0-Linux-x86_64.sh -b -p /tmp/env
+          bash mixed-signal.sky130a-0-Linux-x86_64.sh -b -p ${{ github.workspace }}/tmp/env
 
       - name: archive installer
         uses: actions/upload-artifact@v4
