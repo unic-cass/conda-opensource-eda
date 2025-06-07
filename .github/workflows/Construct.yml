@@ -235,7 +235,7 @@ jobs:
         with:
           name: 'mixed-signal.sky130a-installer'
           path: |
-            /home/runner/work/conda-eda/conda-eda/mixed-signal.sky130a-0-Linux-x86_64.sh
+            ${{ github.workspace }}/mixed-signal.sky130a-0-Linux-x86_64.sh
 
   # digital-gf180mcuc-installer:
   #   needs:
@@ -438,7 +438,7 @@ jobs:
         with:
           name: 'mixed-signal.gf180mcuc-installer'
           path: |
-            /home/runner/work/conda-eda/conda-eda/mixed-signal.gf180mcuc-0-Linux-x86_64.sh
+            ${{ github.workspace }}/mixed-signal.gf180mcuc-0-Linux-x86_64.sh
 
   # mixed-signal-installer:
   #   continue-on-error: true
@@ -611,6 +611,8 @@ jobs:
       - name: dump checksums
         run: |
           md5sum mixed-signal-tools-installer/*.sh
+          md5sum mixed-signal.gf180mcuc-installer/*.sh
+          md5sum mixed-signal.sky130a-installer/*.sh
 
       - run: |
           git config --local user.name conda-eda@bot
@@ -623,8 +625,8 @@ jobs:
       - run: |
           cat << EOF > release-notes.md
           \`\`\`
-          bash ~/Downloads/mixed-signal-tools-0-Linux-x86_64.sh -b -p silicon-env/
-          source silicon-env/bin/activate
+          bash ~/Downloads/mixed-signal-tools-0-Linux-x86_64.sh -b -p $HOME/unic-cass-eda
+          source $HOME/unic-cass-eda/bin/activate
           xschem -v
           ngspice -v
           yosys --version
@@ -641,3 +643,5 @@ jobs:
           body_path: release-notes.md
           files: |
             mixed-signal-tools-installer/*.sh
+            mixed-signal.gf180mcuc-installer/*.sh
+            mixed-signal.sky130a-installer/*.sh
