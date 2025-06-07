@@ -27,6 +27,18 @@ defaults:
     shell: bash
 
 jobs:
+  tool-build:
+    needs:
+      - magic-linux
+      - openroad-linux
+      - ngspice-linux
+      - klayout-linux
+      - netgen-linux
+      - yosys-linux
+      - ngspice-linux
+      - xschem-linux
+      - xyce-linux
+
   magic-linux:
     runs-on: 'ubuntu-22.04'
     env:
@@ -162,6 +174,7 @@ jobs:
     env:
       PACKAGE: "sim/ngspice"
       OS_NAME: "linux"
+      PYTHON_VERSION: "3.13"
     steps:
       - uses: actions/checkout@v3
       - run: |
@@ -214,7 +227,7 @@ jobs:
         id: cache-xyce
         with:
           path: |
-            ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/xschem-*.conda
+            ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/xyce-*.conda
           key: ${{ runner.os }}-cache-xyce-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/linux-64/xyce-*.conda', github.workspace)) }}
 
   # icarus-linux:
