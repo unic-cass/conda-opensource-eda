@@ -1,5 +1,5 @@
 # Use `conda-build-prepare` before building for a better version string.
-{% set version = '%s_%04i_%s'|format(GIT_DESCRIBE_TAG or 'sUNKNOWN', GIT_DESCRIBE_NUMBER|int, GIT_DESCRIBE_HASH or 'gUNKNOWN') %}
+{% set version = '%s_%04i_%s'|format(GIT_DESCRIBE_TAG|replace('v', '')|replace('-', '')|default('0.X'), GIT_DESCRIBE_NUMBER|int, GIT_DESCRIBE_HASH|default('gUNKNOWN')) %}
 
 package:
   name: iverilog
@@ -7,7 +7,7 @@ package:
 
 source:
   git_url: https://github.com/steveicarus/iverilog.git
-  git_rev: master
+  git_rev: 4fd5291
   patches:
     - fix-vvp-path.patch
     - vvp-config.patch
@@ -46,6 +46,17 @@ requirements:
     - readline                  [not win]
 
 test:
+  # commands:
+  #   - test -f "${PREFIX}/bin/iverilog"  # [unix]
+  #   - test -f "${PREFIX}/bin/iverilog-vpi"  # [unix]
+  #   - test -f "${PREFIX}/bin/vvp"  # [unix]
+  #   - test -f "${PREFIX}/lib/libveriuser.a"  # [unix]
+  #   - test -f "${PREFIX}/lib/libvpi.a"  # [unix]
+  #   - test -f "${PREFIX}/lib/ivl/ivl"  # [unix]
+  #   - test -f "${PREFIX}/lib/ivl/ivlpp"  # [unix]
+  #   - test -f "${PREFIX}/lib/ivl/vhdlpp"  # [unix]
+  #   - iverilog -V
+  #   - vvp -V
   files:
     - test/fsm.v
     - test/counter.v
