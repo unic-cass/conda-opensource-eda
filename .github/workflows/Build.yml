@@ -249,7 +249,7 @@ jobs:
         id: cache-icarus
         with:
           path: |
-            ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/icarus-*.conda
+            ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/iverilog-*.conda
           key: ${{ runner.os }}-cache-icarus-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/linux-64/icarus-*.conda', github.workspace)) }}
 
   verilator-linux:
