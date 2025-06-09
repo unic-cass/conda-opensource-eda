@@ -7,7 +7,7 @@ package:
 
 source:
   git_rev: master
-  git_url: http://git.veripool.org/git/verilator
+  git_url: https://github.com/verilator/verilator
 
 build:
   detect_binary_files_with_prefix: True
