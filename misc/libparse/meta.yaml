@@ -1,0 +1,54 @@
+# Use `conda-build-prepare` before building for a better version string.
+{% set version = '%s_%04i_%s'|format(GIT_DESCRIBE_TAG, GIT_DESCRIBE_NUMBER|int, GIT_DESCRIBE_HASH or 'gUNKNOWN') %}
+
+{% set python_version = PYTHON_VERSION | default('3.13') %}
+{% set py_suffix = 'py%s'|format(python_version|replace('.', '')) %}
+
+package:
+  name: libparse
+  version: {{ version }}
+
+source:
+  git_url: https://github.com/efabless/libparse-python
+  git_rev: f83b5a5
+
+build:
+  # number: 201803050325
+  number: {{ environ.get('DATE_NUM') }}
+  # string: 20180305_0325
+  string: {{ environ.get('DATE_STR') }}_{{ py_suffix }}
+  script_env:
+    - CI
+    - CONDA_OUT
+    - TEST_PACKAGE
+
+requirements:
+  build:
+    - python {{ python_version }}
+    - setuptools
+    - wheel
+    - swig
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+  host:
+    - python {{ python_version }}
+  run:
+    - python {{ python_version }}
+
+test:
+  files:
+    - test/test.py
+    - test/test.lib
+  commands:
+    - $PYTHON test/test.py
+
+about:
+  home: https://github.com/efabless/libparse-python
+  license: Apache-2.0
+  license_family: Apache
+  summary: |
+    libparse-python is a SWIG-based Python wrapper around Yosys\'s libparse, for all your lib file parsing needs.
+  description: |
+    A SWIG-based Python wrapper around Yosys's libparse, for all your lib file parsing needs.
+
+
