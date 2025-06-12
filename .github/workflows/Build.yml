@@ -511,20 +511,6 @@ jobs:
   #           ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/yosys-*.conda
   #         key: ${{ runner.os }}-cache-yosys-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/linux-64/yosys-*.conda', github.workspace)) }}
   #         restore-keys: ${{ runner.os }}-cache-yosys-
-  #     - name: restore xschem cache
-  #       uses: actions/cache/restore@v4
-  #       with:
-  #         path: |
-  #           ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/xschem-*.conda
-  #         key: ${{ runner.os }}-cache-xschem-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/linux-64/xschem-*.conda', github.workspace)) }}
-  #         restore-keys: ${{ runner.os }}-cache-xschem-
-  #     - name: restore ngspice cache
-  #       uses: actions/cache/restore@v4
-  #       with:
-  #         path: |
-  #           ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/ngspice-*.conda
-  #         key: ${{ runner.os }}-cache-ngspice-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/linux-64/ngspice-*.conda', github.workspace)) }}
-  #         restore-keys: ${{ runner.os }}-cache-ngspice-
   #     - name: restore openroad cache
   #       uses: actions/cache/restore@v4
   #       with:
@@ -567,6 +553,13 @@ jobs:
   #           ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/verilator-*.conda
   #         key: ${{ runner.os }}-cache-verilator-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/linux-64/verilator-*.conda', github.workspace)) }}
   #         restore-keys: ${{ runner.os }}-cache-verilator-
+  #     - uses: actions/cache/restore@v4
+  #       id: cache-libparse
+  #       with:
+  #         path: |
+  #           ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/libparse-*.conda
+  #         key: ${{ runner.os }}-cache-libparse-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/linux-64/libparse-*.conda', github.workspace)) }}
+  #         restore-keys: ${{ runner.os }}-cache-libparse-
   #     - name: construct installer
   #       run: |
   #         conda install conda-build conda-index
@@ -615,6 +608,24 @@ jobs:
           path: |
             ${{ github.workspace }}/workdir/conda-env/conda-bld/noarch/tcllib-*.conda
           key: ${{ runner.os }}-cache-tcllib-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/noarch/tcllib-*.conda', github.workspace)) }}
+  libparse-linux:
+    runs-on: 'ubuntu-22.04'
+    env:
+      PACKAGE: "misc/libparse"
+      OS_NAME: "linux"
+      PYTHON_VERSION: "3.13"
+    steps:
+      - uses: actions/checkout@v3
+      - run: |
+            sudo apt -qqy update &&
+            sudo apt -qqy install ${{ env.APT_REQUIREMENTS }} libxrender1
+      - uses: ./ci
+      - uses: actions/cache/save@v4
+        id: cache-libparse
+        with:
+          path: |
+            ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/libparse-*.conda
+          key: ${{ runner.os }}-cache-libparse-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/linux-64/libparse-*.conda', github.workspace)) }}
 
   klayout-linux:
     runs-on: 'ubuntu-22.04'
