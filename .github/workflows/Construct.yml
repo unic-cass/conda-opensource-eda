@@ -204,13 +204,14 @@ jobs:
           key: ${{ runner.os }}-cache-klayout-latest-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/linux-64/xyce-*.conda', github.workspace)) }}
           restore-keys: ${{ runner.os }}-cache-xyce-
       - name: restore sky130a cache
-        uses: actions/cache@v3
+        uses: actions/cache/restore@v4
         with:
           path: |
             ${{ github.workspace }}/workdir/conda-env/conda-bld/noarch/open_pdks.sky130a-*.conda
-          key: ${{ runner.os }}-cache-sky130a
+          key: ${{ runner.os }}-cache-sky130a-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/noarch/open_pdks.sky130a-*.conda', github.workspace)) }}
+          restore-keys: ${{ runner.os }}-cache-sky130a-
 
-      - name: construct installern6
+      - name: construct installer
         shell: bash -el {0}
         run: |
           conda install constructor conda-build conda-index
