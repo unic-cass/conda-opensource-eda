@@ -1,7 +1,7 @@
 # Use `conda-build-prepare` before building for a better version string.
 {% set version = '%s_%04i_%s'|format(GIT_DESCRIBE_TAG, GIT_DESCRIBE_NUMBER|int, GIT_DESCRIBE_HASH or 'gUNKNOWN') %}
 
-{% set python_version = PYTHON_VERSION | default('3.7') %}
+{% set python_version = PYTHON_VERSION | default('3.13') %}
 {% set py_suffix = 'py%s'|format(python_version|replace('.', '')) %}
 
 package:
@@ -35,6 +35,7 @@ requirements:
     - click
     - pyyaml
     - tcllib
+    - libparse
     - klayout
     - verilator
     - python {{ python_version }}
@@ -44,8 +45,8 @@ test:
     - open_pdks.sky130a
     - open_pdks.gf180mcuc
   commands:
-    - PDK=sky130A STD_CELL_LIBRARY=sky130_fd_sc_hd STD_CELL_LIBRARY_OPT=sky130_fd_sc_hd flow.tcl -design spm
-    - PDK=gf180mcuC STD_CELL_LIBRARY=gf180mcu_fd_sc_mcu7t5v0 STD_CELL_LIBRARY_OPT=gf180mcu_fd_sc_mcu7t5v0 flow.tcl -design spm    
+    - pip3 install klayout==0.29.7 && PDK_ROOT=$CONDA_PREFIX/share/pdk PDK=sky130A STD_CELL_LIBRARY=sky130_fd_sc_hd STD_CELL_LIBRARY_OPT=sky130_fd_sc_hd flow.tcl -design spm
+    - pip3 install klayout==0.29.7 && PDK_ROOT=$CONDA_PREFIX/share/pdk PDK=gf180mcuC STD_CELL_LIBRARY=gf180mcu_fd_sc_mcu7t5v0 STD_CELL_LIBRARY_OPT=gf180mcu_fd_sc_mcu7t5v0 flow.tcl -design spm
 
 about:
   home: https://github.com/The-OpenROAD-Project/OpenLane

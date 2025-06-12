@@ -7,7 +7,7 @@ package:
 
 source:
    git_url: https://github.com/RTimothyEdwards/netgen
-   git_rev: netgen-1.5
+   git_rev: 1.5.270
    patches:
      - remove-x11-requirement.patch       [osx]
 

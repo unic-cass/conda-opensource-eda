@@ -15,9 +15,10 @@ package:
 
 source:
   - git_url: https://github.com/The-OpenROAD-Project/OpenROAD.git
-    git_rev: master
+    git_rev: b16bda7
     patches:
-      - openroad-fmt-9.1.patch
+      - openroad-fmt-9.1_b16bda7e.patch
+    #   - openroad-fmt-9.1.patch
   - url: https://github.com/The-OpenROAD-Project/lemon-graph/archive/refs/tags/{{ lemon_version }}.tar.gz
     md5: {{ lemon_md5 }}
     folder: third_party/lemon
