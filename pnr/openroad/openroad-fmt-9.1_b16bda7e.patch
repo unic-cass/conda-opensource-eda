@@ -1,0 +1,79 @@
+diff --git a/src/cts/src/HTreeBuilder.h b/src/cts/src/HTreeBuilder.h
+index c7f8241..11fbd85 100644
+--- a/src/cts/src/HTreeBuilder.h
++++ b/src/cts/src/HTreeBuilder.h
+@@ -404,3 +404,8 @@ class HTreeBuilder : public TreeBuilder
+ };
+ 
+ }  // namespace cts
++#if defined(FMT_VERSION) && FMT_VERSION >= 90000
++#include <fmt/ostream.h>
++template <typename T> struct fmt::formatter<cts::Box<T>> : fmt::ostream_formatter {};
++#endif // FMT_VERSION >= 90000
++
+diff --git a/src/cts/src/TreeBuilder.h b/src/cts/src/TreeBuilder.h
+index 8ac102b..11c2f99 100644
+--- a/src/cts/src/TreeBuilder.h
++++ b/src/cts/src/TreeBuilder.h
+@@ -279,3 +279,8 @@ class TreeBuilder
+ };
+ 
+ }  // namespace cts
++#if defined(FMT_VERSION) && FMT_VERSION >= 90000
++#include <fmt/ostream.h>
++template <typename T> struct fmt::formatter<cts::Point<T>> : fmt::ostream_formatter {};
++#endif // FMT_VERSION >= 90000
++
+diff --git a/src/dpl/src/Grid.h b/src/dpl/src/Grid.h
+index 1986134..a80eb9c 100644
+--- a/src/dpl/src/Grid.h
++++ b/src/dpl/src/Grid.h
+@@ -250,3 +250,8 @@ class Grid
+ };
+ 
+ }  // namespace dpl
++#if defined(FMT_VERSION) && FMT_VERSION >= 90000
++#include <fmt/ostream.h>
++template <typename T> struct fmt::formatter<dpl::TypedCoordinate<T>> : fmt::ostream_formatter {};
++#endif // FMT_VERSION >= 90000
++
+diff --git a/src/grt/src/fastroute/include/DataType.h b/src/grt/src/fastroute/include/DataType.h
+index e61422a..9a05120 100644
+--- a/src/grt/src/fastroute/include/DataType.h
++++ b/src/grt/src/fastroute/include/DataType.h
+@@ -253,3 +253,8 @@ struct OrderNetEdge
+ using utl::format_as;
+ 
+ }  // namespace grt
++#if defined(FMT_VERSION) && FMT_VERSION >= 90000
++#include <fmt/ostream.h>
++template <> struct fmt::formatter<grt::RouteType> : fmt::ostream_formatter {};
++#endif // FMT_VERSION >= 90000
++
+diff --git a/src/odb/include/odb/geom.h b/src/odb/include/odb/geom.h
+index cc5b336..367ce62 100644
+--- a/src/odb/include/odb/geom.h
++++ b/src/odb/include/odb/geom.h
+@@ -851,3 +851,9 @@ using utl::format_as;
+ #endif
+ 
+ }  // namespace odb
++#if defined(FMT_VERSION) && FMT_VERSION >= 90000
++#include <fmt/ostream.h>
++template <> struct fmt::formatter<odb::Point> : fmt::ostream_formatter {};
++template <> struct fmt::formatter<odb::Rect> : fmt::ostream_formatter {};
++#endif // FMT_VERSION >= 90000
++
+diff --git a/src/utl/include/utl/timer.h b/src/utl/include/utl/timer.h
+index 0397748..8ee995f 100644
+--- a/src/utl/include/utl/timer.h
++++ b/src/utl/include/utl/timer.h
+@@ -79,3 +79,8 @@ class DebugScopedTimer : public Timer
+ std::ostream& operator<<(std::ostream& os, const Timer& t);
+ 
+ }  // namespace utl
++#if defined(FMT_VERSION) && FMT_VERSION >= 90000
++#include <fmt/ostream.h>
++template <> struct fmt::formatter<utl::DebugScopedTimer> : fmt::ostream_formatter {};
++template <> struct fmt::formatter<utl::Timer> : fmt::ostream_formatter {};
++#endif // FMT_VERSION >= 90000

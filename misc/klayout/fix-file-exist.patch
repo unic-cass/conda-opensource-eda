@@ -1,0 +1,13 @@
+diff --git a/src/drc/drc/built-in-macros/_drc_engine.rb b/src/drc/drc/built-in-macros/_drc_engine.rb
+index 14a384a..0289344 100644
+--- a/src/drc/drc/built-in-macros/_drc_engine.rb
++++ b/src/drc/drc/built-in-macros/_drc_engine.rb
+@@ -122,7 +122,7 @@ module DRC
+ 
+         #  Apply waive DB if possible
+         wdb_file = rdb_file + ".w"
+-        if File.exists?(wdb_file)
++        if File.exist?(wdb_file)
+           begin
+             wdb = RBA::ReportDatabase::new
+             wdb.load(wdb_file)
