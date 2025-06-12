@@ -482,7 +482,7 @@ jobs:
       - libparse-linux
       - magic-linux
       - open_pdks-sky130a-linux
-      - open_pdks-gf180mcuc-linux53c22ab
+      - open_pdks-gf180mcuc-linux
       - magic-linux
       - klayout-linux
       - openroad-linux
