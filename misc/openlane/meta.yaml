@@ -28,7 +28,7 @@ build:
 
 requirements:
   run:
-    - openroad
+    - openroad 2.0_14013_gb16bda7e82
     - magic
     - netgen
     - yosys
