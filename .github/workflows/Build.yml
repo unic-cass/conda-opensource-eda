@@ -101,8 +101,6 @@ jobs:
       PACKAGE: "pnr/openroad"
       OS_NAME: "linux"
       PYTHON_VERSION: "3.13"
-    needs:
-      - openlane-linux
     steps:
       - uses: actions/checkout@v3
       - run: |
@@ -475,6 +473,8 @@ jobs:
       PACKAGE: "misc/openlane"
       OS_NAME: "linux"
       PYTHON_VERSION: "3.13"
+    needs:
+      - openroad-linux
     defaults:
       run:
         shell: bash -l {0}

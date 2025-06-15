@@ -1,3 +1,4 @@
+channel_priority: disabled
 channels:
   - unic-cass
   - duyhieu
