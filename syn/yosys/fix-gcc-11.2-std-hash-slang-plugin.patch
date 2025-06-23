@@ -1,0 +1,20 @@
+diff --git a/third_party/slang/include/slang/util/Hash.h b/third_party/slang/include/slang/util/Hash.h
+index 0a2105c..9c8b8be 100644
+--- a/third_party/slang/include/slang/util/Hash.h
++++ b/third_party/slang/include/slang/util/Hash.h
+@@ -11,6 +11,15 @@
+ #include <cstring>
+ #include <memory>
+ #include <vector>
++#include <filesystem>
++namespace std {
++    template<>
++    struct hash<std::filesystem::path> {
++        size_t operator()(const std::filesystem::path& p) const noexcept {
++            return std::hash<std::string>{}(p.string());
++        }
++    };
++}
+ 
+ #include "slang/util/Util.h"
+ 
