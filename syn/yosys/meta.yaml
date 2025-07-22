@@ -1,7 +1,7 @@
 # Use `conda-build-prepare` before building for a better version string.
 {% set version = '%s_%04i_%s'|format(GIT_DESCRIBE_TAG|replace('yosys-', '') or '0.X', GIT_DESCRIBE_NUMBER|int, GIT_DESCRIBE_HASH or 'gUNKNOWN') %}
 
-{% set python_version = PYTHON_VERSION | default('3.7') %}
+{% set python_version = PYTHON_VERSION | default('3.10') %}
 {% set py_suffix = 'py%s'|format(python_version|replace('.', '')) %}
 
 package:
@@ -10,7 +10,7 @@ package:
 
 source:
   - git_url: https://github.com/YosysHQ/yosys.git
-    git_rev: 53c22ab
+    git_rev: main
     # patches:
     #   - makefile-conda-config.patch
   - git_url: https://github.com/povik/yosys-slang
