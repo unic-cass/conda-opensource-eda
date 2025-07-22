@@ -2,13 +2,19 @@
 {% set NGSPICE_TAG = GIT_DESCRIBE_TAG|replace('ngspice-', '') %}
 {% set version = '%s_%04i_%s'|format(NGSPICE_TAG, GIT_DESCRIBE_NUMBER|int, GIT_DESCRIBE_HASH or 'gUNKNOWN') %}
 
+{% set libxaw_version = '1.0.16' %}
+{% set libxaw_sha256 = '731d572b54c708f81e197a6afa8016918e2e06dfd3025e066ca642a5b8c39c8f' %}
+
 package:
   name: ngspice
   version: {{ version }}
 
 source:
-   git_url: git://git.code.sf.net/p/ngspice/ngspice
-   git_rev: master
+  - git_url: git://git.code.sf.net/p/ngspice/ngspice
+    git_rev: master
+  - url: https://www.x.org/releases/individual/lib/libXaw-{{ libxaw_version }}.tar.xz
+    sha256: {{ libxaw_sha256 }}
+    folder: third_party/libxaw
 
 build:
   # number: 201803050325
@@ -25,6 +31,13 @@ requirements:
     - bison
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
+    - {{ cdt('xorg-x11-proto-devel') }}
+    - {{ cdt('libx11-devel') }}         # [linux]
+    - {{ cdt('libxext-devel') }}        # [linux]
+    - {{ cdt('libxt-devel') }}          # [linux]
+    - xorg-libxmu
+  run:
+    - xorg-libxmu
 
 test:
   commands:
