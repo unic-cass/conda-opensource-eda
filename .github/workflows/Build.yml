@@ -186,7 +186,7 @@ jobs:
       - uses: actions/checkout@v3
       - run: |
           sudo apt -qqy update &&
-          sudo apt -qqy install ${{ env.APT_REQUIREMENTS }}
+          sudo apt -qqy install ${{ env.APT_REQUIREMENTS }} 
       - uses: ./ci
       - uses: actions/cache/save@v4
         id: cache-ngspice
@@ -893,3 +893,56 @@ jobs:
           path: |
             ${{ github.workspace }}/workdir/conda-env/conda-bld/noarch/open_pdks.gf180mcuc-*.conda
           key: ${{ runner.os }}-cache-gf180mcuc-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/noarch/open_pdks.gf180mcuc-*.conda', github.workspace)) }}
+  open_pdks-gf180mcud-linux:
+    runs-on: 'ubuntu-22.04'
+    needs:
+      - magic-linux
+    env:
+      PACKAGE: "misc/open_pdks/gf180mcud"
+      OS_NAME: "linux"
+      PYTHON_VERSION: "3.13"
+    defaults:
+      run:
+        shell: bash -l {0}
+    steps:
+      - name: Maximize build space
+        if: ${{ !env.ACT }}
+        uses: easimon/maximize-build-space@master
+        with:
+          root-reserve-mb: 20480
+          swap-size-mb: 1024
+          remove-dotnet: 'true'
+          remove-android: 'true'
+          remove-haskell: 'true'
+          remove-codeql: 'true'
+      - uses: actions/checkout@v3
+      - run: |
+          df -h
+          sudo apt -qqy update &&
+          sudo apt -qqy install ${{ env.APT_REQUIREMENTS }} libxrender1
+      - uses: conda-incubator/setup-miniconda@v3
+        with:
+          activate-environment: installer-env
+          miniconda-version: latest
+      - name: restore magic cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/magic-*.conda
+          key: ${{ runner.os }}-cache-magic-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/linux-64/magic-*.conda', github.workspace)) }}
+          restore-keys: ${{ runner.os }}-cache-magic-
+      - name: create local repository
+        shell: bash -el {0}
+        run: |
+          conda install constructor conda-build conda-index
+          mkdir -p /tmp/conda-bld/linux-64
+          cp ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/magic-*.conda /tmp/conda-bld/linux-64/
+          python3 -m conda_index /tmp/conda-bld
+          rm -rf ${{ github.workspace }}/workdir
+      - uses: ./ci
+      - uses: actions/cache/save@v4
+        id: cache-gf180mcud
+        with:
+          path: |
+            ${{ github.workspace }}/workdir/conda-env/conda-bld/noarch/open_pdks.gf180mcud-*.conda
+          key: ${{ runner.os }}-cache-gf180mcuc-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/noarch/open_pdks.gf180mcud-*.conda', github.workspace)) }}

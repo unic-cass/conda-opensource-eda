@@ -1,5 +1,5 @@
 diff --git a/gf180mcu/Makefile.in b/gf180mcu/Makefile.in
-index da16966..2967c43 100644
+index 6e221f8..be8c40e 100644
 --- a/gf180mcu/Makefile.in
 +++ b/gf180mcu/Makefile.in
 @@ -152,13 +152,13 @@ endif

@@ -10,7 +10,7 @@ source:
     git_rev: master
     patches:
       - use-sources-from-conda.patch
-      - disable-link-targets-for-C-variant.patch
+      - disable-link-targets-for-D-variant.patch
   - git_url: https://github.com/fossi-foundation/globalfoundries-pdk-libs-gf180mcu_fd_pr.git
     git_rev: main
     git_depth: 1

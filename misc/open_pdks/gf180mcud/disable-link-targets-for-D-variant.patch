@@ -1,0 +1,22 @@
+diff --git a/gf180mcu/Makefile.in b/gf180mcu/Makefile.in
+index 6e221f8..be8c40e 100644
+--- a/gf180mcu/Makefile.in
++++ b/gf180mcu/Makefile.in
+@@ -206,7 +206,7 @@ GF180MCUD = gf180mcuD
+ DIST_LINK_TARGETS_A = ${LINK_TARGETS_A}
+ DIST_LINK_TARGETS_B = ${SHARED_PDKS_PATH}/${LINK_TARGETS_B}
+ DIST_LINK_TARGETS_C = ${SHARED_PDKS_PATH}/${LINK_TARGETS_C}
+-DIST_LINK_TARGETS_D = ${SHARED_PDKS_PATH}/${LINK_TARGETS_D}
++DIST_LINK_TARGETS_D = none
+ 
+ # Basic definitions for each process node
+ GF180MCUA_DEFS = -DTECHNAME=gf180mcuA -DREVISION=${REVISION}
+@@ -1284,7 +1284,7 @@ install-C: install-A
+ 		-link_from ${DIST_LINK_TARGETS_C} 2>&1 | tee -a ${GF180MCUC}_install.log
+ 	echo "Ended GF180MCU PDK migration on "`date` >> ${GF180MCUC}_install.log
+ 
+-install-D: install-A
++install-D: 
+ 	echo "Starting GF180MCU PDK migration on "`date` > ${GF180MCUD}_install.log
+ 	${INSTALL} \
+ 		-source ${STAGING_PATH}/${GF180MCUD} \
