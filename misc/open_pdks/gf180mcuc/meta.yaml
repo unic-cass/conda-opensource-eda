@@ -11,23 +11,23 @@ source:
     patches:
       - use-sources-from-conda.patch
       - disable-link-targets-for-C-variant.patch
-  - git_url: https://github.com/efabless/globalfoundries-pdk-libs-gf180mcu_fd_pr.git
+  - git_url: https://github.com/fossi-foundation/globalfoundries-pdk-libs-gf180mcu_fd_pr.git
     git_rev: main
     git_depth: 1
     folder: gf180mcu-pdk/gf180mcu_fd_pr
-  - git_url: https://github.com/efabless/globalfoundries-pdk-libs-gf180mcu_fd_pv.git
+  - git_url: https://github.com/fossi-foundation/globalfoundries-pdk-libs-gf180mcu_fd_pv.git
     git_rev: main
     git_depth: 1
     folder: gf180mcu-pdk/gf180mcu_fd_pv
-  - git_url: https://github.com/google/globalfoundries-pdk-libs-gf180mcu_fd_io.git
+  - git_url: https://github.com/fossi-foundation/globalfoundries-pdk-libs-gf180mcu_fd_io.git
     git_rev: main
     git_depth: 1
     folder: gf180mcu-pdk/gf180mcu_fd_io
-  - git_url: https://github.com/efabless/globalfoundries-pdk-libs-gf180mcu_fd_sc_mcu7t5v0.git
+  - git_url: https://github.com/fossi-foundation/globalfoundries-pdk-libs-gf180mcu_fd_sc_mcu7t5v0.git
     git_rev: main
     git_depth: 1
     folder: gf180mcu-pdk/gf180mcu_fd_sc_mcu7t5v0
-  - git_url: https://github.com/efabless/globalfoundries-pdk-libs-gf180mcu_fd_sc_mcu9t5v0.git
+  - git_url: https://github.com/fossi-foundation/globalfoundries-pdk-libs-gf180mcu_fd_sc_mcu9t5v0.git
     git_rev: main
     git_depth: 1
     folder: gf180mcu-pdk/gf180mcu_fd_sc_mcu9t5v0

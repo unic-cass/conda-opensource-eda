@@ -1,2 +1,4 @@
 channels:
+  - defaults
   - file:///tmp/conda-bld
+#  - unic-cass
