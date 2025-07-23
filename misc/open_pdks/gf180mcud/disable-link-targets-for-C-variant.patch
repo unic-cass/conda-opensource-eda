@@ -1,0 +1,43 @@
+diff --git a/gf180mcu/Makefile.in b/gf180mcu/Makefile.in
+index 6e221f8..bc717d7 100644
+--- a/gf180mcu/Makefile.in
++++ b/gf180mcu/Makefile.in
+@@ -152,13 +152,13 @@ endif
+ 
+ # Path to GF180MCU open PDK sources.  If this is specified, then all
+ # library repositories must be subdirectories of this path.
+-GF180MCU_PR_PATH = @GF180MCU_FD_PR_PATH@
+-GF180MCU_PV_PATH = @GF180MCU_FD_PV_PATH@
+-GF180MCU_IO_PATH = @GF180MCU_FD_IO_PATH@
+-GF180MCU_SC_7T5V0_PATH = @GF180MCU_FD_SC_MCU7T5V0_PATH@
+-GF180MCU_SC_9T5V0_PATH = @GF180MCU_FD_SC_MCU9T5V0_PATH@
+-GF180MCU_SRAM_PATH = @GF180MCU_FD_IP_SRAM_PATH@
+-GF180MCU_OSU_SC_PATH = @GF180MCU_OSU_SC_PATH@
++GF180MCU_PR_PATH = @GF180MCU_SOURCE_PATH@/gf180mcu_fd_pr
++GF180MCU_PV_PATH = @GF180MCU_SOURCE_PATH@/gf180mcu_fd_pv
++GF180MCU_IO_PATH = @GF180MCU_SOURCE_PATH@/gf180mcu_fd_io
++GF180MCU_SC_7T5V0_PATH = @GF180MCU_SOURCE_PATH@/gf180mcu_fd_sc_mcu7t5v0
++GF180MCU_SC_9T5V0_PATH = @GF180MCU_SOURCE_PATH@/gf180mcu_fd_sc_mcu9t5v0
++GF180MCU_SRAM_PATH = @GF180MCU_SOURCE_PATH@/gf180mcu_fd_ip_sram
++GF180MCU_OSU_SC_PATH = @GF180MCU_SOURCE_PATH@/gf180mcu_osu_sc
+ 
+ USE_REFERENCE = @USE_REFERENCE@
+ 
+@@ -205,7 +205,7 @@ GF180MCUD = gf180mcuD
+ 
+ DIST_LINK_TARGETS_A = ${LINK_TARGETS_A}
+ DIST_LINK_TARGETS_B = ${SHARED_PDKS_PATH}/${LINK_TARGETS_B}
+-DIST_LINK_TARGETS_C = ${SHARED_PDKS_PATH}/${LINK_TARGETS_C}
++DIST_LINK_TARGETS_C = none
+ DIST_LINK_TARGETS_D = ${SHARED_PDKS_PATH}/${LINK_TARGETS_D}
+ 
+ # Basic definitions for each process node
+@@ -1275,7 +1275,7 @@ install-B: install-A
+ 		-link_from ${DIST_LINK_TARGETS_B} 2>&1 | tee -a ${GF180MCUB}_install.log
+ 	echo "Ended GF180MCU PDK migration on "`date` >> ${GF180MCUB}_install.log
+ 
+-install-C: install-A
++install-C:
+ 	echo "Starting GF180MCU PDK migration on "`date` > ${GF180MCUC}_install.log
+ 	${INSTALL} \
+ 		-source ${STAGING_PATH}/${GF180MCUC} \
