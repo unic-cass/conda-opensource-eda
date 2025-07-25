@@ -250,8 +250,41 @@ jobs:
         with:
           path: |
             ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/iverilog-*.conda
-          key: ${{ runner.os }}-cache-icarus-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/linux-64/icarus-*.conda', github.workspace)) }}
-
+          key: ${{ runner.os }}-cache-icarus-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/linux-64/iverilog-*.conda', github.workspace)) }}
+  gaw2-linux:
+    runs-on: 'ubuntu-22.04'
+    env:
+      PACKAGE: "misc/gaw2"
+      OS_NAME: "linux"
+    steps:
+      - uses: actions/checkout@v3
+      - run: |
+          sudo apt -qqy update &&
+          sudo apt -qqy install build-essential csh curl git wget
+      - uses: ./ci
+      - uses: actions/cache/save@v4
+        id: cache-gaw2
+        with:
+          path: |
+            ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/gaw2-*.conda
+          key: ${{ runner.os }}-cache-gaw2-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/linux-64/gaw2-*.conda', github.workspace)) }}
+  gaw3-linux:
+    runs-on: 'ubuntu-22.04'
+    env:
+      PACKAGE: "misc/xschem-gaw"
+      OS_NAME: "linux"
+    steps:
+      - uses: actions/checkout@v3
+      - run: |
+          sudo apt -qqy update &&
+          sudo apt -qqy install build-essential curl git wget
+      - uses: ./ci
+      - uses: actions/cache/save@v4
+        id: cache-gaw3
+        with:
+          path: |
+            ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/gaw-*.conda
+          key: ${{ runner.os }}-cache-gaw3-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/linux-64/gaw-*.conda', github.workspace)) }}
   verilator-linux:
     runs-on: 'ubuntu-22.04'
     env:
