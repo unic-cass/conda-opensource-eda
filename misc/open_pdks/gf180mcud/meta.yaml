@@ -2,7 +2,7 @@
 {% set version = '%s_%04i_%s'| format(GIT_DESCRIBE_TAG | default('0.X'), GIT_DESCRIBE_NUMBER | default(0) | int, GIT_DESCRIBE_HASH | default('gUNKNOWN')) %}
 
 package:
-  name: open_pdks.gf180mcuc
+  name: open_pdks.gf180mcud
   version: {{ version }}
 
 source:
