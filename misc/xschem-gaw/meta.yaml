@@ -1,0 +1,68 @@
+# Use `conda-build-prepare` before building for a better version string.
+{% set version = '%s_%04i_%s'|format(GIT_DESCRIBE_TAG, GIT_DESCRIBE_NUMBER|int, GIT_DESCRIBE_HASH or 'gUNKNOWN') %}
+
+package:
+  name: gaw
+  version: {{ version }}
+
+source:
+   - git_url: https://github.com/StefanSchippers/xschem-gaw.git
+     git_rev: main
+
+build:
+  # number: 201803050325
+  number: {{ environ.get('DATE_NUM') }}
+  # string: 20180305_0325
+  string: {{ environ.get('DATE_STR') }}
+  # script_env:
+  #   - CI
+
+
+requirements:
+  build:
+    - autoconf
+    - automake
+    - make
+    # - libzip
+    - gtk3
+    - pkg-config
+    - {{ compiler('c') }}
+    # - {{ cdt('alsa-lib-devel') }}  # [linux]
+    # - {{ cdt('cairo-devel') }}     # [linux]
+    # - {{ cdt('libpng-devel') }}    # [linux]
+    # - {{ cdt('libx11-devel') }}    # [linux]
+    # - {{ cdt('libxext-devel') }} # [linux]
+    # - {{ cdt('libxrender-devel') }} # [linux]
+    # - {{ cdt('libxfixes-devel') }} # [linux]
+    # - {{ cdt('libxinerama-devel') }} # [linux]
+    # - {{ cdt('expat-devel') }} # [linux]
+    # - {{ cdt('libxcb') }} # [linux]
+    # - {{ cdt('freetype-devel') }} # [linux]
+    # - {{ cdt('xorg-x11-proto-devel') }} # [linux]
+    # - {{ cdt('libxi-devel') }} # [linux]
+    # - {{ cdt('libxcursor-devel') }} # [linux]
+    # - {{ cdt('libxdamage-devel') }} # [linux]
+    # - {{ cdt('libxcomposite-devel') }} # [linux]
+    # - {{ cdt('libselinux-devel') }} # [linux]
+    # - {{ cdt('libxcomposite-devel') }} # [linux]
+  run:
+    - gtk3
+
+test:
+  commands:
+    - test $PREFIX/bin/gaw
+
+about:
+  home: https://gaw.tuxfamily.org/
+  license: GPL-2.0-or-later
+  license_family: GPL
+  summary: 'Analog waveform displaying tool.'
+  description: |
+    Gaw is a Linux software tool for displaying analog waveforms from
+    sampled datas, for example from the output of simulators or input
+    from sound cards. Data can be imported to gaw using files, direct
+    tcp/ip connection or directly from the sound card. Gaw is based on
+    the Gtk2+ toolkit. The Gaw software is licensed under the terms of
+    the GNU General Public License as published by the Free Software
+    Foundation.
+  doc_url: https://gaw.tuxfamily.org/linux/gawman.php
