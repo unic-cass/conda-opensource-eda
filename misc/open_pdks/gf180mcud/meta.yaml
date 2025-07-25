@@ -62,17 +62,17 @@ requirements:
 
 test:
   commands:
-    - test -d $PREFIX/share/pdk/gf180mcuC/libs.ref/gf180mcu_fd_io
-    - test -d $PREFIX/share/pdk/gf180mcuC/libs.ref/gf180mcu_fd_sc_mcu7t5v0
-    - test -d $PREFIX/share/pdk/gf180mcuC/libs.ref/gf180mcu_fd_sc_mcu9t5v0
-    - test -d $PREFIX/share/pdk/gf180mcuC/libs.ref/gf180mcu_fd_ip_sram
-    - test -d $PREFIX/share/pdk/gf180mcuC/libs.ref/gf180mcu_osu_sc_gp9t3v3
-    - test -d $PREFIX/share/pdk/gf180mcuC/libs.ref/gf180mcu_osu_sc_gp12t3v3
+    - test -d $PREFIX/share/pdk/gf180mcuD/libs.ref/gf180mcu_fd_io
+    - test -d $PREFIX/share/pdk/gf180mcuD/libs.ref/gf180mcu_fd_sc_mcu7t5v0
+    - test -d $PREFIX/share/pdk/gf180mcuD/libs.ref/gf180mcu_fd_sc_mcu9t5v0
+    - test -d $PREFIX/share/pdk/gf180mcuD/libs.ref/gf180mcu_fd_ip_sram
+    - test -d $PREFIX/share/pdk/gf180mcuD/libs.ref/gf180mcu_osu_sc_gp9t3v3
+    - test -d $PREFIX/share/pdk/gf180mcuD/libs.ref/gf180mcu_osu_sc_gp12t3v3
     # from gf180mcu_fd_pr
-    - test -d $PREFIX/share/pdk/gf180mcuC/libs.tech/ngspice
-    - test -d $PREFIX/share/pdk/gf180mcuC/libs.tech/xyce
-    - test -d $PREFIX/share/pdk/gf180mcuC/libs.tech/klayout
-    - test -d $PREFIX/share/pdk/gf180mcuC/libs.tech/xschem
+    - test -d $PREFIX/share/pdk/gf180mcuD/libs.tech/ngspice
+    - test -d $PREFIX/share/pdk/gf180mcuD/libs.tech/xyce
+    - test -d $PREFIX/share/pdk/gf180mcuD/libs.tech/klayout
+    - test -d $PREFIX/share/pdk/gf180mcuD/libs.tech/xschem
 
 about:
   home: http://opencircuitdesign.com/open_pdks/

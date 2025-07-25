@@ -42,9 +42,9 @@ requirements:
     - {{ cdt('libselinux-devel') }} # [linux]
     - {{ cdt('libxcomposite-devel') }} # [linux]
     - {{ cdt('expat-devel') }} # [linux]
-    - {{ cdt('libxcb') }} # [linux]
     - libzip
     - pkg-config
+    - libxcb
   run:
     - gtk2
 
