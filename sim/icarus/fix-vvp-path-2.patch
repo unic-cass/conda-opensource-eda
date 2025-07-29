@@ -1,0 +1,37 @@
+diff --git a/vvp/main.cc b/vvp/main.cc
+index 53fbf87..83f796c 100644
+--- a/vvp/main.cc
++++ b/vvp/main.cc
+@@ -141,9 +141,22 @@ int main(int argc, char*argv[])
+ 	    return 0;
+       }
+ 
+-      if (optind == argc) {
+-	    fprintf(stderr, "%s: no input file.\n", argv[0]);
+-	    return -1;
++      if (optind != argc) {
++	    design_path = argv[optind];
++      }
++      if (design_path != 0 && *design_path != '-') {
++            designfile = fopen(design_path, "r");
++	    if (designfile == 0) {
++	         fprintf(stderr, "%s: Unable to open input file.\n", design_path);
++                 return -1;
++	   }
++      } else {
++	    if (stdin_name == 0) {
++	          design_path = "<stdin>";
++	    } else {
++		  design_path = stdin_name;
++	    }
++	    designfile = stdin;
+       }
+ 
+       vvp_init(logfile_name, argc - optind, argv + optind);
+@@ -151,5 +164,5 @@ int main(int argc, char*argv[])
+       for (unsigned idx = 0 ;  idx < module_cnt ;  idx += 1)
+ 	    vpip_load_module(module_tab[idx]);
+ 
+-      return vvp_run(argv[optind]);
++      return vvp_run(designfile, design_path);
+ }

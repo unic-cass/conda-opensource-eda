@@ -7,10 +7,11 @@ package:
 
 source:
   git_url: https://github.com/steveicarus/iverilog.git
-  git_rev: 4fd5291
+  git_rev: master
   patches:
     - fix-vvp-path.patch
-    - vvp-config.patch
+    - fix-vvp-path-2.patch
+    # - vvp-config.patch
 
 build:
   # number: 201803050325
@@ -40,23 +41,25 @@ requirements:
     - m2w64-gcc                 [win]
     - m2-gperf                  [win]
     - m2-bison                  [win]
-  host:
-    # `readline` has to be a `host` req. to be included as a `run`
-    # requirement in the resulting package (through `run_export`)
     - readline                  [not win]
+    - zlib
+    - bzip2
+  # host:
+  #   # `readline` has to be a `host` req. to be included as a `run`
+  #   # requirement in the resulting package (through `run_export`)
 
 test:
-  # commands:
-  #   - test -f "${PREFIX}/bin/iverilog"  # [unix]
-  #   - test -f "${PREFIX}/bin/iverilog-vpi"  # [unix]
-  #   - test -f "${PREFIX}/bin/vvp"  # [unix]
-  #   - test -f "${PREFIX}/lib/libveriuser.a"  # [unix]
-  #   - test -f "${PREFIX}/lib/libvpi.a"  # [unix]
-  #   - test -f "${PREFIX}/lib/ivl/ivl"  # [unix]
-  #   - test -f "${PREFIX}/lib/ivl/ivlpp"  # [unix]
-  #   - test -f "${PREFIX}/lib/ivl/vhdlpp"  # [unix]
-  #   - iverilog -V
-  #   - vvp -V
+  commands:
+    - test -f "${PREFIX}/bin/iverilog"  # [unix]
+    - test -f "${PREFIX}/bin/iverilog-vpi"  # [unix]
+    - test -f "${PREFIX}/bin/vvp"  # [unix]
+    - test -f "${PREFIX}/lib/libveriuser.a"  # [unix]
+    - test -f "${PREFIX}/lib/libvpi.a"  # [unix]
+    - test -f "${PREFIX}/lib/ivl/ivl"  # [unix]
+    - test -f "${PREFIX}/lib/ivl/ivlpp"  # [unix]
+    - test -f "${PREFIX}/lib/ivl/vhdlpp"  # [unix]
+    - iverilog -V
+    - vvp -V
   files:
     - test/fsm.v
     - test/counter.v

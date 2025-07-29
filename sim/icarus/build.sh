@@ -6,7 +6,7 @@ set -x
 export CC_FOR_BUILD=$CC
 
 sh ./autoconf.sh
-./configure --prefix=$PREFIX
+CFLAGS="-I$BUILD_PREFIX/include" LDFLAGS="-L$BUILD_PREFIX/lib" ./configure --prefix=$PREFIX
 
 make -j$CPU_COUNT
 make install
