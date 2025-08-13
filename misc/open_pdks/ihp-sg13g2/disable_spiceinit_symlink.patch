@@ -1,0 +1,19 @@
+diff --git a/ihp-sg13g2/libs.tech/xschem/install.py b/ihp-sg13g2/libs.tech/xschem/install.py
+index 1e8a188..3f0943c 100755
+--- a/ihp-sg13g2/libs.tech/xschem/install.py
++++ b/ihp-sg13g2/libs.tech/xschem/install.py
+@@ -84,14 +84,6 @@ if __name__ == "__main__":
+     	
+ 
+     original_file =  pdk_root + "/ihp-sg13g2/libs.tech/ngspice/.spiceinit"
+-    symbolic_link = "/home/" + username + "/.spiceinit"
+-    # Create the symbolic link
+-    if not os.path.exists(symbolic_link):
+-        try:
+-            os.symlink(original_file, symbolic_link)
+-            print(f"Symbolic link '{symbolic_link}' created successfully.")
+-        except OSError as e:
+-            print(f"Failed to create symbolic link: {e}")
+ 
+ 
+  	

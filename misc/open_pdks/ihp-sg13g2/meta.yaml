@@ -1,0 +1,54 @@
+# Use `conda-build-prepare` before building for a better version string.
+{% set version = '%s_%04i_%s'| format(GIT_DESCRIBE_TAG | default('0.X'), GIT_DESCRIBE_NUMBER | default(0) | int, GIT_DESCRIBE_HASH | default('gUNKNOWN')) %}
+{% set openvaf_version = '23_5_0_linux_amd64' %}
+{% set openvaf_md5 = 'adbfe0fcf85d484439ba4ff319e63db5' %}
+
+package:
+  name: open_pdks.ihp-sg13g2
+  version: {{ version }}
+
+source:
+  - git_url: https://github.com/IHP-GmbH/IHP-Open-PDK.git
+    git_rev: dev
+    patches:
+      - disable_spiceinit_symlink.patch
+      - fix_mosvar_discipline.patch
+  - url: https://openva.fra1.cdn.digitaloceanspaces.com/openvaf_{{ openvaf_version}}.tar.gz
+    md5: adbfe0fcf85d484439ba4ff319e63db5
+    folder: openvaf
+    
+build:
+  noarch: generic
+  # number: 202202031935
+  number: {{ environ.get('DATE_NUM') }}
+  # string: 20220203_1935
+  string: {{ environ.get('DATE_STR') }}
+  script_env:
+    - CI
+
+requirements:
+  build:
+    - make
+    - python
+
+test:
+  commands:
+    - test -d $PREFIX/share/pdk/ihp-sg13g2/libs.ref/sg13g2_io
+    - test -d $PREFIX/share/pdk/ihp-sg13g2/libs.ref/sg13g2_pr
+    - test -d $PREFIX/share/pdk/ihp-sg13g2/libs.ref/sg13g2_sram
+    - test -d $PREFIX/share/pdk/ihp-sg13g2/libs.ref/sg13g2_stdcell
+#     # from gf180mcu_fd_pr
+#     - test -d $PREFIX/share/pdk/ihp-sg13g2/libs.tech/ngspice
+#     - test -d $PREFIX/share/pdk/ihp-sg13g2/libs.tech/xyce
+#     - test -d $PREFIX/share/pdk/ihp-sg13g2/libs.tech/klayout
+#     - test -d $PREFIX/share/pdk/ihg-sg13g2/libs.tech/xschem
+
+about:
+  home: https://ihp-open-pdk-docs.readthedocs.io/en/latest/index.html
+  license: Apache-2.0
+  summary: |
+    130nm BiCMOS Open Source PDK, dedicated for Analog/Digital, Mixed Signal and RF Design
+
+extra:
+  recipe-maintainers:
+    - duyhieubui

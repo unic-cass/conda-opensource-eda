@@ -1,0 +1,230 @@
+diff --git a/ihp-sg13g2/libs.tech/verilog-a/mosvar/discipline.h b/ihp-sg13g2/libs.tech/verilog-a/mosvar/discipline.h
+index b70ce89..8c5d900 100644
+--- a/ihp-sg13g2/libs.tech/verilog-a/mosvar/discipline.h
++++ b/ihp-sg13g2/libs.tech/verilog-a/mosvar/discipline.h
+@@ -18,11 +18,11 @@
+ // Natures and Disciplines
+ //
+ 
+-discipline logic; 
++discipline logic
+   domain discrete;
+ enddiscipline 
+ 
+-discipline ddiscrete; 
++discipline ddiscrete
+   domain discrete; 
+ enddiscipline 
+ 
+@@ -34,7 +34,7 @@ enddiscipline
+ // Electrical
+ 
+ // Current in amperes
+-nature Current; 
++nature Current
+   units        = "A";
+   access       = I;
+   idt_nature   = Charge;
+@@ -46,7 +46,7 @@ nature Current;
+ endnature 
+ 
+ // Charge in coulombs
+-nature Charge; 
++nature Charge
+   units      = "coul";
+   access     = Q;
+   ddt_nature = Current;
+@@ -58,7 +58,7 @@ nature Charge;
+ endnature
+ 
+ // Potential in volts
+-nature Voltage; 
++nature Voltage
+   units      = "V";
+   access     = V;
+   idt_nature = Flux;
+@@ -70,7 +70,7 @@ nature Voltage;
+ endnature 
+ 
+ // Flux in Webers
+-nature Flux; 
++nature Flux
+   units      = "Wb";
+   access     = Phi;
+   ddt_nature = Voltage;
+@@ -82,24 +82,24 @@ nature Flux;
+ endnature
+ 
+ // Conservative discipline
+-discipline electrical; 
++discipline electrical
+   potential    Voltage;
+   flow         Current;
+ enddiscipline
+ 
+ // Signal flow disciplines
+-discipline voltage; 
++discipline voltage
+   potential    Voltage;
+ enddiscipline
+ 
+-discipline current; 
++discipline current
+   flow    Current;
+ enddiscipline
+ 
+ // Magnetic
+ 
+ // Magnetomotive force in Ampere-Turns.
+-nature Magneto_Motive_Force; 
++nature Magneto_Motive_Force
+   units      = "A*turn";
+   access     = MMF;
+ `ifdef MAGNETO_MOTIVE_FORCE_ABSTOL
+@@ -110,7 +110,7 @@ nature Magneto_Motive_Force;
+ endnature
+ 
+ // Conservative discipline
+-discipline magnetic; 
++discipline magnetic
+   potential    Magneto_Motive_Force;
+   flow         Flux;
+ enddiscipline
+@@ -118,7 +118,7 @@ enddiscipline
+ // Thermal
+ 
+ // Temperature in Kelvin
+-nature Temperature; 
++nature Temperature
+   units      = "K";
+   access     = Temp;
+ `ifdef TEMPERATURE_ABSTOL
+@@ -129,7 +129,7 @@ nature Temperature;
+ endnature
+ 
+ // Power in Watts
+-nature Power; 
++nature Power
+   units      = "W";
+   access     = Pwr;
+ `ifdef POWER_ABSTOL
+@@ -140,7 +140,7 @@ nature Power;
+ endnature
+ 
+ // Conservative discipline
+-discipline thermal; 
++discipline thermal
+   potential    Temperature;
+   flow         Power;
+ enddiscipline
+@@ -148,7 +148,7 @@ enddiscipline
+ // Kinematic
+ 
+ // Position in meters
+-nature Position; 
++nature Position
+   units      = "m";
+   access     = Pos;
+   ddt_nature = Velocity;
+@@ -160,7 +160,7 @@ nature Position;
+ endnature
+ 
+ // Velocity in meters per second
+-nature Velocity; 
++nature Velocity
+   units      = "m/s";
+   access     = Vel;
+   ddt_nature = Acceleration;
+@@ -173,7 +173,7 @@ nature Velocity;
+ endnature
+ 
+ // Acceleration in meters per second squared
+-nature Acceleration; 
++nature Acceleration
+   units      = "m/s^2";
+   access     = Acc;
+   ddt_nature = Impulse;
+@@ -186,7 +186,7 @@ nature Acceleration;
+ endnature
+ 
+ // Impulse in meters per second cubed
+-nature Impulse; 
++nature Impulse
+   units      = "m/s^3";
+   access     = Imp;
+   idt_nature = Acceleration;
+@@ -198,7 +198,7 @@ nature Impulse;
+ endnature
+ 
+ // Force in Newtons
+-nature Force; 
++nature Force
+   units      = "N";
+   access     = F;
+ `ifdef FORCE_ABSTOL
+@@ -210,12 +210,12 @@ endnature
+ 
+ // Conservative disciplines
+ 
+-discipline kinematic; 
++discipline kinematic
+   potential    Position;
+   flow         Force;
+ enddiscipline
+ 
+-discipline kinematic_v; 
++discipline kinematic_v
+   potential    Velocity;
+   flow         Force;
+ enddiscipline
+@@ -223,7 +223,7 @@ enddiscipline
+ // Rotational
+ 
+ // Angle in radians
+-nature Angle; 
++nature Angle
+   units      = "rads";
+   access     = Theta;
+   ddt_nature = Angular_Velocity;
+@@ -235,7 +235,7 @@ nature Angle;
+ endnature
+ 
+ // Angular Velocity in radians per second
+-nature Angular_Velocity; 
++nature Angular_Velocity
+   units      = "rads/s";
+   access     = Omega;
+   ddt_nature = Angular_Acceleration;
+@@ -248,7 +248,7 @@ nature Angular_Velocity;
+ endnature
+ 
+ // Angular acceleration in radians per second squared
+-nature Angular_Acceleration; 
++nature Angular_Acceleration
+   units      = "rads/s^2";
+   access     = Alpha;
+   idt_nature = Angular_Velocity;
+@@ -260,7 +260,7 @@ nature Angular_Acceleration;
+ endnature
+ 
+ // Torque in Newtons
+-nature Angular_Force; 
++nature Angular_Force
+   units      = "N*m";
+   access     = Tau;
+ `ifdef ANGULAR_FORCE_ABSTOL
+@@ -271,12 +271,12 @@ nature Angular_Force;
+ endnature
+ 
+ // Conservative disciplines
+-discipline rotational; 
++discipline rotational
+   potential    Angle;
+   flow         Angular_Force;
+ enddiscipline
+ 
+-discipline rotational_omega; 
++discipline rotational_omega
+   potential    Angular_Velocity;
+   flow         Angular_Force;
+ enddiscipline
