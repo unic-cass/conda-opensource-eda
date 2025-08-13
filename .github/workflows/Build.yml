@@ -979,3 +979,35 @@ jobs:
           path: |
             ${{ github.workspace }}/workdir/conda-env/conda-bld/noarch/open_pdks.gf180mcud-*.conda
           key: ${{ runner.os }}-cache-gf180mcuc-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/noarch/open_pdks.gf180mcud-*.conda', github.workspace)) }}
+  ihp-sg13g2:
+    runs-on: 'ubuntu-22.04'
+    env:
+      PACKAGE: "misc/open_pdks/ihp-sg13g2"
+      OS_NAME: "linux"
+      PYTHON_VERSION: "3.13"
+    defaults:
+      run:
+        shell: bash -l {0}
+    steps:
+      - name: Maximize build space
+        if: ${{ !env.ACT }}
+        uses: easimon/maximize-build-space@master
+        with:
+          root-reserve-mb: 20480
+          swap-size-mb: 1024
+          remove-dotnet: 'true'
+          remove-android: 'true'
+          remove-haskell: 'true'
+          remove-codeql: 'true'
+      - uses: actions/checkout@v3
+      - run: |
+          df -h
+          sudo apt -qqy update &&
+          sudo apt -qqy install ${{ env.APT_REQUIREMENTS }}
+      - uses: ./ci
+      - uses: actions/cache/save@v4
+        id: cache-ihg-sg13g2
+        with:
+          path: |
+            ${{ github.workspace }}/workdir/conda-env/conda-bld/noarch/open_pdks.ihp-sg13g2-*.conda
+          key: ${{ runner.os }}-cache-ihp-sg13g2-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/noarch/open_pdks.ihp-sg13g2-*.conda', github.workspace)) }}
