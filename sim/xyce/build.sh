@@ -17,6 +17,18 @@
 
 set -ex
 
+# echo manual | perl -mCPAN::FirstTime -e 'CPAN::FirstTime->init(autoconfig => 1)'
+# yes | cpan install Alien::Libxml2 XML::SAX XML::NamespaceSupport
+
+# cd $SRC_DIR/perl-xml-libxml
+# perl Makefile.PL
+# make
+# make install
+
+cd $SRC_DIR/amds
+cmake -B build -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_INSTALL_PREFIX=$PREFIX .
+cmake --build build -j $CPU_COUNT --target install
+
 cd $SRC_DIR/blas
 cmake -B build -DCMAKE_INSTALL_PREFIX=$PREFIX .
 cmake --build build -j $CPU_COUNT --target install
@@ -63,10 +75,17 @@ FLAGS="-O3" cmake -B build -DCMAKE_INSTALL_PREFIX=$PREFIX \
      -DTPL_ENABLE_LAPACK=ON \
      -DTPL_BLAS_LIBRARIES="$PREFIX/lib/libblas.a;gfortran;m" \
      -DTPL_LAPACK_LIBRARIES="$PREFIX/lib/liblapack.a;gfortran;m" \
-     -D HAVE_dggsvd3_POST=1 \
-     . 
+     -DBUILD_SHARED_LIBS=ON \
+     -D HAVE_dggsvd3_POST=1 . 
+
 cmake --build build -j $CPU_COUNT --target install
 
 cd $SRC_DIR
-cmake -B build -DCMAKE_FIND_ROOT_PATH="$BUILD_PREFIX;$PREFIX" -DCMAKE_FIND_ROOT_PATH_MODE_INCLUDE=ONLY -DCMAKE_FIND_ROOT_PATH_MODE_LIBRARY=ONLY -DCMAKE_FIND_ROOT_PATH_MODE_PROGRAM=ONLY -DCMAKE_INSTALL_PREFIX=$PREFIX .
+cmake -B build -DCMAKE_FIND_ROOT_PATH="$BUILD_PREFIX;$PREFIX" \
+      -DCMAKE_FIND_ROOT_PATH_MODE_INCLUDE=ONLY \
+      -DCMAKE_FIND_ROOT_PATH_MODE_LIBRARY=ONLY \
+      -DCMAKE_FIND_ROOT_PATH_MODE_PROGRAM=ONLY \
+      -D Xyce_PLUGIN_SUPPORT=ON \
+      -DCMAKE_INSTALL_PREFIX=$PREFIX .
+
 cmake --build build -j $CPU_COUNT --target install

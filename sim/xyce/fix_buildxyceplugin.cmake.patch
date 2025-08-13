@@ -1,0 +1,21 @@
+diff --git a/utils/buildxyceplugin.cmake.in b/utils/buildxyceplugin.cmake.in
+index 9ed76909..cdd5e6ad 100755
+--- a/utils/buildxyceplugin.cmake.in
++++ b/utils/buildxyceplugin.cmake.in
+@@ -139,7 +139,7 @@ then
+     exit 1
+ fi
+ 
+-cd $DESTDIR
++#cd $DESTDIR
+ 
+ echo "buildxyceplugin is building a plugin from the Verilog-A files:"
+ echo ${VAFILES}
+@@ -223,6 +223,6 @@ echo "Building plugin..."
+ cp ${XyceInstDir}/share/XycePluginProject.cmake ./CMakeLists.txt
+ cmake -DCMAKE_CXX_COMPILER="@CMAKE_CXX_COMPILER@" -DPLUGIN_NAME="$pluginname" -DXYCE_INSTALL="$XyceInstDir" .
+ cmake --build .
+-
++cp "${pluginname}.so" $DESTDIR/
+ echo "Done!  Your plugin may now be used by running Xyce with the option '-plugin ${pluginname}.so'"
+ echo "This plugin provides the Verilog-A modules: $modules"
