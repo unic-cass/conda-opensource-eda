@@ -1,0 +1,13 @@
+diff --git a/frontends/verilog/verilog_parser.y b/frontends/verilog/verilog_parser.y
+index e299d31..1df9214 100644
+--- a/frontends/verilog/verilog_parser.y
++++ b/frontends/verilog/verilog_parser.y
+@@ -33,7 +33,7 @@
+  *
+  */
+ 
+-%require "3.8"
++%require "3.7"
+ %language "c++"
+ %define api.value.type variant
+ %define api.prefix {frontend_verilog_yy}
