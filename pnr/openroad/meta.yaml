@@ -75,6 +75,10 @@ requirements:
     - qt-main >=5.7,<6
     - spdlog >=1.11,<1.12
     - libxcb
+    - xcb-util-image
+    - xcb-util-keysyms
+    - xcb-util-renderutil
+    - xcb-util-wm
 
 test:
   commands:
