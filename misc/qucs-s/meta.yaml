@@ -1,0 +1,84 @@
+# Use `conda-build-prepare` before building for a better version string.
+{% set version = '%s_%04i_%s'|format(GIT_DESCRIBE_TAG, GIT_DESCRIBE_NUMBER|int, GIT_DESCRIBE_HASH or 'gUNKNOWN') %}
+
+{% set python_version = PYTHON_VERSION | default('3.7') %}
+{% set py_suffix = 'py%s'|format(python_version|replace('.', '')) %}
+
+package:
+  name: qucs-s
+  version: {{ version }}
+
+source:
+  - git_url: https://github.com/ra3xdh/qucs_s.git
+    git_rev: current
+  - git_url: https://github.com/qt/qtcharts
+    git_rev: v6.7.2
+    folder: qtcharts
+
+build:
+  # number: 201803050325
+  number: {{ environ.get('DATE_NUM') }}
+  # string: 20180305_0325_py37
+  string: {{ environ.get('DATE_STR') }}_{{ py_suffix }}
+  script_env:
+    - CI
+    - CONDA_OUT
+    - TEST_PACKAGE
+
+requirements:
+  build:
+    - flex
+    - bison
+    - cmake
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+    - {{ cdt('mesa-libgl-devel') }}   [linux]
+    - {{ cdt('mesa-dri-drivers') }}   [linux]
+    - {{ cdt('libselinux') }}         [linux]
+    - {{ cdt('libxdamage') }}         [linux]
+    - {{ cdt('libxxf86vm') }}         [linux]
+    - {{ cdt('libxext') }}            [linux]
+    - {{ cdt('libxfixes') }}          [linux]
+    - {{ cdt('libxau') }}             [linux]
+    - {{ cdt('libxcb') }}             [linux]
+    - {{ cdt('expat') }}              [linux]
+    - {{ cdt('libpng') }}             [linux]
+    - libgl-devel        [linux]
+    - libegl-devel       [linux]
+    - libglx-devel       [linux]
+    - libgles-devel      [linux]
+    - libopengl-devel    [linux]
+    - gperf
+    - dos2unix
+  host:
+    - qt 6.7.2
+    - libxcb
+    - xcb-util-image
+    - xcb-util-keysyms
+    - xcb-util-renderutil
+    - xcb-util-wm
+
+
+# test:
+#   commands:
+#     - klayout -v
+#   requires:
+#     - ruby
+#     - python
+
+about:
+  home: https://ra3xdh.github.io
+  summary: 'Qucs-S: Quite universal circuit simulator with SPICE'
+  description: |
+    Qucs-S provides a fancy graphical user interface for a number of
+    popular circuit simulation engines. Qucs-S contains instruments
+    for schematic capture, visualization and provides differents
+    passive and active components including device library.
+  license: GPL-2.0-or-later
+  license_family: GPL
+  doc_url: https://ra3xdh.github.io/
+  dev_url: https://github.com/ra3xdh/qucs_s.git 
+
+extra:
+  recipe-maintainers:
+    - duyhieubui
