@@ -1,0 +1,27 @@
+diff --git a/ihp-sg13g2/libs.tech/verilog-a/adms-compile-va.sh b/ihp-sg13g2/libs.tech/verilog-a/adms-compile-va.sh
+index e6d3c7a..5fc79fd 100755
+--- a/ihp-sg13g2/libs.tech/verilog-a/adms-compile-va.sh
++++ b/ihp-sg13g2/libs.tech/verilog-a/adms-compile-va.sh
+@@ -13,19 +13,19 @@ if [ ! -d "$DIRECTORY" ]; then
+ fi
+ 
+ cd ./psp103/
+-buildxyceplugin psp103.va ../../xyce/plugins
++buildxyceplugin.sh psp103.va ../../xyce/plugins
+ rm *.la *.log
+ rm -rfd .libs/
+ cd ..
+ 
+ cd ./r3_cmc/
+-buildxyceplugin r3_cmc.va ../../xyce/plugins
++buildxyceplugin.sh r3_cmc.va ../../xyce/plugins
+ rm *.la *.log
+ rm -rfd .libs/
+ cd ..
+ 
+ cd ./mosvar/
+-buildxyceplugin mosvar.va ../../xyce/plugins
++buildxyceplugin.sh mosvar.va ../../xyce/plugins
+ rm *.la *.log
+ rm -rfd .libs/
+ cd ..

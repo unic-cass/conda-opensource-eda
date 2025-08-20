@@ -13,6 +13,7 @@ source:
     patches:
       - disable_spiceinit_symlink.patch
       - fix_mosvar_discipline.patch
+      - fix-adms-compile-va-xyce-7.9.patch
   - url: https://openva.fra1.cdn.digitaloceanspaces.com/openvaf_{{ openvaf_version}}.tar.gz
     md5: adbfe0fcf85d484439ba4ff319e63db5
     folder: openvaf
