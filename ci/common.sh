@@ -138,6 +138,10 @@ if [ -d "workdir/recipe" ]; then
     fi
 fi
 
+## New anaconda-client is not working with click > 8.2.0
+## Force using LEGACY anaconda client
+export ANACONDA_CLIENT_FORCE_STANDALONE=1
+
 # ssh: Disable host key checking
 mkdir -p ~/.ssh
 echo "Host *" >> ~/.ssh/config
