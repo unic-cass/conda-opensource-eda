@@ -105,7 +105,7 @@ jobs:
     env:
       PACKAGE: "pnr/openroad"
       OS_NAME: "linux"
-      PYTHON_VERSION: "3.13"
+      PYTHON_VERSION: "3.12"
     steps:
       - uses: actions/checkout@v3
       - run: |
@@ -157,24 +157,24 @@ jobs:
             ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/openroad-*.conda
           key: ${{ runner.os }}-cache-openroad-py311-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/linux-64/openroad-*.conda', github.workspace)) }}
 
-  openroad-linux-py312:
-    runs-on: 'ubuntu-22.04'
-    env:
-      PACKAGE: "pnr/openroad"
-      OS_NAME: "linux"
-      PYTHON_VERSION: "3.12"
-    steps:
-      - uses: actions/checkout@v3
-      - run: |
-          sudo apt -qqy update &&
-          sudo apt -qqy install ${{ env.APT_REQUIREMENTS }} libxml2
-      - uses: ./ci
-      - uses: actions/cache/save@v4
-        id: cache-openroad-py312
-        with:
-          path: |
-            ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/openroad-*.conda
-          key: ${{ runner.os }}-cache-openroad-py312-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/linux-64/openroad-*.conda', github.workspace)) }}
+  # openroad-linux-py313:
+  #   runs-on: 'ubuntu-24.04'
+  #   env:
+  #     PACKAGE: "pnr/openroad"
+  #     OS_NAME: "linux"
+  #     PYTHON_VERSION: "3.13"
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #     - run: |
+  #         sudo apt -qqy update &&
+  #         sudo apt -qqy install ${{ env.APT_REQUIREMENTS }} libxml2
+  #     - uses: ./ci
+  #     - uses: actions/cache/save@v4
+  #       id: cache-openroad-py313
+  #       with:
+  #         path: |
+  #           ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/openroad-*.conda
+  #         key: ${{ runner.os }}-cache-openroad-py313-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/linux-64/openroad-*.conda', github.workspace)) }}
 
   ngspice-linux:
     runs-on: 'ubuntu-22.04'
@@ -682,7 +682,7 @@ jobs:
     env:
       PACKAGE: "misc/klayout"
       OS_NAME: "linux"
-      PYTHON_VERSION: "3.13"
+      PYTHON_VERSION: "3.12"
     steps:
       - uses: actions/checkout@v3
       - run: |
@@ -734,24 +734,24 @@ jobs:
             ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/klayout-*.conda
           key: ${{ runner.os }}-cache-klayout-py311-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/linux-64/klayout-*.conda', github.workspace)) }}
 
-  klayout-linux-py312:
-    runs-on: 'ubuntu-22.04'
-    env:
-      PACKAGE: "misc/klayout"
-      OS_NAME: "linux"
-      PYTHON_VERSION: "3.12"
-    steps:
-      - uses: actions/checkout@v3
-      - run: |
-          sudo apt -qqy update &&
-          sudo apt -qqy install ${{ env.APT_REQUIREMENTS }}
-      - uses: ./ci
-      - uses: actions/cache/save@v4
-        id: cache-klayout-py312
-        with:
-          path: |
-            ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/klayout-*.conda
-          key: ${{ runner.os }}-cache-klayout-py312-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/linux-64/klayout-*.conda', github.workspace)) }}
+  # klayout-linux-py313:
+  #   runs-on: 'ubuntu-24.04'
+  #   env:
+  #     PACKAGE: "misc/klayout"
+  #     OS_NAME: "linux"
+  #     PYTHON_VERSION: "3.13"
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #     - run: |
+  #         sudo apt -qqy update &&
+  #         sudo apt -qqy install ${{ env.APT_REQUIREMENTS }}
+  #     - uses: ./ci
+  #     - uses: actions/cache/save@v4
+  #       id: cache-klayout-py313
+  #       with:
+  #         path: |
+  #           ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/klayout-*.conda
+  #         key: ${{ runner.os }}-cache-klayout-py313-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/linux-64/klayout-*.conda', github.workspace)) }}
 
   # klayout-osx:
   #   runs-on: "macos-latest"
