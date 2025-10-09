@@ -39,8 +39,10 @@ if [[ $OS == "Mac" ]]; then
     fi
 fi
 
+CMAKE_PLATFORM_FLAGS+=(-DCMAKE_TOOLCHAIN_FILE="${RECIPE_DIR}/cross-linux.cmake")
+
 cd $SRC_DIR/third_party/lemon
-cmake -B build  -DCMAKE_INSTALL_PREFIX=$PREFIX .
+cmake -B build  -DCMAKE_INSTALL_PREFIX=$PREFIX ${CMAKE_PLATFORM_FLAGS[@]} .
 cmake --build build -j $CPU_COUNT --target install
 
 cd $SRC_DIR/third_party/cudd
@@ -49,7 +51,14 @@ make V=1 -j$CPU_COUNT
 make V=1 install
 
 cd $SRC_DIR/third_party/or-tools
-cmake -B build  -DBUILD_DEPS:BOOL=ON -DBUILD_EXAMPLES:BOOL=OFF -DBUILD_SAMPLES:BOOL=OFF -DBUILD_TESTING:BOOL=OFF  -DCMAKE_CXX_FLAGS="-w" -DCMAKE_C_FLAGS="-w" -DCMAKE_INSTALL_PREFIX=$PREFIX .
+cmake -B build  -DBUILD_DEPS:BOOL=ON \
+      -DBUILD_EXAMPLES:BOOL=OFF \
+      -DBUILD_SAMPLES:BOOL=OFF \
+      -DBUILD_TESTING:BOOL=OFF  \
+      -DCMAKE_CXX_FLAGS="-w" \
+      -DCMAKE_C_FLAGS="-w" \
+      -DCMAKE_INSTALL_PREFIX=$PREFIX \
+      ${CMAKE_PLATFORM_FLAGS[@]} .
 cmake --build build --config Release -j $CPU_COUNT --target install
 
 ## there is a bug with SPDLOG 1.11 and fmt 0.9
@@ -60,8 +69,13 @@ cmake -B build -DTCL_LIB_PATHS="$BUILD_PREFIX;$PREFIX" \
       -DCMAKE_FIND_ROOT_PATH_MODE_INCLUDE=ONLY \
       -DCMAKE_FIND_ROOT_PATH_MODE_LIBRARY=ONLY \
       -DCMAKE_FIND_ROOT_PATH_MODE_PROGRAM=ONLY \
-      -DUSE_SYSTEM_BOOST=ON -DINSTALL_LIBOPENSTA=OFF \
+      -DUSE_SYSTEM_BOOST=ON \
       -DSPDLOG_FMT_EXTERNAL=OFF \
-      -DBUILD_MPL2=OFF -DBUILD_PAR=OFF \
-      -DENABLE_TESTS=OFF -DCMAKE_INSTALL_PREFIX=$PREFIX .
+      -DCMAKE_CXX_FLAGS="-I$BUILD_PREFIX/include -I$PREFIX/include -L$BUILD_PREFIX/lib -L$PREFIX/lib -lxcb-glx -lxcb-dri2" \
+      -DCMAKE_C_FLAGS="-I$BUILD_PREFIX/include -I$PREFIX/include -L$BUILD_PREFIX/lib -L$PREFIX/lib -lxcb-glx -lxcb-dri2" \
+      -DCMAKE_EXE_LINKER_FLAGS="-L$BUILD_PREFIX/lib -L$PREFIX/lib -lxcb-glx -lxcb-dri2" \
+      -DENABLE_TESTS=OFF -DCMAKE_INSTALL_PREFIX=$PREFIX \
+      -DFLEX_INCLUDE_DIR=$BUILD_PREFIX/include \
+      ${CMAKE_PLATFORM_FLAGS[@]} .
+patch -p0 < $RECIPE_DIR/patch-gtest.patch
 cmake --build build -j $CPU_COUNT --target install
