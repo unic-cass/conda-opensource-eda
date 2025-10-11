@@ -50,8 +50,31 @@ requirements:
     - libopengl-devel    [linux]
     - gperf
     - dos2unix
-  host:
+    - qt-main 6.7.2
     - qt 6.7.2
+    - qtbase 6.7.2
+    - qtimageformats 6.7.2
+    - qtshadertools 6.7.2
+    - qtsvg 6.7.2
+    - qtdeclarative 6.7.2
+    - qt5compat 6.7.2
+    - qttools 6.7.2
+    - qtwebchannel 6.7.2
+    - qtwebsockets 6.7.2
+    - qttranslations 6.7.2
+  host:
+    - qt-main 6.7.2
+    - qt 6.7.2
+    - qtbase 6.7.2
+    - qtimageformats 6.7.2
+    - qtshadertools 6.7.2
+    - qtsvg 6.7.2
+    - qtdeclarative 6.7.2
+    - qt5compat 6.7.2
+    - qttools 6.7.2
+    - qtwebchannel 6.7.2
+    - qtwebsockets 6.7.2
+    - qttranslations 6.7.2
     - libxcb
     - xcb-util-image
     - xcb-util-keysyms

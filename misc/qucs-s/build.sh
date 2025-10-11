@@ -3,11 +3,14 @@
 set -e
 set -x
 
+CMAKE_PLATFORM_FLAGS+=(-DCMAKE_TOOLCHAIN_FILE="${RECIPE_DIR}/cross-linux.cmake")
+
 cd $SRC_DIR/qtcharts
-cmake -B build -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_INSTALL_PREFIX=$PREFIX .
+cmake -B build -DCMAKE_BUILD_TYPE=RELEASE \
+      -DCMAKE_INSTALL_PREFIX=$PREFIX
 cmake --build build -j $CPU_COUNT --target install
 
-export LD_LIBRARY_PATH=$BUILD_PREFIX/lib:$PREFIX/lib
+# export LD_LIBRARY_PATH=$BUILD_PREFIX/lib:$PREFIX/lib
 
 ## add bison executable because it is not found by default
 cd $SRC_DIR
