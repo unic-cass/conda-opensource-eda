@@ -14,7 +14,7 @@ case "${UNAME_OUT}" in
 esac
 
 if [ "$OS" = "Linux" ]; then
-    ./configure --prefix="${PREFIX}" --with-cairo="${BUILD_PREFIX}/include"
+    CC="/usr/bin/gcc" ./configure --prefix="${PREFIX}" --with-cairo="${BUILD_PREFIX}/include"
 elif [ "$OS" = "Mac" ]; then
     ./configure --prefix="${PREFIX}" --without-cairo --without-opengl --without-x
 fi
