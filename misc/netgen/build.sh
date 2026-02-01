@@ -27,7 +27,7 @@ echo CPPFLAGS="$CPPFLAGS"
 cp $BUILD_PREFIX/share/autoconf/build-aux/config.* scripts
 
 if [ "$OS" = "Linux" ]; then
-	./configure \
+	CC="/usr/bin/gcc" ./configure \
 		--prefix="${PREFIX}" \
 		--with-tk="${PREFIX}" \
 		--with-tcl="${PREFIX}" \
