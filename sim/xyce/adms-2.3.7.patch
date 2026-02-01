@@ -1,0 +1,26 @@
+diff --git a/admsXml/admsXml.c b/admsXml/admsXml.c
+index 5d314b4..2014557 100644
+--- a/admsXml/admsXml.c
++++ b/admsXml/admsXml.c
+@@ -642,7 +642,7 @@ static void parseva (const int argc,const char** argv,char* myverilogamsfile)
+     if(root()->_dbg_vla==admse_yes)
+       adms_veriloga_setint_yydebug(1);
+     adms_veriloga_setfile_input(ifh);
+-    if(verilogaparse(root()))
++    if(verilogaparse())
+       adms_message_fatal(("parse Verilog-AMS preprocessed file '%s' failed\n",mytmpverilogamsfile))
+     else
+       adms_message_verbose(("No error found during parsing\n"))
+diff --git a/admsXml/mkctext.pl b/admsXml/mkctext.pl
+index 729eec9..0851107 100644
+--- a/admsXml/mkctext.pl
++++ b/admsXml/mkctext.pl
+@@ -66,7 +66,7 @@ if($cygpath_top_srcdir=`cygpath -ad $top_srcdir 2>/dev/null`)
+   $cygpath_top_srcdir="\"$cygpath_top_srcdir\"";
+ }
+ my$GIT;
+-$GIT=`git log --pretty=format:'%h' -n 1u` or $GIT="unknown";
++$GIT=`git log --pretty=format:'%h' -n 1` or $GIT="unknown";
+ #print "git version: $GIT\n";
+ 
+ sub text2ccode

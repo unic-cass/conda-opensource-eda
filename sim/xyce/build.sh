@@ -25,7 +25,9 @@ set -ex
 # make
 # make install
 
-cd $SRC_DIR/amds
+echo "Build dependencies for xyce"
+cmake --version
+cd $SRC_DIR/adms
 cmake -B build -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_INSTALL_PREFIX=$PREFIX .
 cmake --build build -j $CPU_COUNT --target install
 

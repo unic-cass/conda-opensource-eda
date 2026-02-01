@@ -1,15 +1,11 @@
 # Use `conda-build-prepare` before building for a better version string.
 {% set version = '%s_%04i_%s'|format(GIT_DESCRIBE_TAG|replace('v', '')|replace('-', '')|default('0.X'), GIT_DESCRIBE_NUMBER|int, GIT_DESCRIBE_HASH|default('gUNKNOWN')) %}
-{% set trilinos_version = '14-4-0' %}
-{% set trilinos_md5 = '334f9c3700c72f6ed5658eaa783ffccd' %}
 {% set blas_version = '3.11.0' %}
 {% set blas_md5 = '92418c9bc598e589d73044ec39518616' %}
 {% set lapack_version = '3.11.0' %}
 {% set lapack_md5 = '595b064fd448b161cd711fe346f498a7' %}
 {% set amd_version = '6.0.2' %}
 {% set amd_md5 = '628214a2d18ee4d3996fdc50b7fc9aef' %}
-{% set amds_version = '2.3.7' %}
-{% set amds_md5 = '91620c74f172ffb4f817d9889389858b' %}
 
 package:
   name: xyce
@@ -20,9 +16,11 @@ source:
     git_rev: master
     patches:
       - fix_buildxyceplugin.cmake.patch
-  - url: https://github.com/trilinos/Trilinos/archive/refs/tags/trilinos-release-{{ trilinos_version }}.tar.gz
-    md5: {{ trilinos_md5 }}
+  - git_url: https://github.com/trilinos/Trilinos.git
+    git_rev: trilinos-release-14-4-0
     folder: Trilinos
+    patches:
+      - trilinos-14.4.0.patch
   - url: http://www.netlib.org/blas/blas-{{ blas_version }}.tgz
     md5: {{ blas_md5 }}
     folder: blas
@@ -32,9 +30,10 @@ source:
   - url: https://github.com/DrTimothyAldenDavis/SuiteSparse/archive/refs/tags/v{{ amd_version }}.tar.gz
     md5: {{ amd_md5 }}
     folder: amd
-  - url: https://github.com/Qucs/ADMS/archive/refs/tags/release-{{ amds_version }}.tar.gz
-    md5: {{ amds_md5 }}
-    folder: amds
+  - git_url: https://github.com/Qucs/ADMS.git
+    folder: adms
+    patches:
+      - adms-2.3.7.patch
 
 build:
   # number: 202202031935
@@ -49,7 +48,7 @@ requirements:
     - autoconf
     - automake
     - make
-    - cmake>=3.23.0
+    - cmake >=3.23.0,<4
     - bison
     - flex
     - git
