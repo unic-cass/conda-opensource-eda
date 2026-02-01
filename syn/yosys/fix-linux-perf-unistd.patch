@@ -1,0 +1,12 @@
+diff --git a/passes/cmds/linux_perf.cc b/passes/cmds/linux_perf.cc
+index 967ccd2f8..40cae3d91 100644
+--- a/passes/cmds/linux_perf.cc
++++ b/passes/cmds/linux_perf.cc
+@@ -23,6 +23,7 @@
+ 
+ #include <fcntl.h>
+ #include <stdlib.h>
++#include <unistd.h>
+ 
+ USING_YOSYS_NAMESPACE
+ PRIVATE_NAMESPACE_BEGIN
