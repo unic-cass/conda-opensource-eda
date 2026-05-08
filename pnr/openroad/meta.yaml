@@ -16,7 +16,7 @@ package:
 
 source:
   - git_url: https://github.com/The-OpenROAD-Project/OpenROAD.git
-    git_rev: master
+    git_rev: dcf36133
     # patches:
     # 	- openroad-fmt-9.1.patch
   - url: https://github.com/The-OpenROAD-Project/lemon-graph/archive/refs/tags/{{ lemon_version }}.tar.gz
@@ -42,8 +42,9 @@ build:
 requirements:
   build:
     - make
-    - cmake >=3.19
-    - swig 4.0.2
+    - rhash 1.4.3
+    - cmake 3.31.2
+    - swig 4.3.0
     - bison
     - flex
     # - sysroot_linux-64 >=2.28
@@ -64,8 +65,8 @@ requirements:
     - yaml-cpp
     - python {{ python_version }}
     - libboost 1.82
-    - eigen 3.3.3
-    - spdlog
+    - eigen 3.4.0
+    - spdlog 1.15.3
     - tk
     - zlib
     - fmt
@@ -82,7 +83,7 @@ requirements:
     - {{ pin_compatible('libboost', min_pin='x.x', max_pin='x.x') }}
     - {{ pin_compatible('python', min_pin='x.x', max_pin='x.x') }}
     - qt-main >=5.7,<6
-    - spdlog
+    - spdlog 1.15.3
     - yaml-cpp
 
 test:

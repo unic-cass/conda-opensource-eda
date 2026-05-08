@@ -77,5 +77,5 @@ cmake -B build -DTCL_LIB_PATHS="$BUILD_PREFIX;$PREFIX" \
       -DENABLE_TESTS=OFF -DCMAKE_INSTALL_PREFIX=$PREFIX \
       -DFLEX_INCLUDE_DIR=$BUILD_PREFIX/include \
       ${CMAKE_PLATFORM_FLAGS[@]} .
-patch -p0 < $RECIPE_DIR/patch-gtest.patch
+
 cmake --build build -j $CPU_COUNT --target install

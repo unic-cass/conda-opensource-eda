@@ -4,9 +4,9 @@
 package:
   name: verilator
   version: {{ version }}
-
+# v0.5.044
 source:
-  git_rev: master
+  git_rev: 8df584c
   git_url: https://github.com/verilator/verilator
 
 build:
