@@ -220,7 +220,7 @@ jobs:
     env:
       PACKAGE: "sim/ngspice"
       OS_NAME: "linux"
-      PYTHON_VERSION: "3.13"
+      PYTHON_VERSION: "3.12"
     steps:
       - uses: actions/checkout@v3
       - run: |
@@ -384,7 +384,7 @@ jobs:
     env:
       PACKAGE: "sim/verilator"
       OS_NAME: "linux"
-      PYTHON_VERSION: "3.13"
+      PYTHON_VERSION: "3.12"
     steps:
       - uses: actions/checkout@v3
       - run: |
