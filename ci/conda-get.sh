@@ -34,3 +34,4 @@ conda list
 conda update -y conda
 conda install -y anaconda-client
 conda install -y python
+conda install -y conda-build
