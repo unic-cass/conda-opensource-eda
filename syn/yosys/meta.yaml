@@ -61,6 +61,9 @@ requirements:
     - {{ compiler('c') }} 4.0   [osx]
     - {{ compiler('cxx') }} 4.0 [osx]
     - cmake 3.22.1
+    - scikit-build
+    - scikit-build-core
+    - python {{ python_version }}
 
   host:
     - python {{ python_version }}
@@ -81,6 +84,7 @@ requirements:
     - iverilog [osx]
     - libffi
     - tk
+    - python {{ python_version }}
 
 about:
   home: http://www.clifford.at/yosys/

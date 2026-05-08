@@ -51,6 +51,7 @@ jobs:
     env:
       PACKAGE: "misc/magic"
       OS_NAME: "linux"
+      CONDA_BLD_PATH: "${{ github.workspace }}/workdir/conda-env/conda-bld"
     steps:
       - uses: actions/checkout@v3
       - run: |
@@ -69,6 +70,7 @@ jobs:
     env:
       PACKAGE: "misc/netgen"
       OS_NAME: "linux"
+      CONDA_BLD_PATH: "${{ github.workspace }}/workdir/conda-env/conda-bld"
     steps:
       - uses: actions/checkout@v3
       - run: |
@@ -87,6 +89,7 @@ jobs:
     env:
       PACKAGE: "syn/yosys"
       OS_NAME: "linux"
+      CONDA_BLD_PATH: "${{ github.workspace }}/workdir/conda-env/conda-bld"
     steps:
       - uses: actions/checkout@v3
       - run: |
@@ -222,7 +225,7 @@ jobs:
       OS_NAME: "linux"
       PYTHON_VERSION: "3.12"
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v6
       - run: |
           sudo apt -qqy update &&
           sudo apt -qqy install ${{ env.APT_REQUIREMENTS }} 
@@ -240,13 +243,13 @@ jobs:
       PACKAGE: "misc/xschem"
       OS_NAME: "linux"
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v6
       - run: |
           sudo apt -qqy update &&
           sudo apt -qqy install ${{ env.APT_REQUIREMENTS }} xorg-dev tcl-dev
       - name: install nodejs for cache
         if: ${{ env.ACT }}
-        run: curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && apt -qqy install nodejs
+        run: curl -fsSL https://deb.nodesource.com/setup_24.x | bash - && apt -qqy install nodejs
       - uses: ./ci
       - uses: actions/cache/save@v4
         id: cache-xschem
@@ -261,7 +264,7 @@ jobs:
       PACKAGE: "sim/xyce"
       OS_NAME: "linux"
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v6
       - run: |
           sudo apt -qqy update &&
           sudo apt -qqy install ${{ env.APT_REQUIREMENTS }} xorg-dev tcl-dev
@@ -279,7 +282,7 @@ jobs:
       OS_NAME: "linux"
       PYTHON_VERSION: "3.12"
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v6
       - run: |
           sudo apt -qqy update &&
           sudo apt -qqy install ${{ env.APT_REQUIREMENTS }}
@@ -297,7 +300,7 @@ jobs:
       OS_NAME: "linux"
       PYTHON_VERSION: "3.11"
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v6
       - run: |
           sudo apt -qqy update &&
           sudo apt -qqy install ${{ env.APT_REQUIREMENTS }}
@@ -316,7 +319,7 @@ jobs:
       OS_NAME: "linux"
       PYTHON_VERSION: "3.10"
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v6
       - run: |
           sudo apt -qqy update &&
           sudo apt -qqy install ${{ env.APT_REQUIREMENTS }}
@@ -328,47 +331,47 @@ jobs:
             ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/qucs-s-*.conda
           key: ${{ runner.os }}-cache-qucs-s-py310-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/linux-64/qucs-s-*.conda', github.workspace)) }}
 
-  icarus-linux:
-    runs-on: 'ubuntu-22.04'
-    env:
-      PACKAGE: "sim/icarus"
-      OS_NAME: "linux"
-    steps:
-      - uses: actions/checkout@v3
-      - run: |
-          sudo apt -qqy update &&
-          sudo apt -qqy install ${{ env.APT_REQUIREMENTS }}
-      - uses: ./ci
-      - uses: actions/cache/save@v4
-        id: cache-icarus
-        with:
-          path: |
-            ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/iverilog-*.conda
-          key: ${{ runner.os }}-cache-icarus-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/linux-64/iverilog-*.conda', github.workspace)) }}
-  gaw2-linux:
-    runs-on: 'ubuntu-22.04'
-    env:
-      PACKAGE: "misc/gaw2"
-      OS_NAME: "linux"
-    steps:
-      - uses: actions/checkout@v3
-      - run: |
-          sudo apt -qqy update &&
-          sudo apt -qqy install build-essential csh curl git wget
-      - uses: ./ci
-      - uses: actions/cache/save@v4
-        id: cache-gaw2
-        with:
-          path: |
-            ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/gaw2-*.conda
-          key: ${{ runner.os }}-cache-gaw2-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/linux-64/gaw2-*.conda', github.workspace)) }}
+  # icarus-linux:
+  #   runs-on: 'ubuntu-22.04'
+  #   env:
+  #     PACKAGE: "sim/icarus"
+  #     OS_NAME: "linux"
+  #   steps:
+  #     - uses: actions/checkout@v6
+  #     - run: |
+  #         sudo apt -qqy update &&
+  #         sudo apt -qqy install ${{ env.APT_REQUIREMENTS }}
+  #     - uses: ./ci
+  #     - uses: actions/cache/save@v4
+  #       id: cache-icarus
+  #       with:
+  #         path: |
+  #           ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/iverilog-*.conda
+  #         key: ${{ runner.os }}-cache-icarus-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/linux-64/iverilog-*.conda', github.workspace)) }}
+  # gaw2-linux:
+  #   runs-on: 'ubuntu-22.04'
+  #   env:
+  #     PACKAGE: "misc/gaw2"
+  #     OS_NAME: "linux"
+  #   steps:
+  #     - uses: actions/checkout@v6
+  #     - run: |
+  #         sudo apt -qqy update &&
+  #         sudo apt -qqy install build-essential csh curl git wget
+  #     - uses: ./ci
+  #     - uses: actions/cache/save@v4
+  #       id: cache-gaw2
+  #       with:
+  #         path: |
+  #           ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/gaw2-*.conda
+  #         key: ${{ runner.os }}-cache-gaw2-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/linux-64/gaw2-*.conda', github.workspace)) }}
   gaw3-linux:
     runs-on: 'ubuntu-22.04'
     env:
       PACKAGE: "misc/xschem-gaw"
       OS_NAME: "linux"
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v6
       - run: |
           sudo apt -qqy update &&
           sudo apt -qqy install build-essential curl git wget
@@ -386,7 +389,7 @@ jobs:
       OS_NAME: "linux"
       PYTHON_VERSION: "3.12"
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v6
       - run: |
           sudo apt -qqy update &&
           sudo apt -qqy install ${{ env.APT_REQUIREMENTS }}
@@ -724,7 +727,7 @@ jobs:
       OS_NAME: "linux"
       PYTHON_VERSION: "3.13"
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v6
       - run: |
             sudo apt -qqy update &&
             sudo apt -qqy install ${{ env.APT_REQUIREMENTS }} libxrender1
@@ -742,7 +745,7 @@ jobs:
       OS_NAME: "linux"
       PYTHON_VERSION: "3.12"
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v6
       - run: |
             sudo apt -qqy update &&
             sudo apt -qqy install ${{ env.APT_REQUIREMENTS }} libxrender1
@@ -761,7 +764,7 @@ jobs:
       OS_NAME: "linux"
       PYTHON_VERSION: "3.12"
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v6
       - run: |
           sudo apt -qqy update &&
           sudo apt -qqy install ${{ env.APT_REQUIREMENTS }}
@@ -780,7 +783,7 @@ jobs:
       OS_NAME: "linux"
       PYTHON_VERSION: "3.10"
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v6
       - run: |
           sudo apt -qqy update &&
           sudo apt -qqy install ${{ env.APT_REQUIREMENTS }}
@@ -799,7 +802,7 @@ jobs:
       OS_NAME: "linux"
       PYTHON_VERSION: "3.11"
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v6
       - run: |
           sudo apt -qqy update &&
           sudo apt -qqy install ${{ env.APT_REQUIREMENTS }}
@@ -914,112 +917,112 @@ jobs:
   #   steps:
   #     - uses: actions/checkout@v3
   #     - uses: ./ci
-  open_pdks-sky130a-linux:
-    runs-on: 'ubuntu-22.04'
-    needs:
-      - magic-linux
-    env:
-      PACKAGE: "misc/open_pdks/sky130a"
-      OS_NAME: "linux"
-      PYTHON_VERSION: "3.13"
-    defaults:
-      run:
-        shell: bash -l {0}
-    steps:
-      - name: Maximize build space
-        if: ${{ !env.ACT }}
-        uses: easimon/maximize-build-space@master
-        with:
-          root-reserve-mb: 20480
-          swap-size-mb: 1024
-          remove-dotnet: 'true'
-          remove-android: 'true'
-          remove-haskell: 'true'
-          remove-codeql: 'true'
-      - uses: actions/checkout@v3
-      - run: |
-          sudo apt -qqy update &&
-          sudo apt -qqy install ${{ env.APT_REQUIREMENTS }} libxrender1
-      - uses: conda-incubator/setup-miniconda@v3
-        with:
-          activate-environment: installer-env
-          miniconda-version: latest
-      - name: restore magic cache
-        uses: actions/cache/restore@v4
-        with:
-          path: |
-            ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/magic-*.conda
-          key: ${{ runner.os }}-cache-magic-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/linux-64/magic-*.conda', github.workspace)) }}
-          restore-keys: ${{ runner.os }}-cache-magic-
-      - name: create local repository
-        shell: bash -el {0}
-        run: |
-          conda install constructor conda-build conda-index
-          mkdir -p /tmp/conda-bld/linux-64
-          cp ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/magic-*.conda /tmp/conda-bld/linux-64/
-          python -m conda_index /tmp/conda-bld
-          rm -rf ${{ github.workspace }}/workdir
-      - uses: ./ci
-      - uses: actions/cache/save@v4
-        id: cache-sky130a
-        with:
-          path: |
-            ${{ github.workspace }}/workdir/conda-env/conda-bld/noarch/open_pdks.sky130a-*.conda
-          key: ${{ runner.os }}-cache-sky130a-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/noarch/open_pdks.sky130a-*.conda', github.workspace)) }}
+  # open_pdks-sky130a-linux:
+  #   runs-on: 'ubuntu-22.04'
+  #   needs:
+  #     - magic-linux
+  #   env:
+  #     PACKAGE: "misc/open_pdks/sky130a"
+  #     OS_NAME: "linux"
+  #     PYTHON_VERSION: "3.13"
+  #   defaults:
+  #     run:
+  #       shell: bash -l {0}
+  #   steps:
+  #     - name: Maximize build space
+  #       if: ${{ !env.ACT }}
+  #       uses: easimon/maximize-build-space@master
+  #       with:
+  #         root-reserve-mb: 20480
+  #         swap-size-mb: 1024
+  #         remove-dotnet: 'true'
+  #         remove-android: 'true'
+  #         remove-haskell: 'true'
+  #         remove-codeql: 'true'
+  #     - uses: actions/checkout@v3
+  #     - run: |
+  #         sudo apt -qqy update &&
+  #         sudo apt -qqy install ${{ env.APT_REQUIREMENTS }} libxrender1
+  #     - uses: conda-incubator/setup-miniconda@v3
+  #       with:
+  #         activate-environment: installer-env
+  #         miniconda-version: latest
+  #     - name: restore magic cache
+  #       uses: actions/cache/restore@v4
+  #       with:
+  #         path: |
+  #           ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/magic-*.conda
+  #         key: ${{ runner.os }}-cache-magic-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/linux-64/magic-*.conda', github.workspace)) }}
+  #         restore-keys: ${{ runner.os }}-cache-magic-
+  #     - name: create local repository
+  #       shell: bash -el {0}
+  #       run: |
+  #         conda install constructor conda-build conda-index
+  #         mkdir -p /tmp/conda-bld/linux-64
+  #         cp ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/magic-*.conda /tmp/conda-bld/linux-64/
+  #         python -m conda_index /tmp/conda-bld
+  #         rm -rf ${{ github.workspace }}/workdir
+  #     - uses: ./ci
+  #     - uses: actions/cache/save@v4
+  #       id: cache-sky130a
+  #       with:
+  #         path: |
+  #           ${{ github.workspace }}/workdir/conda-env/conda-bld/noarch/open_pdks.sky130a-*.conda
+  #         key: ${{ runner.os }}-cache-sky130a-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/noarch/open_pdks.sky130a-*.conda', github.workspace)) }}
 
-  open_pdks-gf180mcuc-linux:
-    runs-on: 'ubuntu-22.04'
-    needs:
-      - magic-linux
-    env:
-      PACKAGE: "misc/open_pdks/gf180mcuc"
-      OS_NAME: "linux"
-      PYTHON_VERSION: "3.12"
-    defaults:
-      run:
-        shell: bash -l {0}
-    steps:
-      - name: Maximize build space
-        if: ${{ !env.ACT }}
-        uses: easimon/maximize-build-space@master
-        with:
-          root-reserve-mb: 20480
-          swap-size-mb: 1024
-          remove-dotnet: 'true'
-          remove-android: 'true'
-          remove-haskell: 'true'
-          remove-codeql: 'true'
-      - uses: actions/checkout@v3
-      - run: |
-          df -h
-          sudo apt -qqy update &&
-          sudo apt -qqy install ${{ env.APT_REQUIREMENTS }} libxrender1
-      - uses: conda-incubator/setup-miniconda@v3
-        with:
-          activate-environment: installer-env
-          miniconda-version: latest
-      - name: restore magic cache
-        uses: actions/cache@v3
-        with:
-          path: |
-            ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/magic-*.conda
-          key: ${{ runner.os }}-cache-magic-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/linux-64/magic-*.conda', github.workspace)) }}
-          restore-keys: ${{ runner.os }}-cache-magic-
-      - name: create local repository
-        shell: bash -el {0}
-        run: |
-          conda install constructor conda-build conda-index
-          mkdir -p /tmp/conda-bld/linux-64
-          cp ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/magic-*.conda /tmp/conda-bld/linux-64/
-          python3 -m conda_index /tmp/conda-bld
-          rm -rf ${{ github.workspace }}/workdir
-      - uses: ./ci
-      - uses: actions/cache/save@v4
-        id: cache-gf180mcuc
-        with:
-          path: |
-            ${{ github.workspace }}/workdir/conda-env/conda-bld/noarch/open_pdks.gf180mcuc-*.conda
-          key: ${{ runner.os }}-cache-gf180mcuc-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/noarch/open_pdks.gf180mcuc-*.conda', github.workspace)) }}
+  # open_pdks-gf180mcuc-linux:
+  #   runs-on: 'ubuntu-22.04'
+  #   needs:
+  #     - magic-linux
+  #   env:
+  #     PACKAGE: "misc/open_pdks/gf180mcuc"
+  #     OS_NAME: "linux"
+  #     PYTHON_VERSION: "3.12"
+  #   defaults:
+  #     run:
+  #       shell: bash -l {0}
+  #   steps:
+  #     - name: Maximize build space
+  #       if: ${{ !env.ACT }}
+  #       uses: easimon/maximize-build-space@master
+  #       with:
+  #         root-reserve-mb: 20480
+  #         swap-size-mb: 1024
+  #         remove-dotnet: 'true'
+  #         remove-android: 'true'
+  #         remove-haskell: 'true'
+  #         remove-codeql: 'true'
+  #     - uses: actions/checkout@v6
+  #     - run: |
+  #         df -h
+  #         sudo apt -qqy update &&
+  #         sudo apt -qqy install ${{ env.APT_REQUIREMENTS }} libxrender1
+  #     - uses: conda-incubator/setup-miniconda@v3
+  #       with:
+  #         activate-environment: installer-env
+  #         miniconda-version: latest
+  #     - name: restore magic cache
+  #       uses: actions/cache@v3
+  #       with:
+  #         path: |
+  #           ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/magic-*.conda
+  #         key: ${{ runner.os }}-cache-magic-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/linux-64/magic-*.conda', github.workspace)) }}
+  #         restore-keys: ${{ runner.os }}-cache-magic-
+  #     - name: create local repository
+  #       shell: bash -el {0}
+  #       run: |
+  #         conda install constructor conda-build conda-index
+  #         mkdir -p /tmp/conda-bld/linux-64
+  #         cp ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/magic-*.conda /tmp/conda-bld/linux-64/
+  #         python3 -m conda_index /tmp/conda-bld
+  #         rm -rf ${{ github.workspace }}/workdir
+  #     - uses: ./ci
+  #     - uses: actions/cache/save@v4
+  #       id: cache-gf180mcuc
+  #       with:
+  #         path: |
+  #           ${{ github.workspace }}/workdir/conda-env/conda-bld/noarch/open_pdks.gf180mcuc-*.conda
+  #         key: ${{ runner.os }}-cache-gf180mcuc-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/noarch/open_pdks.gf180mcuc-*.conda', github.workspace)) }}
   # open_pdks-gf180mcud-linux:
   #   runs-on: 'ubuntu-22.04'
   #   needs:
@@ -1073,67 +1076,68 @@ jobs:
   #         path: |
   #           ${{ github.workspace }}/workdir/conda-env/conda-bld/noarch/open_pdks.gf180mcud-*.conda
   #         key: ${{ runner.os }}-cache-gf180mcuc-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/noarch/open_pdks.gf180mcud-*.conda', github.workspace)) }}
-  open_pdks-gf180mcud-linux:
-    runs-on: 'ubuntu-22.04'
-    env:
-      PACKAGE: "misc/open_pdks/gf180mcud"
-      OS_NAME: "linux"
-      PYTHON_VERSION: "3.12"
-    defaults:
-      run:
-        shell: bash -l {0}
-    steps:
-      - name: Maximize build space
-        if: ${{ !env.ACT }}
-        uses: easimon/maximize-build-space@master
-        with:
-          root-reserve-mb: 20480
-          swap-size-mb: 1024
-          remove-dotnet: 'true'
-          remove-android: 'true'
-          remove-haskell: 'true'
-          remove-codeql: 'true'
-      - uses: actions/checkout@v3
-      - run: |
-          df -h
-          sudo apt -qqy update &&
-          sudo apt -qqy install ${{ env.APT_REQUIREMENTS }} libxrender1
-      - uses: ./ci
-      - uses: actions/cache/save@v4
-        id: cache-gf180mcud
-        with:
-          path: |
-            ${{ github.workspace }}/workdir/conda-env/conda-bld/noarch/open_pdks.gf180mcud-*.conda
-          key: ${{ runner.os }}-cache-gf180mcuc-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/noarch/open_pdks.gf180mcud-*.conda', github.workspace)) }}
-  ihp-sg13g2:
-    runs-on: 'ubuntu-22.04'
-    env:
-      PACKAGE: "misc/open_pdks/ihp-sg13g2"
-      OS_NAME: "linux"
-      PYTHON_VERSION: "3.13"
-    defaults:
-      run:
-        shell: bash -l {0}
-    steps:
-      - name: Maximize build space
-        if: ${{ !env.ACT }}
-        uses: easimon/maximize-build-space@master
-        with:
-          root-reserve-mb: 20480
-          swap-size-mb: 1024
-          remove-dotnet: 'true'
-          remove-android: 'true'
-          remove-haskell: 'true'
-          remove-codeql: 'true'
-      - uses: actions/checkout@v3
-      - run: |
-          df -h
-          sudo apt -qqy update &&
-          sudo apt -qqy install ${{ env.APT_REQUIREMENTS }}
-      - uses: ./ci
-      - uses: actions/cache/save@v4
-        id: cache-ihg-sg13g2
-        with:
-          path: |
-            ${{ github.workspace }}/workdir/conda-env/conda-bld/noarch/open_pdks.ihp-sg13g2-*.conda
-          key: ${{ runner.os }}-cache-ihp-sg13g2-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/noarch/open_pdks.ihp-sg13g2-*.conda', github.workspace)) }}
+  # open_pdks-gf180mcud-linux:
+  #   runs-on: 'ubuntu-22.04'
+  #   env:
+  #     PACKAGE: "misc/open_pdks/gf180mcud"
+  #     OS_NAME: "linux"
+  #     PYTHON_VERSION: "3.12"
+  #     CONDA_BLD_PATH: "${{ github.workspace }}/workdir/conda-env/conda-bld"
+  #   defaults:
+  #     run:
+  #       shell: bash -l {0}
+  #   steps:
+  #     - name: Maximize build space
+  #       if: ${{ !env.ACT }}
+  #       uses: easimon/maximize-build-space@master
+  #       with:
+  #         root-reserve-mb: 20480
+  #         swap-size-mb: 1024
+  #         remove-dotnet: 'true'
+  #         remove-android: 'true'
+  #         remove-haskell: 'true'
+  #         remove-codeql: 'true'
+  #     - uses: actions/checkout@v6
+  #     - run: |
+  #         df -h
+  #         sudo apt -qqy update &&
+  #         sudo apt -qqy install ${{ env.APT_REQUIREMENTS }} libxrender1
+  #     - uses: ./ci
+  #     - uses: actions/cache/save@v4
+  #       id: cache-gf180mcud
+  #       with:
+  #         path: |
+  #           ${{ github.workspace }}/workdir/conda-env/conda-bld/noarch/open_pdks.gf180mcud-*.conda
+  #         key: ${{ runner.os }}-cache-gf180mcuc-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/noarch/open_pdks.gf180mcud-*.conda', github.workspace)) }}
+  # ihp-sg13g2:
+  #   runs-on: 'ubuntu-22.04'
+  #   env:
+  #     PACKAGE: "misc/open_pdks/ihp-sg13g2"
+  #     OS_NAME: "linux"
+  #     PYTHON_VERSION: "3.13"
+  #   defaults:
+  #     run:
+  #       shell: bash -l {0}
+  #   steps:
+  #     - name: Maximize build space
+  #       if: ${{ !env.ACT }}
+  #       uses: easimon/maximize-build-space@master
+  #       with:
+  #         root-reserve-mb: 20480
+  #         swap-size-mb: 1024
+  #         remove-dotnet: 'true'
+  #         remove-android: 'true'
+  #         remove-haskell: 'true'
+  #         remove-codeql: 'true'
+  #     - uses: actions/checkout@v6
+  #     - run: |
+  #         df -h
+  #         sudo apt -qqy update &&
+  #         sudo apt -qqy install ${{ env.APT_REQUIREMENTS }}
+  #     - uses: ./ci
+  #     - uses: actions/cache/save@v4
+  #       id: cache-ihg-sg13g2
+  #       with:
+  #         path: |
+  #           ${{ github.workspace }}/workdir/conda-env/conda-bld/noarch/open_pdks.ihp-sg13g2-*.conda
+  #         key: ${{ runner.os }}-cache-ihp-sg13g2-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/noarch/open_pdks.ihp-sg13g2-*.conda', github.workspace)) }}

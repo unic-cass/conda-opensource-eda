@@ -20,7 +20,13 @@ echo "ENABLE_READLINE := 0" >> Makefile.conf
 # echo "CONFIG := gcc" >> Makefile.conf
 echo "ENABLE_TCL := 1" >> Makefile.conf
 echo "ENABLE_PLUGINS := 1" >> Makefile.conf
+echo "ENABLE_PYOSYS := 1" >> Makefile.conf
+echo "PYOSYS_USE_UV := 0" >> Makefile.conf
+echo "PYTHON_EXECUTABLE := python3" >> Makefile.conf
 
+python3 -m pip install  git+https://github.com/pybind/pybind11.git@v3.0.0
+python3 -m pip install git+https://github.com/robotpy/cxxheaderparser@1.5.4
+# export CXXFLAGS="-I$BUILD_PREFIX/include"
 if [[ $OS == "Linux" ]]; then
     ln -sf $GCC $BUILD_PREFIX/bin/gcc
     ln -sf $CXX $BUILD_PREFIX/bin/g++

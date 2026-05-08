@@ -26,6 +26,7 @@ requirements:
     # - libzip
     - gtk3
     - pkg-config
+    - libegl-devel
     - {{ compiler('c') }}
     # - {{ cdt('alsa-lib-devel') }}  # [linux]
     # - {{ cdt('cairo-devel') }}     # [linux]
