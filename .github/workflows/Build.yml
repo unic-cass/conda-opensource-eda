@@ -124,8 +124,6 @@ jobs:
           remove-haskell: 'true'
           remove-codeql: 'true'
       - uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
       - run: |
           sudo apt -qqy update &&
           sudo apt -qqy install ${{ env.APT_REQUIREMENTS }} libxml2
