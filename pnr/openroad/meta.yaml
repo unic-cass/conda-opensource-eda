@@ -1,5 +1,5 @@
 # Use `conda-build-prepare` before building for a better version string.
-{% set version = '%s_%04i_%s'|format(GIT_DESCRIBE_TAG|replace('v', '')|replace('-', '')|default('0.X'), GIT_DESCRIBE_NUMBER|int, GIT_DESCRIBE_HASH|default('gUNKNOWN')) %}
+{% set version = '%s_%04i_%s'|format(GIT_DESCRIBE_TAG, GIT_DESCRIBE_NUMBER|int, GIT_DESCRIBE_HASH|default('gUNKNOWN')) %}
 
 {% set python_version = PYTHON_VERSION | default('3.12') %}
 {% set py_suffix = 'py%s'|format(python_version|replace('.', '')) %}
@@ -17,7 +17,6 @@ package:
 source:
   - git_url: https://github.com/The-OpenROAD-Project/OpenROAD.git
     git_rev: dcf36133
-    git_depth: -1
     # patches:
     # 	- openroad-fmt-9.1.patch
   - url: https://github.com/The-OpenROAD-Project/lemon-graph/archive/refs/tags/{{ lemon_version }}.tar.gz
