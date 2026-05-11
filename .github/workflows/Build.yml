@@ -102,7 +102,44 @@ jobs:
           path: |
             ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/yosys-*.conda
           key: ${{ runner.os }}-cache-yosys-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/linux-64/yosys-*.conda', github.workspace)) }}
-
+  yosys-linux-py311:
+    runs-on: 'ubuntu-22.04'
+    env:
+      PACKAGE: "syn/yosys"
+      OS_NAME: "linux"
+      CONDA_BLD_PATH: "${{ github.workspace }}/workdir/conda-env/conda-bld"
+      PYTHON_VERSION: "3.11"
+    steps:
+      - uses: actions/checkout@v3
+      - run: |
+          sudo apt -qqy update &&
+          sudo apt -qqy install ${{ env.APT_REQUIREMENTS }}
+      - uses: ./ci
+      - uses: actions/cache/save@v4
+        id: cache-yosys
+        with:
+          path: |
+            ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/yosys-*.conda
+          key: ${{ runner.os }}-cache-yosys-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/linux-64/yosys-*.conda', github.workspace)) }}
+  yosys-linux-py310:
+    runs-on: 'ubuntu-22.04'
+    env:
+      PACKAGE: "syn/yosys"
+      OS_NAME: "linux"
+      CONDA_BLD_PATH: "${{ github.workspace }}/workdir/conda-env/conda-bld"
+      PYTHON_VERSION: "3.10"
+    steps:
+      - uses: actions/checkout@v3
+      - run: |
+          sudo apt -qqy update &&
+          sudo apt -qqy install ${{ env.APT_REQUIREMENTS }}
+      - uses: ./ci
+      - uses: actions/cache/save@v4
+        id: cache-yosys
+        with:
+          path: |
+            ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/yosys-*.conda
+          key: ${{ runner.os }}-cache-yosys-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/linux-64/yosys-*.conda', github.workspace)) }}
   openroad-linux:
     runs-on: 'ubuntu-22.04'
     env:
@@ -333,23 +370,23 @@ jobs:
             ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/qucs-s-*.conda
           key: ${{ runner.os }}-cache-qucs-s-py310-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/linux-64/qucs-s-*.conda', github.workspace)) }}
 
-  # icarus-linux:
-  #   runs-on: 'ubuntu-22.04'
-  #   env:
-  #     PACKAGE: "sim/icarus"
-  #     OS_NAME: "linux"
-  #   steps:
-  #     - uses: actions/checkout@v6
-  #     - run: |
-  #         sudo apt -qqy update &&
-  #         sudo apt -qqy install ${{ env.APT_REQUIREMENTS }}
-  #     - uses: ./ci
-  #     - uses: actions/cache/save@v4
-  #       id: cache-icarus
-  #       with:
-  #         path: |
-  #           ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/iverilog-*.conda
-  #         key: ${{ runner.os }}-cache-icarus-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/linux-64/iverilog-*.conda', github.workspace)) }}
+  icarus-linux:
+    runs-on: 'ubuntu-22.04'
+    env:
+      PACKAGE: "sim/icarus"
+      OS_NAME: "linux"
+    steps:
+      - uses: actions/checkout@v6
+      - run: |
+          sudo apt -qqy update &&
+          sudo apt -qqy install ${{ env.APT_REQUIREMENTS }}
+      - uses: ./ci
+      - uses: actions/cache/save@v4
+        id: cache-icarus
+        with:
+          path: |
+            ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/iverilog-*.conda
+          key: ${{ runner.os }}-cache-icarus-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/linux-64/iverilog-*.conda', github.workspace)) }}
   # gaw2-linux:
   #   runs-on: 'ubuntu-22.04'
   #   env:
