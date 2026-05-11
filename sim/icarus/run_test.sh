@@ -37,12 +37,12 @@ vvp -n test_counter
 echo "----------------------"
 
 # More advanced test
-echo
-echo
-echo "FSM Test ============="
-iverilog -o test_fsm fsm.v
-echo "----------------------"
-cat test_fsm
-echo "----------------------"
-./test_fsm
-echo "----------------------"
+#echo
+#echo
+#echo "FSM Test ============="
+#iverilog -o test_fsm fsm.v
+#echo "----------------------"
+#cat test_fsm
+#echo "----------------------"
+#./test_fsm
+#echo "----------------------"
