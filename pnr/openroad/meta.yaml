@@ -49,6 +49,7 @@ requirements:
     - swig 4.3.0
     - bison
     - flex
+    - gtest 1.17.0
     # - sysroot_linux-64 >=2.28
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
@@ -100,4 +101,4 @@ about:
 
 extra:
   recipe-maintainers:
-    - proppy
+    - duyhieu.bui
