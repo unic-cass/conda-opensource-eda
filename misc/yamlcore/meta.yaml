@@ -1,0 +1,46 @@
+# yamlcore — YAML Core schema support for PyYAML (pure Python, noarch).
+#
+# librelane 3.0.17 pins `yamlcore>=0.0.2,<0.1.0`; conda-forge has no
+# yamlcore package, so it is packaged here. 0.0.4 is the newest release
+# satisfying that constraint.
+package:
+  name: yamlcore
+  version: "0.0.4"
+
+source:
+  url: https://files.pythonhosted.org/packages/eb/d4/113dfc4c85f945de13b045a20eca50be5f6efa33342d9a9bd6162d26b288/yamlcore-0.0.4.tar.gz
+  sha256: c2b1a08dd117cf76a70ee124e936b3c568b0b5c4e5131e69b513f4a877a44881
+
+build:
+  noarch: python
+  number: {{ environ.get('DATE_NUM') }}
+  string: {{ environ.get('DATE_STR') }}
+  script: {{ PYTHON }} -m pip install . --no-deps --ignore-installed -vv
+  script_env:
+    - CI
+    - CONDA_OUT
+    - TEST_PACKAGE
+
+requirements:
+  host:
+    - python
+    - pip
+    - setuptools
+  run:
+    - python
+    - pyyaml
+
+test:
+  commands:
+    - python -c "import yamlcore, yaml; print('yamlcore OK')"
+
+about:
+  home: https://github.com/yaml/pyyaml-schema
+  license: MIT
+  license_file: LICENSE
+  summary: 'YAML Core schema support for PyYAML'
+  dev_url: https://github.com/yaml/pyyaml-schema
+
+extra:
+  recipe-maintainers:
+    - duyhieubui

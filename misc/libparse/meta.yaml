@@ -1,54 +1,59 @@
-# Use `conda-build-prepare` before building for a better version string.
-{% set version = '%s_%04i_%s'|format(GIT_DESCRIBE_TAG, GIT_DESCRIBE_NUMBER|int, GIT_DESCRIBE_HASH or 'gUNKNOWN') %}
-
+# libparse (= pip `lln-libparse`): Python wrapper around Yosys' libparse module.
+#
+# Bumped to 0.56.0 — the version librelane 3.0.17 pins (`lln-libparse==0.56.*`).
+# Built from the pinned PyPI sdist (pybind11 C++ extension, python-version
+# specific — not noarch).
 {% set python_version = PYTHON_VERSION | default('3.12') %}
 {% set py_suffix = 'py%s'|format(python_version|replace('.', '')) %}
 
 package:
   name: libparse
-  version: {{ version }}
+  version: "0.56.0"
 
 source:
-  git_url: https://github.com/efabless/libparse-python
-  git_rev: f83b5a5
+  url: https://files.pythonhosted.org/packages/17/28/70011f1ad509af0d481c581c07243e20ee47e808873709405f28a589d42d/lln_libparse-0.56.0.tar.gz
+  sha256: 7622424c318e0dfc253a7ee841d2a4fdfd9fbcefd07d7b958347bbfc2ecdda2c
 
 build:
   # number: 201803050325
   number: {{ environ.get('DATE_NUM') }}
   # string: 20180305_0325
   string: {{ environ.get('DATE_STR') }}_{{ py_suffix }}
+  script: {{ PYTHON }} -m pip install . --no-deps --ignore-installed -vv
   script_env:
     - CI
     - CONDA_OUT
     - TEST_PACKAGE
 
 requirements:
-  build:
-    - python {{ python_version }}
-    - setuptools
-    - wheel
-    - swig
+  # NOTE: compilers live in `host` (not `build`) — conda-build 26 crashes
+  # silently when a separate _build_env is present for this recipe.
+  host:
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
-  host:
     - python {{ python_version }}
+    - pip
+    - setuptools >=42
+    - pybind11 >=2.10.0
   run:
-    - python {{ python_version }}
+    - python
 
 test:
-  files:
-    - test/test.py
-    - test/test.lib
   commands:
-    - $PYTHON test/test.py
+    - python -c "import libparse; print(libparse.__version__)"
 
 about:
-  home: https://github.com/efabless/libparse-python
+  home: https://github.com/librelane/lln-libparse
   license: Apache-2.0
-  license_family: Apache
-  summary: |
-    libparse-python is a SWIG-based Python wrapper around Yosys\'s libparse, for all your lib file parsing needs.
+  license_file: PKG-INFO
+  summary: 'Python wrapper around Yosys'' libparse module'
   description: |
-    A SWIG-based Python wrapper around Yosys's libparse, for all your lib file parsing needs.
+    lln-libparse is a Python wrapper around the library file parser
+    (`libparse.cc`) used in Yosys. Packaged under the name `libparse` in
+    this repository; librelane depends on it via its pip name
+    `lln-libparse`.
+  dev_url: https://github.com/librelane/lln-libparse
 
-
+extra:
+  recipe-maintainers:
+    - duyhieubui

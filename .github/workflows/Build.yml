@@ -46,6 +46,107 @@ jobs:
     steps:
       - run: echo "Tool Build done."
 
+  librelane-stack:
+    runs-on: 'ubuntu-22.04'
+    needs:
+      - yosys-linux
+      - openroad-linux
+      - klayout-linux
+      - magic-linux
+      - netgen-linux
+      - symbiyosys-linux
+      - eqy-linux
+      - libparse-linux
+      - ciel-linux
+      - yamlcore-linux
+    steps:
+      - run: echo "Librelane toolchain ready."
+
+  symbiyosys-linux:
+    runs-on: 'ubuntu-22.04'
+    env:
+      PACKAGE: "formal/symbiyosys"
+      OS_NAME: "linux"
+      PYTHON_VERSION: "3.12"
+    steps:
+      - uses: actions/checkout@v6
+      - run: |
+          sudo apt -qqy update &&
+          sudo apt -qqy install ${{ env.APT_REQUIREMENTS }}
+      - uses: ./ci
+
+  eqy-linux:
+    runs-on: 'ubuntu-22.04'
+    env:
+      PACKAGE: "misc/eqy"
+      OS_NAME: "linux"
+    steps:
+      - uses: actions/checkout@v6
+      - run: |
+          sudo apt -qqy update &&
+          sudo apt -qqy install ${{ env.APT_REQUIREMENTS }}
+      - uses: ./ci
+
+  libparse-linux:
+    runs-on: 'ubuntu-22.04'
+    env:
+      PACKAGE: "misc/libparse"
+      OS_NAME: "linux"
+      PYTHON_VERSION: "3.12"
+    steps:
+      - uses: actions/checkout@v6
+      - run: |
+          sudo apt -qqy update &&
+          sudo apt -qqy install ${{ env.APT_REQUIREMENTS }}
+      - uses: ./ci
+
+  ciel-linux:
+    runs-on: 'ubuntu-22.04'
+    env:
+      PACKAGE: "misc/ciel"
+      OS_NAME: "linux"
+    steps:
+      - uses: actions/checkout@v6
+      - run: |
+          sudo apt -qqy update &&
+          sudo apt -qqy install ${{ env.APT_REQUIREMENTS }}
+      - uses: ./ci
+
+  yamlcore-linux:
+    runs-on: 'ubuntu-22.04'
+    env:
+      PACKAGE: "misc/yamlcore"
+      OS_NAME: "linux"
+    steps:
+      - uses: actions/checkout@v6
+      - run: |
+          sudo apt -qqy update &&
+          sudo apt -qqy install ${{ env.APT_REQUIREMENTS }}
+      - uses: ./ci
+
+  librelane-linux:
+    runs-on: 'ubuntu-22.04'
+    needs:
+      - openroad-linux
+      - yosys-linux
+      - klayout-linux
+      - magic-linux
+      - netgen-linux
+      - symbiyosys-linux
+      - eqy-linux
+      - libparse-linux
+      - ciel-linux
+      - yamlcore-linux
+    env:
+      PACKAGE: "misc/librelane"
+      OS_NAME: "linux"
+    steps:
+      - uses: actions/checkout@v6
+      - run: |
+          sudo apt -qqy update &&
+          sudo apt -qqy install ${{ env.APT_REQUIREMENTS }}
+      - uses: ./ci
+
   magic-linux:
     runs-on: 'ubuntu-22.04'
     env:

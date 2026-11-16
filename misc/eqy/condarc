@@ -1,0 +1,5 @@
+channel_priority: flexible
+channels:
+  - unic-cass
+  - conda-forge
+  - defaults

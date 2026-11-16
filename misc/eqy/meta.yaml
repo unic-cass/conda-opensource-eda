@@ -1,0 +1,54 @@
+# Use `conda-build-prepare` before building for a better version string.
+{% set version = '%s_%04i_%s'|format(GIT_DESCRIBE_TAG|replace('yosys-', '') or '0.X', GIT_DESCRIBE_NUMBER|int, GIT_DESCRIBE_HASH or 'gUNKNOWN') %}
+
+package:
+  name: eqy
+  version: {{ version }}
+
+source:
+  - git_url: https://github.com/YosysHQ/eqy.git
+    git_rev: v0.62
+
+build:
+  # number: 201803050325
+  number: {{ environ.get('DATE_NUM') }}
+  # string: 20180305_0325
+  string: {{ environ.get('DATE_STR') }}
+  script_env:
+    - CI
+    - CONDA_OUT
+    - TEST_PACKAGE
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+    - make
+  host:
+    # eqy builds its yosys plugins with `yosys-config` from the host yosys
+    - yosys
+  run:
+    - yosys
+    # librelane's eqy strategies use `sby` (symbiyosys) and, for the
+    # `bitwuzla` strategy, smtbmc engines provided by symbiyosys
+    - symbiyosys
+
+test:
+  commands:
+    - eqy --help
+
+about:
+  home: https://github.com/YosysHQ/eqy
+  license: ISC
+  license_file: COPYING
+  summary: 'Equivalence checking with Yosys'
+  description: |
+    EQY is a framework for equivalence checking of digital designs. It
+    combines design partitioning and multiple SAT-based equivalence
+    checking strategies. Required by librelane's equivalence-checking
+    steps (pinned to v0.62, matching the librelane 3.0.17 tool set).
+  dev_url: https://github.com/YosysHQ/eqy
+
+extra:
+  recipe-maintainers:
+    - duyhieubui

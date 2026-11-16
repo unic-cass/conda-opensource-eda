@@ -8,6 +8,10 @@ package:
 source:
    git_url: https://github.com/RTimothyEdwards/magic
    git_rev: 8.3.623
+   patches:
+     # librelane 3.0.17 parity (upstream fix d083bef0, github issue #564):
+     # instance-name buffer overflow handling (applies with patch fuzz)
+     - instance_name_length.patch
 
 build:
   # number: 201803050325

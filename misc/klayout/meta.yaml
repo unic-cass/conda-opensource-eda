@@ -13,6 +13,9 @@ source:
   git_rev: 6dd3e6b
   patches:
     - force-python-dynamic-link.patch
+    # librelane 3.0.17 parity (nix-eda patch): bbox-conversion cache perf fix
+    # in dbHierNetworkProcessor (DRC engine)
+    - performance_regression.patch
 
 build:
   # number: 201803050325
