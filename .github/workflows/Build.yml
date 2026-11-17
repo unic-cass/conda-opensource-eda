@@ -87,19 +87,6 @@ jobs:
           sudo apt -qqy install ${{ env.APT_REQUIREMENTS }}
       - uses: ./ci
 
-  libparse-linux:
-    runs-on: 'ubuntu-22.04'
-    env:
-      PACKAGE: "misc/libparse"
-      OS_NAME: "linux"
-      PYTHON_VERSION: "3.12"
-    steps:
-      - uses: actions/checkout@v6
-      - run: |
-          sudo apt -qqy update &&
-          sudo apt -qqy install ${{ env.APT_REQUIREMENTS }}
-      - uses: ./ci
-
   ciel-linux:
     runs-on: 'ubuntu-22.04'
     env:
