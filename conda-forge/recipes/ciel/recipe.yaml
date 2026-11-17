@@ -1,0 +1,48 @@
+context:
+  version: "3.2.0"
+
+package:
+  name: ciel
+  version: ${{ version }}
+
+source:
+  url: https://files.pythonhosted.org/packages/26/72/2dbea0d3ca2a5abee310ba9be07747c7d8172919838a8a8a91eb065aab6d/ciel-3.2.0.tar.gz
+  sha256: 96d8faa5330f4f8a23ca10c76470ecf6f8a46b5dd85bbcbc25698872d919e1e8
+
+build:
+  noarch: python
+  script: |
+    ${{ PYTHON }} -m pip install . --no-deps --ignore-installed -vv
+
+requirements:
+  host:
+    - python
+    - pip
+    - poetry-core >=1.0.0
+  run:
+    - python
+    - click >=8,<8.5
+    - httpx >=0.22.0,<0.29
+    - pcpp >=1.2,<2
+    - pyyaml >=5,<7
+    - rich >=12,<16
+    - zstandard >=0.19.0,<1
+
+tests:
+  - script:
+      - ciel --help
+
+about:
+  homepage: https://github.com/fossi-foundation/ciel
+  repository: https://github.com/fossi-foundation/ciel
+  license: Apache-2.0
+  license_file: License
+  summary: A fork of open_pdks, using build system infrastructure from LibreLane
+  description: |
+    Ciel is a wrapper for building and installing open-source PDKs
+    (sky130, gf180mcu, ...) — a fork of open_pdks using build infrastructure
+    from LibreLane.
+
+extra:
+  recipe-maintainers:
+    - duyhieubui

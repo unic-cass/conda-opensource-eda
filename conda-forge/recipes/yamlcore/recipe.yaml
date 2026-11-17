@@ -1,0 +1,43 @@
+context:
+  version: "0.0.4"
+
+package:
+  name: yamlcore
+  version: ${{ version }}
+
+source:
+  url: https://files.pythonhosted.org/packages/eb/d4/113dfc4c85f945de13b045a20eca50be5f6efa33342d9a9bd6162d26b288/yamlcore-0.0.4.tar.gz
+  sha256: c2b1a08dd117cf76a70ee124e936b3c568b0b5c4e5131e69b513f4a877a44881
+
+build:
+  noarch: python
+  script: |
+    ${{ PYTHON }} -m pip install . --no-deps --ignore-installed -vv
+
+requirements:
+  host:
+    - python
+    - pip
+    - setuptools >=61.0
+  run:
+    - python
+    - pyyaml
+
+tests:
+  - script:
+      - python -c "import yamlcore, yaml; print('yamlcore OK')"
+
+about:
+  homepage: https://github.com/yaml/pyyaml-schema
+  repository: https://github.com/yaml/pyyaml-schema
+  license: MIT
+  license_file: LICENSE
+  summary: YAML 1.2 Core Schema Support for PyYAML
+  description: |
+    This module can be used on top of PyYAML to build custom schema
+    support (PyYAML implements the YAML 1.1 core schema). yamlcore adds
+    the YAML 1.2 Core schema; librelane pins >=0.0.2,<0.1.0.
+
+extra:
+  recipe-maintainers:
+    - duyhieubui

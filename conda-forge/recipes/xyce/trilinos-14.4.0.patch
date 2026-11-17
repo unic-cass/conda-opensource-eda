@@ -1,0 +1,12 @@
+diff --git a/packages/kokkos-kernels/sparse/src/KokkosSparse_spadd_handle.hpp b/packages/kokkos-kernels/sparse/src/KokkosSparse_spadd_handle.hpp
+index 2902550d6a9..fd690992332 100644
+--- a/packages/kokkos-kernels/sparse/src/KokkosSparse_spadd_handle.hpp
++++ b/packages/kokkos-kernels/sparse/src/KokkosSparse_spadd_handle.hpp
+@@ -36,6 +36,7 @@ class SPADDHandle {
+   bool input_sorted;
+ 
+   size_type result_nnz_size;
++  int sort_option;
+ 
+   bool called_symbolic;
+   bool called_numeric;

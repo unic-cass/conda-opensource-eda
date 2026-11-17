@@ -1,0 +1,78 @@
+context:
+  version: "3.0.17"
+
+package:
+  name: librelane
+  version: ${{ version }}
+
+source:
+  # The sdist ships no license file; License (from the 3.0.17 tag) is
+  # vendored in this recipe directory.
+  - url: https://files.pythonhosted.org/packages/41/1f/1bdec943465f9c6e25fca18e599a746118661783df8879c4159907f8d833/librelane-3.0.17.tar.gz
+    sha256: e6b915b0fe09b1c22abb74437a51164d5486939f942000742e90f4440e9b0aaa
+  - url: https://raw.githubusercontent.com/librelane/librelane/64ef80802d3d189b476636d2a6b17888c03304ee/License
+    sha256: cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30
+
+build:
+  noarch: python
+  script: |
+    ${{ PYTHON }} -m pip install . --no-deps --ignore-installed -vv
+
+requirements:
+  host:
+    - python >=3.10
+    - pip
+    - poetry-core >=2.0.0
+  run:
+    - python >=3.10
+    # --- librelane's declared Python dependencies (pip names -> conda names)
+    - click >=8,<8.3
+    - cloup >=3.0.5,<4
+    - pyyaml >=5,<7
+    - rich >=12,<16
+    - lxml >=4.9.0
+    - deprecated >=1.2.10,<2
+    - psutil >=5.9.0
+    - httpx >=0.22.0,<0.29
+    - rapidfuzz >=3.9.0,<4
+    - semver >=3.0.2,<4
+    # klayout: librelane requires the KLayout *Python module* (>=0.29,<0.32)
+    - klayout >=0.29.0,<0.32
+    # yamlcore: no conda-forge package exists yet (librelane pins
+    # >=0.0.2,<0.1.0); submitted as a separate staged recipe
+    # lln-libparse==0.56.*: no conda-forge package exists yet; submitted as a
+    #   separate staged recipe (C++/pybind11 extension)
+    # ciel >=2.3.1,<3: no conda-forge package exists yet; submitted as a
+    #   separate staged recipe (PDK manager)
+    #
+    # --- external tool binaries ---
+    # LibreLane drives openroad, yosys, klayout (binary), magic, netgen,
+    #   verilator, iverilog, symbiyosys, eqy, sta, ... found in PATH at
+    #   runtime. Run deps below cover what conda-forge provides; see the PR
+    #   description for the full tool requirements and known gaps.
+    - magic
+    - verilator
+    - iverilog
+
+tests:
+  # NOTE: these only pass once the ciel/yamlcore/lln-libparse prerequisite
+  # recipes are merged (librelane imports libparse at import time).
+  - script:
+      - librelane --version
+      - python -c "import librelane; print(librelane.__version__)"
+
+about:
+  homepage: https://librelane.org/
+  repository: https://github.com/librelane/librelane
+  license: Apache-2.0
+  license_file: License
+  summary: An infrastructure for implementing chip design flows
+  description: |
+    LibreLane is a libre infrastructure for implementing chip design flows,
+    the successor of OpenLane 2. It drives a set of underlying tools
+    (OpenROAD, Yosys, KLayout, Magic, Netgen, ...) to take a design from RTL
+    to GDSII.
+
+extra:
+  recipe-maintainers:
+    - duyhieubui
