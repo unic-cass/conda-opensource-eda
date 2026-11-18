@@ -26,7 +26,10 @@ python -m pip install git+https://github.com/hdl/conda-build-prepare@${_cbp_rev}
 if [ "$ANACONDA_USER" != "" ]; then
     branch="$(git rev-parse --abbrev-ref HEAD)"
     # The last channel will be on top of the environment's channel list
-    ADDITIONAL_CHANNELS="$ANACONDA_USER $ANACONDA_USER/label/ci-$branch-$GITHUB_RUN_ID"
+    # conda-forge is needed for python packaging deps (pip, poetry-core,
+    # pybind11) used by the pip-based recipes; the user channel stays first
+    # so this repo's own packages win by priority
+    ADDITIONAL_CHANNELS="$ANACONDA_USER $ANACONDA_USER/label/ci-$branch-$GITHUB_RUN_ID conda-forge"
 else
     ADDITIONAL_CHANNELS="defaults"
 fi
