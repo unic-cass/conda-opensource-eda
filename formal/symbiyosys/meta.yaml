@@ -1,12 +1,11 @@
-# Use `conda-build-prepare` before building for a better version string.
-{% set version = '%s.0_%04i_%s'|format(GIT_DESCRIBE_TAG|replace('v', '') or '0.X.X', GIT_DESCRIBE_NUMBER|int, GIT_DESCRIBE_HASH or 'gUNKNOWN') %}
-
+# SymbiYosys 0.62 — pinned to the YosysHQ tag v0.62, matching the yosys 0.62
+# built by this repository (librelane 3.0.17's documented tool set).
 {% set python_version = PYTHON_VERSION | default('3.12') %}
 {% set py_suffix = 'py%s'|format(python_version|replace('.', '')) %}
 
 package:
   name: symbiyosys
-  version: {{ version }}
+  version: "0.62.0"
 
 source:
   - git_url: https://github.com/YosysHQ/SymbiYosys.git

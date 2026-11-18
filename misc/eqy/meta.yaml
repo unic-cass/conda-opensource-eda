@@ -1,9 +1,8 @@
-# Use `conda-build-prepare` before building for a better version string.
-{% set version = '%s_%04i_%s'|format(GIT_DESCRIBE_TAG|replace('yosys-', '') or '0.X', GIT_DESCRIBE_NUMBER|int, GIT_DESCRIBE_HASH or 'gUNKNOWN') %}
-
+# eqy 0.62 — pinned to the YosysHQ tag v0.62, matching the yosys 0.62
+# built by this repository (librelane 3.0.17's documented tool set).
 package:
   name: eqy
-  version: {{ version }}
+  version: "0.62.0"
 
 source:
   - git_url: https://github.com/YosysHQ/eqy.git
