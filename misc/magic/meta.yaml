@@ -7,11 +7,10 @@ package:
 
 source:
    git_url: https://github.com/RTimothyEdwards/magic
-   git_rev: 8.3.623
-   patches:
-     # librelane 3.0.17 parity (upstream fix d083bef0, github issue #564):
-     # instance-name buffer overflow handling (applies with patch fuzz)
-     - instance_name_length.patch
+   # 8.3.698: includes the instance-name overflow fix (d083bef0, issue #564)
+   # AND the commands/CmdLQ.c syntax fix — the 8.3.623 tag does not compile
+   # (missing paren in TxPrintf, fixed upstream by e366cf6a).
+   git_rev: 8.3.698
 
 build:
   # number: 201803050325
