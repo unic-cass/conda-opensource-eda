@@ -64,6 +64,7 @@ jobs:
 
   symbiyosys-linux:
     runs-on: 'ubuntu-22.04'
+    needs: [yosys-linux]
     env:
       PACKAGE: "formal/symbiyosys"
       OS_NAME: "linux"
@@ -77,6 +78,7 @@ jobs:
 
   eqy-linux:
     runs-on: 'ubuntu-22.04'
+    needs: [yosys-linux, symbiyosys-linux]
     env:
       PACKAGE: "misc/eqy"
       OS_NAME: "linux"
