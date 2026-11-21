@@ -34,7 +34,9 @@ else
     ADDITIONAL_CHANNELS="defaults"
 fi
 
-ADDITIONAL_PACKAGES="conda-build conda-verify jinja2 pexpect python"
+# pin conda-build: 26.9.1 has a flaky bug where the generated build script
+    # references a python from a previous render (exit 127), breaking builds
+    ADDITIONAL_PACKAGES="conda-build=26.9.1 conda-verify jinja2 pexpect python"
 if [[ "$OS_NAME" != 'windows' ]]; then
     ADDITIONAL_PACKAGES="$ADDITIONAL_PACKAGES ripgrep"
 fi
