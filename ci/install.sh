@@ -1,7 +1,7 @@
 #!/bin/bash
 
-source $CI_SCRIPTS_PATH/common.sh
 set -e
+source "$CI_SCRIPTS_PATH/common.sh"
 
 # Getting the conda environment
 start_section "environment.conda" "Setting up basic ${YELLOW}conda environment${NC}"
@@ -22,44 +22,42 @@ cat "$CI_SCRIPTS_PATH/conda_build_config.yaml" >> "$PACKAGE/conda_build_config.y
 _cbp_rev=${CONDA_BUILD_PREPARE_REV:-v0.1.2}
 python -m pip install git+https://github.com/hdl/conda-build-prepare@${_cbp_rev}#egg=conda-build-prepare
 
-# ANACONDA_USER isn't available in cross-repository PRs
-if [ "$ANACONDA_USER" != "" ]; then
+# conda-build-prepare prepends these in order (last one highest). The
+# recipe's condarc supplies any other channels and its channel priority.
+additional_channels=()
+recipe_os=${OS_NAME/osx/macos}
+if [[ ! -f "$PACKAGE/condarc_$recipe_os" && ! -f "$PACKAGE/condarc" ]]; then
+    additional_channels+=(defaults)
+fi
+package_channel=${ANACONDA_USER:-unic-cass}
+additional_channels+=("$package_channel")
+if [[ ${CI_USE_RUN_CHANNEL:-false} == true ]]; then
     branch="$(git rev-parse --abbrev-ref HEAD)"
-    # The last channel will be on top of the environment's channel list
-    # conda-forge is needed for python packaging deps (pip, poetry-core,
-    # pybind11) used by the pip-based recipes; the user channel stays first
-    # so this repo's own packages win by priority
-    ADDITIONAL_CHANNELS="$ANACONDA_USER $ANACONDA_USER/label/ci-$branch-$GITHUB_RUN_ID conda-forge"
-else
-    ADDITIONAL_CHANNELS="defaults"
+    additional_channels+=("$package_channel/label/ci-$branch-$GITHUB_RUN_ID")
 fi
 
-# pin conda-build: 26.9.1 has a flaky bug where the generated build script
-    # references a python from a previous render (exit 127), breaking builds
-    ADDITIONAL_PACKAGES="conda-build=26.9.1 conda-verify jinja2 pexpect python"
+# This is the build runner's Python, not the recipe's PYTHON_VERSION variant.
+additional_packages=(conda-build=26.9.1 conda-verify jinja2 pexpect python=3.12)
 if [[ "$OS_NAME" != 'windows' ]]; then
-    ADDITIONAL_PACKAGES="$ADDITIONAL_PACKAGES ripgrep"
+    additional_packages+=(ripgrep)
 fi
 
 # Prepare the recipe and create workdir/conda-env to be activated
-python -m conda_build_prepare --channels $ADDITIONAL_CHANNELS --packages $ADDITIONAL_PACKAGES --dir workdir $PACKAGE
-
-# Freshly created conda environment will be activated by the common.sh
-source $CI_SCRIPTS_PATH/common.sh
+printf 'Channels prepended by CI (highest first):'
+for ((i=${#additional_channels[@]}-1; i>=0; i--)); do
+    printf ' %s' "${additional_channels[i]}"
+done
+printf '\n'
+python -u -m conda_build_prepare --channels "${additional_channels[@]}" \
+    --packages "${additional_packages[@]}" --dir workdir "$PACKAGE"
 
 end_section "environment.conda"
 
 $SPACER
 
 # Output some useful info
-start_section "info.conda.env" "Info on ${YELLOW}conda environment${NC}"
-conda info
-end_section "info.conda.env"
-
 start_section "info.conda.config" "Info on ${YELLOW}conda config${NC}"
-conda config --show
-echo
-conda config --show-sources
+conda run -p workdir/conda-env conda config --show channels channel_priority
 end_section "info.conda.config"
 
 start_section "info.conda.package" "Info on ${YELLOW}conda package${NC}"

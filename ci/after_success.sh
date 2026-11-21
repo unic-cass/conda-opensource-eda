@@ -3,9 +3,6 @@
 source $CI_SCRIPTS_PATH/common.sh
 set -e
 
-# Close the after_success fold
-echo ::endgroup::
-
 if [[ $UPLOAD == "no-upload" ]]; then
     echo "Job without upload..."
 else
@@ -32,14 +29,14 @@ else
         check_path="$ANACONDA_USER/$name/$version/$os_and_package"
         branch="$(git rev-parse --abbrev-ref HEAD)"
 
-        if anaconda show $check_path 2>&1 | grep -E "^labels.*'main'"; then
+        if anaconda show "$check_path" 2>&1 | grep -E "^labels.*'main'"; then
             echo "Package $check_path is present in main label. Uploading will be skipped because doing so would remove the 'main' one."
             if [ "$branch" != "master" ]; then
                 exit 1
             fi
         else
             echo "Package $check_path not present in 'main' label"
-            anaconda -t $ANACONDA_TOKEN upload --force --no-progress --user $ANACONDA_USER --label ci-$branch-$GITHUB_RUN_ID $CONDA_OUT
+            anaconda -t "$ANACONDA_TOKEN" upload --force --no-progress --user "$ANACONDA_USER" --label "ci-$branch-$GITHUB_RUN_ID" "$CONDA_OUT"
         fi
 
         end_section "package.upload"
@@ -50,10 +47,3 @@ else
 
     $SPACER
 fi
-
-start_section "success.tail" "${GREEN}Success output...${NC}"
-echo "Log is $(wc -l /tmp/output.log) lines long."
-echo "Displaying last 1000 lines"
-echo
-tail -n 1000 /tmp/output.log
-end_section "success.tail"

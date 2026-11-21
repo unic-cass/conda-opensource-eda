@@ -18,7 +18,8 @@ else
         sys_name=MacOSX
     fi
 
-    wget --progress=dot:giga -c https://repo.continuum.io/miniconda/Miniconda3-latest-${sys_name}-x86_64.sh
+    wget --progress=dot:giga --tries=3 --timeout=45 --retry-connrefused -c \
+        "https://repo.anaconda.com/miniconda/Miniconda3-latest-${sys_name}-x86_64.sh"
     chmod a+x Miniconda3-latest-${sys_name}-x86_64.sh
     if [ ! -d $CONDA_PATH -o ! -z "$CI"  ]; then
             bash Miniconda3-latest-${sys_name}-x86_64.sh -p $CONDA_PATH -b -f

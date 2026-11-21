@@ -3,34 +3,58 @@ description: 'Build a package'
 runs:
   using: "composite"
   steps:
-    - name: build
+    - name: Prepare recipe and Conda environment
+      if: ${{ !env.SKIP }}
+      env:
+        CI_USE_RUN_CHANNEL: ${{ !env.ACT && github.event_name != 'pull_request' && env.UPLOAD != 'no-upload' && env.ANACONDA_TOKEN != '' && env.ANACONDA_USER != '' }}
+        CONDA_REMOTE_MAX_RETRIES: '2'
       run: |
-        if [ $SKIP ]; then
-          exit 0;
-        fi
-        if [ $OS_NAME = "windows" ]; then
-          export PATH="$PATH:/c/ProgramData/Chocolatey/bin/"
-          export PATH="$PATH:/c/Program Files/Git/usr/bin/"
-        fi
-        # Used in the scripts to locate other scripts.
+        set -o pipefail
+        unset ANACONDA_TOKEN
         export CI_SCRIPTS_PATH="$GITHUB_ACTION_PATH"
+        mkdir -p "$RUNNER_TEMP/conda-ci"
+        (
+          set -e
+          if [[ $OS_NAME == windows ]]; then
+            export PATH="$PATH:/c/ProgramData/Chocolatey/bin/:/c/Program Files/Git/usr/bin/"
+          elif [[ $OS_NAME == osx && ! -d $HOME/sdk/MacOSX10.9.sdk ]]; then
+            git clone https://github.com/phracker/MacOSX-SDKs "$HOME/sdk"
+          fi
+          bash "$CI_SCRIPTS_PATH/install.sh"
+        ) 2>&1 | tee "$RUNNER_TEMP/conda-ci/prepare.log"
+      shell: bash
 
-        source $GITHUB_ACTION_PATH/common.sh
-        if [ $OS_NAME = 'osx' ]; then
-            if [[ ! -d $HOME/sdk/MacOSX10.9.sdk ]]; then
-                git clone https://github.com/phracker/MacOSX-SDKs $HOME/sdk
-            fi
+    - name: Build, test and install package
+      if: ${{ !env.SKIP }}
+      env:
+        CONDA_ANACONDA_UPLOAD: 'false'
+        CONDA_REMOTE_MAX_RETRIES: '2'
+      run: |
+        set -o pipefail
+        unset ANACONDA_TOKEN
+        export CI_SCRIPTS_PATH="$GITHUB_ACTION_PATH"
+        if [[ $OS_NAME == windows ]]; then
+          export PATH="$PATH:/c/ProgramData/Chocolatey/bin/:/c/Program Files/Git/usr/bin/"
         fi
-        bash $GITHUB_ACTION_PATH/install.sh
-        set -x
-        if [ $SCRIPT ]; then
-          bash $SCRIPT
+        if [[ -n $SCRIPT ]]; then
+          source "$CI_SCRIPTS_PATH/common.sh"
+          bash "$SCRIPT" 2>&1 | tee "$RUNNER_TEMP/conda-ci/build.log"
         else
-          bash $GITHUB_ACTION_PATH/script.sh
-        fi
-        if [ $? -eq 0 ]; then
-          source $GITHUB_ACTION_PATH/after_success.sh
-        else
-          source $GITHUB_ACTION_PATH/after_failure.sh
+          bash "$CI_SCRIPTS_PATH/script.sh" 2>&1 | tee "$RUNNER_TEMP/conda-ci/build.log"
         fi
       shell: bash
+
+    - name: Upload package to the run label
+      if: ${{ !env.SKIP && !env.ACT && github.event_name != 'pull_request' && env.UPLOAD != 'no-upload' && env.ANACONDA_TOKEN != '' && env.ANACONDA_USER != '' }}
+      run: |
+        export CI_SCRIPTS_PATH="$GITHUB_ACTION_PATH"
+        bash "$CI_SCRIPTS_PATH/after_success.sh"
+      shell: bash
+
+    - name: Attach Conda diagnostics
+      if: ${{ failure() && !env.ACT }}
+      uses: actions/upload-artifact@v4
+      with:
+        name: conda-logs-${{ github.job }}-attempt-${{ github.run_attempt }}
+        path: ${{ runner.temp }}/conda-ci/*.log
+        retention-days: 14

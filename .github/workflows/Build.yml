@@ -2,8 +2,8 @@ name: Build packages
 
 on:
   push:
-    branch:
-      - master
+    branches:
+      # Upload.yml calls this workflow for master before promoting packages.
       - 'release/**'
     paths-ignore:
       - 'installer/**'
@@ -17,7 +17,7 @@ on:
       ANACONDA_USER:
         description: 'Anaconda User'
 permissions:
-  contents: write
+  contents: read
 
 env:
   ANACONDA_TOKEN: ${{ secrets.ANACONDA_TOKEN }}
@@ -31,6 +31,19 @@ defaults:
     shell: bash
 
 jobs:
+  validate:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - name: Check workflow and recipe layout
+        run: |
+          python3 -m pip install --disable-pip-version-check 'PyYAML==6.0.3'
+          python3 ci/validate.py
+          bash ci/lint-workflows.sh
+
   tool-build:
     runs-on: 'ubuntu-22.04'
     needs:
@@ -40,7 +53,6 @@ jobs:
       - klayout-linux
       - netgen-linux
       - yosys-linux
-      - ngspice-linux
       - xschem-linux
       - xyce-linux
     steps:
@@ -71,9 +83,7 @@ jobs:
       PYTHON_VERSION: "3.12"
     steps:
       - uses: actions/checkout@v6
-      - run: |
-          sudo apt -qqy update &&
-          sudo apt -qqy install ${{ env.APT_REQUIREMENTS }}
+      - run: bash ci/apt-install.sh $APT_REQUIREMENTS
       - uses: ./ci
 
   eqy-linux:
@@ -84,33 +94,29 @@ jobs:
       OS_NAME: "linux"
     steps:
       - uses: actions/checkout@v6
-      - run: |
-          sudo apt -qqy update &&
-          sudo apt -qqy install ${{ env.APT_REQUIREMENTS }}
+      - run: bash ci/apt-install.sh $APT_REQUIREMENTS
       - uses: ./ci
 
   ciel-linux:
     runs-on: 'ubuntu-22.04'
+    needs: validate
     env:
       PACKAGE: "misc/ciel"
       OS_NAME: "linux"
     steps:
       - uses: actions/checkout@v6
-      - run: |
-          sudo apt -qqy update &&
-          sudo apt -qqy install ${{ env.APT_REQUIREMENTS }}
+      - run: bash ci/apt-install.sh $APT_REQUIREMENTS
       - uses: ./ci
 
   yamlcore-linux:
     runs-on: 'ubuntu-22.04'
+    needs: validate
     env:
       PACKAGE: "misc/yamlcore"
       OS_NAME: "linux"
     steps:
       - uses: actions/checkout@v6
-      - run: |
-          sudo apt -qqy update &&
-          sudo apt -qqy install ${{ env.APT_REQUIREMENTS }}
+      - run: bash ci/apt-install.sh $APT_REQUIREMENTS
       - uses: ./ci
 
   librelane-linux:
@@ -131,22 +137,19 @@ jobs:
       OS_NAME: "linux"
     steps:
       - uses: actions/checkout@v6
-      - run: |
-          sudo apt -qqy update &&
-          sudo apt -qqy install ${{ env.APT_REQUIREMENTS }}
+      - run: bash ci/apt-install.sh $APT_REQUIREMENTS
       - uses: ./ci
 
   magic-linux:
     runs-on: 'ubuntu-22.04'
+    needs: validate
     env:
       PACKAGE: "misc/magic"
       OS_NAME: "linux"
       CONDA_BLD_PATH: "${{ github.workspace }}/workdir/conda-env/conda-bld"
     steps:
-      - uses: actions/checkout@v3
-      - run: |
-          sudo apt -qqy update &&
-          sudo apt -qqy install ${{ env.APT_REQUIREMENTS }} libxrender1
+      - uses: actions/checkout@v6
+      - run: bash ci/apt-install.sh $APT_REQUIREMENTS libxrender1
       - uses: ./ci
       - uses: actions/cache/save@v4
         id: cache-magic
@@ -157,15 +160,14 @@ jobs:
 
   netgen-linux:
     runs-on: 'ubuntu-22.04'
+    needs: validate
     env:
       PACKAGE: "misc/netgen"
       OS_NAME: "linux"
       CONDA_BLD_PATH: "${{ github.workspace }}/workdir/conda-env/conda-bld"
     steps:
-      - uses: actions/checkout@v3
-      - run: |
-          sudo apt -qqy update &&
-          sudo apt -qqy install git wget
+      - uses: actions/checkout@v6
+      - run: bash ci/apt-install.sh git wget
       - uses: ./ci
       - uses: actions/cache/save@v4
         id: cache-netgen
@@ -176,15 +178,14 @@ jobs:
 
   yosys-linux:
     runs-on: 'ubuntu-22.04'
+    needs: validate
     env:
       PACKAGE: "syn/yosys"
       OS_NAME: "linux"
       CONDA_BLD_PATH: "${{ github.workspace }}/workdir/conda-env/conda-bld"
     steps:
-      - uses: actions/checkout@v3
-      - run: |
-          sudo apt -qqy update &&
-          sudo apt -qqy install ${{ env.APT_REQUIREMENTS }}
+      - uses: actions/checkout@v6
+      - run: bash ci/apt-install.sh $APT_REQUIREMENTS
       - uses: ./ci
       - uses: actions/cache/save@v4
         id: cache-yosys
@@ -194,16 +195,15 @@ jobs:
           key: ${{ runner.os }}-cache-yosys-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/linux-64/yosys-*.conda', github.workspace)) }}
   yosys-linux-py311:
     runs-on: 'ubuntu-22.04'
+    needs: validate
     env:
       PACKAGE: "syn/yosys"
       OS_NAME: "linux"
       CONDA_BLD_PATH: "${{ github.workspace }}/workdir/conda-env/conda-bld"
       PYTHON_VERSION: "3.11"
     steps:
-      - uses: actions/checkout@v3
-      - run: |
-          sudo apt -qqy update &&
-          sudo apt -qqy install ${{ env.APT_REQUIREMENTS }}
+      - uses: actions/checkout@v6
+      - run: bash ci/apt-install.sh $APT_REQUIREMENTS
       - uses: ./ci
       - uses: actions/cache/save@v4
         id: cache-yosys
@@ -213,16 +213,15 @@ jobs:
           key: ${{ runner.os }}-cache-yosys-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/linux-64/yosys-*.conda', github.workspace)) }}
   yosys-linux-py310:
     runs-on: 'ubuntu-22.04'
+    needs: validate
     env:
       PACKAGE: "syn/yosys"
       OS_NAME: "linux"
       CONDA_BLD_PATH: "${{ github.workspace }}/workdir/conda-env/conda-bld"
       PYTHON_VERSION: "3.10"
     steps:
-      - uses: actions/checkout@v3
-      - run: |
-          sudo apt -qqy update &&
-          sudo apt -qqy install ${{ env.APT_REQUIREMENTS }}
+      - uses: actions/checkout@v6
+      - run: bash ci/apt-install.sh $APT_REQUIREMENTS
       - uses: ./ci
       - uses: actions/cache/save@v4
         id: cache-yosys
@@ -232,6 +231,7 @@ jobs:
           key: ${{ runner.os }}-cache-yosys-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/linux-64/yosys-*.conda', github.workspace)) }}
   openroad-linux:
     runs-on: 'ubuntu-22.04'
+    needs: validate
     env:
       PACKAGE: "pnr/openroad"
       OS_NAME: "linux"
@@ -253,9 +253,7 @@ jobs:
       - uses: actions/checkout@v6
         with:
           fetch-depth: 0
-      - run: |
-          sudo apt -qqy update &&
-          sudo apt -qqy install ${{ env.APT_REQUIREMENTS }} libxml2
+      - run: bash ci/apt-install.sh $APT_REQUIREMENTS libxml2
       - uses: ./ci
       - uses: actions/cache/save@v4
         id: cache-openroad
@@ -266,6 +264,7 @@ jobs:
 
   openroad-linux-py310:
     runs-on: 'ubuntu-22.04'
+    needs: validate
     env:
       PACKAGE: "pnr/openroad"
       OS_NAME: "linux"
@@ -284,10 +283,8 @@ jobs:
       #     remove-android: 'true'
       #     remove-haskell: 'true'
       #     remove-codeql: 'true'
-      - uses: actions/checkout@v3
-      - run: |
-          sudo apt -qqy update &&
-          sudo apt -qqy install ${{ env.APT_REQUIREMENTS }} libxml2
+      - uses: actions/checkout@v6
+      - run: bash ci/apt-install.sh $APT_REQUIREMENTS libxml2
       - uses: ./ci
       - uses: actions/cache/save@v4
         id: cache-openroad-py310
@@ -298,6 +295,7 @@ jobs:
 
   openroad-linux-py311:
     runs-on: 'ubuntu-22.04'
+    needs: validate
     env:
       PACKAGE: "pnr/openroad"
       OS_NAME: "linux"
@@ -316,10 +314,8 @@ jobs:
       #     remove-android: 'true'
       #     remove-haskell: 'true'
       #     remove-codeql: 'true'
-      - uses: actions/checkout@v3
-      - run: |
-          sudo apt -qqy update &&
-          sudo apt -qqy install ${{ env.APT_REQUIREMENTS }} libxml2
+      - uses: actions/checkout@v6
+      - run: bash ci/apt-install.sh $APT_REQUIREMENTS libxml2
       - uses: ./ci
       - uses: actions/cache/save@v4
         id: cache-openroad-py311
@@ -349,15 +345,14 @@ jobs:
 
   ngspice-linux:
     runs-on: 'ubuntu-22.04'
+    needs: validate
     env:
       PACKAGE: "sim/ngspice"
       OS_NAME: "linux"
       PYTHON_VERSION: "3.12"
     steps:
       - uses: actions/checkout@v6
-      - run: |
-          sudo apt -qqy update &&
-          sudo apt -qqy install ${{ env.APT_REQUIREMENTS }} 
+      - run: bash ci/apt-install.sh $APT_REQUIREMENTS
       - uses: ./ci
       - uses: actions/cache/save@v4
         id: cache-ngspice
@@ -368,14 +363,13 @@ jobs:
 
   xschem-linux:
     runs-on: 'ubuntu-22.04'
+    needs: validate
     env:
       PACKAGE: "misc/xschem"
       OS_NAME: "linux"
     steps:
       - uses: actions/checkout@v6
-      - run: |
-          sudo apt -qqy update &&
-          sudo apt -qqy install ${{ env.APT_REQUIREMENTS }} xorg-dev tcl-dev
+      - run: bash ci/apt-install.sh $APT_REQUIREMENTS xorg-dev tcl-dev
       - name: install nodejs for cache
         if: ${{ env.ACT }}
         run: curl -fsSL https://deb.nodesource.com/setup_24.x | bash - && apt -qqy install nodejs
@@ -389,14 +383,13 @@ jobs:
 
   xyce-linux:
     runs-on: 'ubuntu-22.04'
+    needs: validate
     env:
       PACKAGE: "sim/xyce"
       OS_NAME: "linux"
     steps:
       - uses: actions/checkout@v6
-      - run: |
-          sudo apt -qqy update &&
-          sudo apt -qqy install ${{ env.APT_REQUIREMENTS }} xorg-dev tcl-dev
+      - run: bash ci/apt-install.sh $APT_REQUIREMENTS xorg-dev tcl-dev
       - uses: ./ci
       - uses: actions/cache/save@v4
         id: cache-xyce
@@ -406,15 +399,14 @@ jobs:
           key: ${{ runner.os }}-cache-xyce-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/linux-64/xyce-*.conda', github.workspace)) }}
   qucs-s-linux:
     runs-on: 'ubuntu-22.04'
+    needs: validate
     env:
       PACKAGE: "misc/qucs-s"
       OS_NAME: "linux"
       PYTHON_VERSION: "3.12"
     steps:
       - uses: actions/checkout@v6
-      - run: |
-          sudo apt -qqy update &&
-          sudo apt -qqy install ${{ env.APT_REQUIREMENTS }}
+      - run: bash ci/apt-install.sh $APT_REQUIREMENTS
       - uses: ./ci
       - uses: actions/cache/save@v4
         id: cache-qucs-s
@@ -424,15 +416,14 @@ jobs:
           key: ${{ runner.os }}-cache-xyce-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/linux-64/qucs-s-*.conda', github.workspace)) }}
   qucs-s-py311-linux:
     runs-on: 'ubuntu-22.04'
+    needs: validate
     env:
       PACKAGE: "misc/qucs-s"
       OS_NAME: "linux"
       PYTHON_VERSION: "3.11"
     steps:
       - uses: actions/checkout@v6
-      - run: |
-          sudo apt -qqy update &&
-          sudo apt -qqy install ${{ env.APT_REQUIREMENTS }}
+      - run: bash ci/apt-install.sh $APT_REQUIREMENTS
       - uses: ./ci
       - uses: actions/cache/save@v4
         id: cache-qucs-s-py311
@@ -443,15 +434,14 @@ jobs:
 
   qucs-s-py310-linux:
     runs-on: 'ubuntu-22.04'
+    needs: validate
     env:
       PACKAGE: "misc/qucs-s"
       OS_NAME: "linux"
       PYTHON_VERSION: "3.10"
     steps:
       - uses: actions/checkout@v6
-      - run: |
-          sudo apt -qqy update &&
-          sudo apt -qqy install ${{ env.APT_REQUIREMENTS }}
+      - run: bash ci/apt-install.sh $APT_REQUIREMENTS
       - uses: ./ci
       - uses: actions/cache/save@v4
         id: cache-qucs-s-py310
@@ -462,14 +452,13 @@ jobs:
 
   icarus-linux:
     runs-on: 'ubuntu-22.04'
+    needs: validate
     env:
       PACKAGE: "sim/icarus"
       OS_NAME: "linux"
     steps:
       - uses: actions/checkout@v6
-      - run: |
-          sudo apt -qqy update &&
-          sudo apt -qqy install ${{ env.APT_REQUIREMENTS }}
+      - run: bash ci/apt-install.sh $APT_REQUIREMENTS
       - uses: ./ci
       - uses: actions/cache/save@v4
         id: cache-icarus
@@ -496,14 +485,13 @@ jobs:
   #         key: ${{ runner.os }}-cache-gaw2-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/linux-64/gaw2-*.conda', github.workspace)) }}
   gaw3-linux:
     runs-on: 'ubuntu-22.04'
+    needs: validate
     env:
       PACKAGE: "misc/xschem-gaw"
       OS_NAME: "linux"
     steps:
       - uses: actions/checkout@v6
-      - run: |
-          sudo apt -qqy update &&
-          sudo apt -qqy install build-essential curl git wget
+      - run: bash ci/apt-install.sh build-essential curl git wget
       - uses: ./ci
       - uses: actions/cache/save@v4
         id: cache-gaw3
@@ -513,15 +501,14 @@ jobs:
           key: ${{ runner.os }}-cache-gaw3-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/linux-64/gaw-*.conda', github.workspace)) }}
   verilator-linux:
     runs-on: 'ubuntu-22.04'
+    needs: validate
     env:
       PACKAGE: "sim/verilator"
       OS_NAME: "linux"
       PYTHON_VERSION: "3.12"
     steps:
       - uses: actions/checkout@v6
-      - run: |
-          sudo apt -qqy update &&
-          sudo apt -qqy install ${{ env.APT_REQUIREMENTS }}
+      - run: bash ci/apt-install.sh $APT_REQUIREMENTS
       - uses: ./ci
       - uses: actions/cache/save@v4
         id: cache-verilator
@@ -851,15 +838,14 @@ jobs:
 
   tcllib-linux:
     runs-on: 'ubuntu-22.04'
+    needs: validate
     env:
       PACKAGE: "misc/tcllib"
       OS_NAME: "linux"
       PYTHON_VERSION: "3.13"
     steps:
       - uses: actions/checkout@v6
-      - run: |
-            sudo apt -qqy update &&
-            sudo apt -qqy install ${{ env.APT_REQUIREMENTS }} libxrender1
+      - run: bash ci/apt-install.sh $APT_REQUIREMENTS libxrender1
       - uses: ./ci
       - uses: actions/cache/save@v4
         id: cache-tcllib
@@ -869,15 +855,14 @@ jobs:
           key: ${{ runner.os }}-cache-tcllib-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/noarch/tcllib-*.conda', github.workspace)) }}
   libparse-linux:
     runs-on: 'ubuntu-22.04'
+    needs: validate
     env:
       PACKAGE: "misc/libparse"
       OS_NAME: "linux"
       PYTHON_VERSION: "3.12"
     steps:
       - uses: actions/checkout@v6
-      - run: |
-            sudo apt -qqy update &&
-            sudo apt -qqy install ${{ env.APT_REQUIREMENTS }} libxrender1
+      - run: bash ci/apt-install.sh $APT_REQUIREMENTS libxrender1
       - uses: ./ci
       - uses: actions/cache/save@v4
         id: cache-libparse
@@ -888,15 +873,14 @@ jobs:
 
   klayout-linux:
     runs-on: 'ubuntu-22.04'
+    needs: validate
     env:
       PACKAGE: "misc/klayout"
       OS_NAME: "linux"
       PYTHON_VERSION: "3.12"
     steps:
       - uses: actions/checkout@v6
-      - run: |
-          sudo apt -qqy update &&
-          sudo apt -qqy install ${{ env.APT_REQUIREMENTS }}
+      - run: bash ci/apt-install.sh $APT_REQUIREMENTS
       - uses: ./ci
       - uses: actions/cache/save@v4
         id: cache-klayout
@@ -907,15 +891,14 @@ jobs:
 
   klayout-linux-py310:
     runs-on: 'ubuntu-22.04'
+    needs: validate
     env:
       PACKAGE: "misc/klayout"
       OS_NAME: "linux"
       PYTHON_VERSION: "3.10"
     steps:
       - uses: actions/checkout@v6
-      - run: |
-          sudo apt -qqy update &&
-          sudo apt -qqy install ${{ env.APT_REQUIREMENTS }}
+      - run: bash ci/apt-install.sh $APT_REQUIREMENTS
       - uses: ./ci
       - uses: actions/cache/save@v4
         id: cache-klayout-py310
@@ -926,15 +909,14 @@ jobs:
 
   klayout-linux-py311:
     runs-on: 'ubuntu-22.04'
+    needs: validate
     env:
       PACKAGE: "misc/klayout"
       OS_NAME: "linux"
       PYTHON_VERSION: "3.11"
     steps:
       - uses: actions/checkout@v6
-      - run: |
-          sudo apt -qqy update &&
-          sudo apt -qqy install ${{ env.APT_REQUIREMENTS }}
+      - run: bash ci/apt-install.sh $APT_REQUIREMENTS
       - uses: ./ci
       - uses: actions/cache/save@v4
         id: cache-klayout-py311

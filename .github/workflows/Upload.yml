@@ -24,6 +24,8 @@ jobs:
 
 
   Build:
+    permissions:
+      contents: read
     uses: ./.github/workflows/Build.yml
     secrets:
       ANACONDA_TOKEN: ${{ secrets.ANACONDA_TOKEN }}
@@ -32,10 +34,10 @@ jobs:
 
   Upload:
     needs: Build
-    if: always() && (github.event_name != 'pull_request') && (github.ref == 'refs/heads/master')
-    runs-on: ubuntu-20.04
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/master'
+    runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v6
       - name: Upload packages
         run: |
           # Required internally by the scripts to locate other scripts.
@@ -48,9 +50,10 @@ jobs:
 
 
   Cleanup:
-    runs-on: ubuntu-20.04
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v6
       - name: Cleanup Anaconda
         run: |
           # Required internally by the scripts to locate other scripts.
