@@ -60,7 +60,7 @@ requirements:
     - {{ compiler('cxx') }}     [not osx]
     - {{ compiler('c') }} 4.0   [osx]
     - {{ compiler('cxx') }} 4.0 [osx]
-    - cmake 3.22.1
+    - cmake >=3.22.1
     - scikit-build
     - scikit-build-core
     - python {{ python_version }}

@@ -14,7 +14,10 @@ case "${UNAME_OUT}" in
 esac
 
 if [ "$OS" = "Linux" ]; then
-    CC="/usr/bin/gcc" ./configure --prefix="${PREFIX}" --with-cairo="${BUILD_PREFIX}/include"
+    # tcl/tk headers live in the host prefix, not in system paths
+    CC="/usr/bin/gcc" CPPFLAGS="-I$PREFIX/include" \
+      ./configure --prefix="${PREFIX}" --with-cairo="${BUILD_PREFIX}/include" \
+        --with-tcl="${PREFIX}/lib" --with-tk="${PREFIX}/lib"
 elif [ "$OS" = "Mac" ]; then
     ./configure --prefix="${PREFIX}" --without-cairo --without-opengl --without-x
 fi

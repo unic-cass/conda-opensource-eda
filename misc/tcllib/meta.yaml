@@ -35,7 +35,8 @@ test:
   source_files:
     - examples
   commands:
-    - tclsh examples/logger/logtofile.tcl
+    # tclsh needs the installed tcllib modules on its auto_path
+    - TCLLIBPATH="$PREFIX/lib/tcllib2.0" tclsh examples/logger/logtofile.tcl
 
 about:
   home: https://core.tcl-lang.org/tcllib/doc/trunk/embedded/index.md
