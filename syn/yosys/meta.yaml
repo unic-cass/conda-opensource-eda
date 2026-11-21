@@ -15,7 +15,8 @@ source:
       - fix-linux-perf-unistd.patch
     #   - fix-bison-version-yosys-0.56.patch
   - git_url: https://github.com/povik/yosys-slang
-    git_rev: master
+    # Supports Yosys 0.62 and still provides the compatibility Makefile.
+    git_rev: 3251530961e0e8a8054098c9bb8376474958944a
     folder: plugins/slang
     # patches:
     #   - fix-gcc-11.2-std-hash-slang-plugin.patch
@@ -41,6 +42,7 @@ test:
     - yosys -V
     - yosys-abc -v 2>&1 | grep compiled
     - yosys -Q -p synth tests/simple/always01.v
+    - yosys -Q -m slang -p 'read_slang tests/simple/always01.v; synth'  # [linux or osx]
     - git clone https://github.com/timvideos/yosys.git     # [osx]
     - cd yosys                                             # [osx]
     - git apply ../only-test.patch                         # [osx]
