@@ -127,6 +127,7 @@ jobs:
       - klayout-linux
       - magic-linux
       - netgen-linux
+      - verilator-linux
       - symbiyosys-linux
       - eqy-linux
       - libparse-linux

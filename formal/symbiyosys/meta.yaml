@@ -9,7 +9,8 @@ package:
 
 source:
   - git_url: https://github.com/YosysHQ/SymbiYosys.git
-    git_rev: v0.62
+    # v0.62 commit; conda-build-prepare renames the tag in its local clone.
+    git_rev: 16171682e419dac18037398a05b40c651aac3519
     folder: SymbiYosys
   - git_url: https://github.com/Boolector/boolector.git
     folder: boolector

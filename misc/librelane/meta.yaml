@@ -4,11 +4,11 @@
 #
 # Tool binaries (openroad, yosys, magic, netgen, klayout) come from this
 # repository and are pinned to the exact versions librelane 3.0.17 documents
-# in its release `tool_versions.txt`:
+# in its release `tool_versions.txt`, except for the newer Magic patch release:
 #   openroad @ dcf36133a369abc8f3c5e5738cd4d82e4903c0e0
 #   yosys @ v0.62 (7326bb7d6)
 #   klayout @ 0.30.7 (6dd3e6b10)
-#   magic-vlsi @ 8.3.623
+#   magic-vlsi @ 8.3.698 (upstream pin: 8.3.623)
 #   netgen @ 1.5.316
 package:
   name: librelane
@@ -52,7 +52,7 @@ requirements:
     # klayout: the Python module - provided by this repository's `klayout`
     # package (the KLayout app build includes the Python bindings), which
     # also ships the KLayout binary librelane invokes.
-    - klayout >=0.29.0,<0.32
+    - klayout 0.30.7_0_g6dd3e6b10
     # yamlcore: packaged here (conda-forge has no yamlcore); librelane pins
     # >=0.0.2,<0.1.0
     - yamlcore >=0.0.2,<0.1.0
@@ -62,10 +62,12 @@ requirements:
     # ciel: the PDK manager (pip name ciel)
     - ciel >=2.3.1,<3
     # --- tool binaries (from this repository, at librelane 3.0.17's pins)
-    - openroad
-    - yosys
-    - magic
-    - netgen
+    - openroad 2.0_28825_gdcf36133a3
+    - yosys 0.62_0_g7326bb7d6
+    - magic 8.3.698_0_g8d37ad4c
+    - netgen 1.5.316_0_gb76c9a1
+    # Classic starts with Verilator lint.
+    - verilator
     # symbiyosys (sby) + eqy are required by librelane's equivalence steps
     - symbiyosys
     - eqy
@@ -73,8 +75,15 @@ requirements:
 test:
   commands:
     - librelane --version
-    - librelane.env_info --help || true
-    - python -c "import librelane; print(librelane.__version__)"
+    - librelane.env_info
+    - python -c "import librelane; import klayout.db"
+    - openroad -version
+    - sta -version
+    - klayout -v
+    - yosys -V
+    - verilator --version
+    - magic -dnull -noconsole --version
+    - netgen -batch quit
 
 about:
   home: https://librelane.org/

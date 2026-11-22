@@ -49,3 +49,7 @@ if [[ $OS == "Mac" ]]; then
     cd ${SRC_DIR}
     cp -a build/pymod/*${lib_ext}* ${PREFIX}/lib/pymod/
 fi
+
+# Keep KLayout's embedded module directory and expose it to Conda Python.
+mkdir -p "${SP_DIR}"
+printf '%s\n' ../../pymod > "${SP_DIR}/klayout.pth"

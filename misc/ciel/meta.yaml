@@ -5,12 +5,13 @@
 # The sdist ships no license file; it is fetched from the upstream tag.
 package:
   name: ciel
-  version: "3.2.0"
+  # LibreLane 3.0.17 requires ciel >=2.3.1,<3.
+  version: "2.6.1"
 
 source:
-  - url: https://files.pythonhosted.org/packages/26/72/2dbea0d3ca2a5abee310ba9be07747c7d8172919838a8a8a91eb065aab6d/ciel-3.2.0.tar.gz
-    sha256: 96d8faa5330f4f8a23ca10c76470ecf6f8a46b5dd85bbcbc25698872d919e1e8
-  # The sdist ships no license file; LICENSE (from upstream tag 3.2.0) is
+  - url: https://files.pythonhosted.org/packages/59/24/98ac927526ce8e42e825e7ec33502b6f80bec16243e8d6da3647aa2e36a4/ciel-2.6.1.tar.gz
+    sha256: e4fcfb303f5c603752b51541c4cf47baf6b08f300f5df65d36372234451896ec
+  # The sdist ships no license file; LICENSE (from upstream tag 2.6.1) is
   # vendored in this recipe directory.
 
 build:
@@ -25,12 +26,12 @@ build:
 
 requirements:
   host:
-    - python
+    - python >=3.8
     - pip
     - setuptools
     - poetry-core
   run:
-    - python
+    - python >=3.8
     - click >=8,<8.5
     - httpx >=0.22.0,<0.29
     - pcpp >=1.2,<2

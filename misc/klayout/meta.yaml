@@ -64,6 +64,7 @@ requirements:
 test:
   commands:
     - klayout -v
+    - python -c "from klayout.db import Layout; layout = Layout(); assert layout.create_cell('TOP').name == 'TOP'"
   requires:
     - ruby
     - python

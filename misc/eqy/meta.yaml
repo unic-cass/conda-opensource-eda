@@ -6,7 +6,8 @@ package:
 
 source:
   - git_url: https://github.com/YosysHQ/eqy.git
-    git_rev: v0.62
+    # v0.62 commit; conda-build-prepare renames the tag in its local clone.
+    git_rev: 91b2178dc5b141aba3794d1d088740f9d1a48a54
 
 build:
   # number: 201803050325
@@ -28,13 +29,17 @@ requirements:
     - yosys
   run:
     - yosys
+    - click
     # librelane's eqy strategies use `sby` (symbiyosys) and, for the
     # `bitwuzla` strategy, smtbmc engines provided by symbiyosys
     - symbiyosys
 
 test:
+  source_files:
+    - examples/simple/counter.eqy
+    - examples/simple/counter.sv
   commands:
-    - eqy --help
+    - cd examples/simple && eqy -f counter.eqy
 
 about:
   home: https://github.com/YosysHQ/eqy
