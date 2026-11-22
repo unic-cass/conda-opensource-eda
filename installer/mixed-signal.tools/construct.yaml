@@ -2,19 +2,22 @@ name: mixed-signal-tools
 version: 0
 
 channels:
+  - https://conda.anaconda.org/unic-cass
+  - https://conda.anaconda.org/conda-forge
   - https://repo.anaconda.com/pkgs/main/
-  - file:///tmp/conda-bld
+  - https://repo.anaconda.com/pkgs/r/
 
 specs:
-  - python
-  - conda
-  - xschem
-  - magic
-  - ngspice
-  - netgen
-  - yosys
-  - openroad
-  - klayout
-  - xyce
+  - python=3.15.2
+  # This is the latest published native Xschem build that uses Tcl/Tk 8.6.
+  - unic-cass::xschem=3.4.7_365_g4961ee43=20260511_222327
+  - unic-cass::magic=8.3.698_0_g8d37ad4c=20261122_153213
+  - unic-cass::ngspice=45.2_370_ga80f6e3e9=20261122_153213
+  - unic-cass::netgen=1.5.316_0_gb76c9a1=20261122_153213
+  - unic-cass::yosys=0.62_0_g7326bb7d6=20261122_153213_py315
+  - unic-cass::openroad=2.0_28825_gdcf36133a3=20261122_153213_py315
+  - unic-cass::klayout=0.30.7_0_g6dd3e6b10=20261122_153213_py315
+  - unic-cass::xyce=7.10.0_234_g369a7be8=20261122_153213
 
+initialize_conda: false
 post_install: post_install.sh

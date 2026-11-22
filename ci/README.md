@@ -45,11 +45,25 @@ CI tests the same `noarch` LibreLane package in a fresh environment on each of
 those Python versions. The build environment itself uses Python 3.12 to run
 the pinned `conda-build`.
 
-To build only one variant of a job locally, use `--matrix`:
+To build only one variant locally, select its job ID:
 
 ```bash
-act push -W .github/workflows/Build.yml -j libparse-linux-modern-python \
-    --matrix python:3.14 -P ubuntu-22.04=ghcr.io/catthehacker/ubuntu:act-22.04
+act push -W .github/workflows/Build.yml -j libparse-linux-py314 \
+    -P ubuntu-22.04=ghcr.io/catthehacker/ubuntu:act-22.04
+```
+
+## Tools-only GitHub release
+
+Push a `tools-<version>` tag to run `Construct.yml` for the standalone Linux
+x86-64 tools installer. It builds from the published package builds pinned in
+`installer/mixed-signal.tools/construct.yaml`, smoke-tests a fresh installation,
+and publishes the installer and SHA-256 checksum to the tagged release.
+
+To run the same installer build and smoke test locally:
+
+```bash
+act workflow_dispatch -W .github/workflows/Construct.yml \
+    -j mixed-signal-tools-installer -P ubuntu-22.04=ghcr.io/catthehacker/ubuntu:act-22.04
 ```
 
 ## Setting up Github Actions for your own fork
