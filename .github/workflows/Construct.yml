@@ -10,6 +10,11 @@ on:
     - 'installer/mixed-signal.sky130a/*'
     - 'installer/mixed-signal.gf180mcuc/*'
   workflow_dispatch:
+    inputs:
+      include_librelane:
+        description: 'Build only the mixed-signal installer with LibreLane'
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -124,7 +129,7 @@ jobs:
   #           ${{ vars.GITHUB_WORKSPACE }}/conda-eda/analog.sky130a-0-Linux-x86_64.sh
 
   mixed-signal-sky130a-installer:
-    if: ${{ !startsWith(github.ref, 'refs/tags/tools-') }}
+    if: ${{ !startsWith(github.ref, 'refs/tags/tools-') && !inputs.include_librelane }}
     runs-on: 'ubuntu-22.04'
     env:
       PYTHON_VERSION: "3.13"
@@ -331,7 +336,7 @@ jobs:
   #           /home/runner/work/conda-eda/conda-eda/analog.gf180mcuc-0-Linux-x86_64.sh
 
   mixed-signal-gf180mcuc-installer:
-    if: ${{ !startsWith(github.ref, 'refs/tags/tools-') }}
+    if: ${{ !startsWith(github.ref, 'refs/tags/tools-') && !inputs.include_librelane }}
     runs-on: 'ubuntu-22.04'
     defaults:
       run:
@@ -501,6 +506,9 @@ jobs:
   #           /home/runner/work/conda-eda/conda-eda/mixed-signal-0-Linux-x86_64.sh
   mixed-signal-tools-installer:
     runs-on: 'ubuntu-22.04'
+    env:
+      INCLUDE_LIBRELANE: ${{ inputs.include_librelane && '1' || '0' }}
+      INSTALLER: ${{ inputs.include_librelane && 'mixed-signal-librelane-3.0.17-Linux-x86_64.sh' || 'mixed-signal-tools-0-Linux-x86_64.sh' }}
     defaults:
       run:
         shell: bash -el {0}
@@ -515,7 +523,7 @@ jobs:
           miniconda-version: latest
           python-version: '3.12'
 
-      - name: Build tools-only installer
+      - name: Build mixed-signal installer
         env:
           CONDA_CHANNEL_PRIORITY: flexible
           CONDA_REMOTE_MAX_RETRIES: '5'
@@ -525,21 +533,21 @@ jobs:
 
       - name: Smoke-test installed tools
         run: |
-          bash installer/mixed-signal.tools/smoke-test.sh mixed-signal-tools-0-Linux-x86_64.sh
-          sha256sum mixed-signal-tools-0-Linux-x86_64.sh > mixed-signal-tools-0-Linux-x86_64.sh.sha256
+          bash installer/mixed-signal.tools/smoke-test.sh "$INSTALLER"
+          sha256sum "$INSTALLER" > "$INSTALLER.sha256"
 
       - name: archive installer
         if: ${{ !env.ACT }}
         uses: actions/upload-artifact@v4
         with:
-          name: 'mixed-signal-tools-installer'
+          name: ${{ inputs.include_librelane && 'mixed-signal-librelane-installer' || 'mixed-signal-tools-installer' }}
           path: |
-            mixed-signal-tools-0-Linux-x86_64.sh
-            mixed-signal-tools-0-Linux-x86_64.sh.sha256
+            ${{ env.INSTALLER }}
+            ${{ env.INSTALLER }}.sha256
           if-no-files-found: error
 
   release-tools:
-    if: ${{ startsWith(github.ref, 'refs/tags/tools-') }}
+    if: ${{ startsWith(github.ref, 'refs/tags/tools-') && !inputs.include_librelane }}
     needs: mixed-signal-tools-installer
     runs-on: ubuntu-22.04
     permissions:
@@ -564,7 +572,7 @@ jobs:
             mixed-signal-tools-0-Linux-x86_64.sh mixed-signal-tools-0-Linux-x86_64.sh.sha256
 
   release:
-    if: ${{ !startsWith(github.ref, 'refs/tags/tools-') }}
+    if: ${{ !startsWith(github.ref, 'refs/tags/tools-') && !inputs.include_librelane }}
     needs:
       - mixed-signal-tools-installer
   #     - analog-sky130a-installer

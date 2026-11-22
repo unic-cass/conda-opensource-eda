@@ -66,6 +66,11 @@ act workflow_dispatch -W .github/workflows/Construct.yml \
     -j mixed-signal-tools-installer -P ubuntu-22.04=ghcr.io/catthehacker/ubuntu:act-22.04
 ```
 
+Pass `--input include_librelane=true` to build the installer with LibreLane and
+run its Sky130A smoke test. On GitHub, select `include_librelane` when manually
+running **Build installers** to download the tested installer and checksum from
+the run's artifacts.
+
 ## Setting up Github Actions for your own fork
 
 To use any of the conda-* repositories in Github Actions you must meet the following requirements:

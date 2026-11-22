@@ -1,5 +1,10 @@
+{% if environ.get('INCLUDE_LIBRELANE') == '1' %}
+name: mixed-signal-librelane
+version: 3.0.17
+{% else %}
 name: mixed-signal-tools
 version: 0
+{% endif %}
 
 channels:
   - https://conda.anaconda.org/unic-cass
@@ -18,6 +23,15 @@ specs:
   - unic-cass::openroad=2.0_28825_gdcf36133a3=20261122_153213_py315
   - unic-cass::klayout=0.30.7_0_g6dd3e6b10=20261122_153213_py315
   - unic-cass::xyce=7.10.0_234_g369a7be8=20261122_153213
+{% if environ.get('INCLUDE_LIBRELANE') == '1' %}
+  - unic-cass::librelane=3.0.17=20261122_153213
+  - unic-cass::libparse=0.56.0=20261122_153213_py315
+  - unic-cass::symbiyosys=0.62_0_g1617168=20261122_153213_py315
+  - unic-cass::eqy=0.62_0_g91b2178=20261122_153213
+  - unic-cass::verilator=5.044_0_g8df584ca1=20261122_153213
+  - unic-cass::ciel=2.6.1=20261122_153213
+  - unic-cass::yamlcore=0.0.4=20261122_153213
+{% endif %}
 
 initialize_conda: false
 post_install: post_install.sh
