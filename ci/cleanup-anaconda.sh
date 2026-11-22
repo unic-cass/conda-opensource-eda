@@ -13,7 +13,11 @@ echo "RESULT;LABELS;NDOWNLOADS;PACKAGE" >$log_file
 function print_log {
     end_section  # in case exiting inside a section
     start_section "Cleanup summary"
-    column -t -s ';' <$log_file
+    if command -v column >/dev/null; then
+        column -t -s ';' < "$log_file"
+    else
+        cat "$log_file"
+    fi
     end_section
 }
 trap print_log EXIT
@@ -29,11 +33,13 @@ limit_date=$(date --date="$ago" +'%s%3N')
 echo "[CLEANUP] Will remove packages older than $ago with no more than $download_threshold downloads\n"
 
 #anaconda prints requested data to stderr
-function anaconda_stdout {
-    anaconda -t $ANACONDA_TOKEN $@ 2>&1 | tr -s ' '
-}
+anaconda_stdout() (
+    set -o pipefail
+    anaconda -t "$ANACONDA_TOKEN" "$@" 2>&1 | tr -s ' '
+)
 
-for label in $(anaconda_stdout label -o $ANACONDA_USER --list | grep -oP '(?<= \+ )ci-[^ ]+')
+label_list=$(anaconda_stdout label -o "$ANACONDA_USER" --list)
+for label in $(grep -oP '(?<= \+ )ci-[^ ]+' <<< "$label_list")
 do
     start_section "Label $label"
 
@@ -46,7 +52,13 @@ do
     fi
 
     #get label packages
-    packages=$(anaconda_stdout label -o $ANACONDA_USER --show $label | grep -oP '(?<= \+ )[^ ]+')
+    label_info=$(anaconda_stdout label -o "$ANACONDA_USER" --show "$label")
+    packages=$(grep -oP '(?<= \+ )[^ ]+' <<< "$label_info" || true)
+    if [[ -z "$packages" ]]; then
+        echo "[CLEANUP] No packages on label $label."
+        end_section
+        continue
+    fi
 
     #check build timestamp of the first package
     package=$(echo "$packages" | head -n1)
@@ -68,9 +80,10 @@ do
         labels=$(echo "$metadata" | grep -oP '(?<=labels : ).+')
         ndownloads=$(echo "$metadata" | grep -oP '(?<=ndownloads : )[0-9]+')
         function print_result {
-            # <OS>-64/<...>.tar.bz2
-            pkg_name=$(echo $package | grep -oP '[^/]+/[^/]+.tar.bz2')
-            echo "$1;$labels;$ndownloads;$pkg_name" >> $log_file
+            # Keep the subdirectory and filename, regardless of archive format.
+            local package_dir=${package%/*}
+            local pkg_name=${package_dir##*/}/${package##*/}
+            echo "$1;$labels;$ndownloads;$pkg_name" >> "$log_file"
             echo "[CLEANUP] $1: $pkg_name"
         }
 
