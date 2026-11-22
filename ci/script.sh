@@ -28,7 +28,36 @@ end_section "conda.build"
 $SPACER
 
 start_section "conda.install" "${GREEN}Installing..${NC}"
-conda install --yes $CONDA_OUT
+# Exercise a downstream install without trying to change the build runner's Python.
+# Installing archive paths directly bypasses dependency solving in newer Conda.
+artifacts=($CONDA_OUT)
+channel_dir=$(dirname "$(dirname "${artifacts[0]}")")
+conda index "$channel_dir"
+channel_url=$(python -c 'import sys; from conda.common.url import path_to_url; print(path_to_url(sys.argv[1]))' "$channel_dir")
+channels=(-c "$channel_url")
+# Preserve the recipe's configured channels when adding the local build channel.
+configured_channels=$(conda config --show channels --json | python -c 'import json, sys; print("\n".join(json.load(sys.stdin)["channels"]))')
+while IFS= read -r channel; do
+    [[ -z "$channel" ]] || channels+=(-c "$channel")
+done <<< "$configured_channels"
+specs=()
+for artifact in "${artifacts[@]}"; do
+    filename=${artifact##*/}
+    build=${filename%.conda}
+    build=${build##*-}
+    name_version=${filename%-*}
+    specs+=("$channel_url::${name_version%-*}==${name_version##*-}=$build")
+done
+if [[ -n ${CI_INSTALL_PYTHONS:-} ]]; then
+    for version in $CI_INSTALL_PYTHONS; do
+        prefix="$PWD/workdir/install-test-${version//./}"
+        conda create --yes --no-default-packages --prefix "$prefix" \
+            "${channels[@]}" "${specs[@]}" "python=$version"
+    done
+else
+    conda create --yes --no-default-packages --prefix "$PWD/workdir/install-test" \
+        "${channels[@]}" "${specs[@]}"
+fi
 end_section "conda.install"
 
 $SPACER

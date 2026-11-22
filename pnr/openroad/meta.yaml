@@ -67,15 +67,33 @@ requirements:
   host:
     - yaml-cpp
     - python {{ python_version }}
+{% if python_version == '3.15' %}
+    - libpython {{ python_version }}
+{% endif %}
+{% if python_version in ('3.13', '3.14', '3.15') %}
+    # These Python builds need newer zlib than Boost 1.82 and the Qt metapackage.
+    - libboost 1.88.*
+    - libboost-devel 1.88.*
+{% else %}
     - libboost 1.82
+{% endif %}
     - eigen 3.4.0
     - spdlog 1.15.3
+{% if python_version in ('3.13', '3.14', '3.15') %}
+    - tk 8.6.*
+{% else %}
     - tk
+{% endif %}
     - zlib
     - fmt
     - libgomp                 [not osx]
     - llvm-openmp             [osx]
+{% if python_version in ('3.13', '3.14', '3.15') %}
+    # Qt Core, Widgets, and Charts are already provided by qt-main.
+    - qt-main 5.15.2.*
+{% else %}
     - qt >=5.7,<6
+{% endif %}
     - libxcb
     - xcb-util-image
     - xcb-util-keysyms
@@ -85,6 +103,9 @@ requirements:
     # missing run_exports
     - {{ pin_compatible('libboost', min_pin='x.x', max_pin='x.x') }}
     - {{ pin_compatible('python', min_pin='x.x', max_pin='x.x') }}
+{% if python_version == '3.15' %}
+    - libpython {{ python_version }}
+{% endif %}
     - qt-main >=5.7,<6
     - spdlog 1.15.3
     - yaml-cpp
@@ -93,6 +114,14 @@ test:
   commands:
     - openroad -version
     - sta -version
+{% if python_version in ('3.13', '3.14', '3.15') %}
+    - |
+      printf '%s\n' 'import sys, odb' \
+        'assert f"{sys.version_info.major}.{sys.version_info.minor}" == "{{ python_version }}"' \
+        'assert odb.dbDatabase.create() is not None' \
+        'print("OpenROAD Python bindings OK")' > check_openroad.py
+      openroad -python -exit check_openroad.py | grep -F 'OpenROAD Python bindings OK'
+{% endif %}
 
 about:
   home: https://theopenroadproject.org/

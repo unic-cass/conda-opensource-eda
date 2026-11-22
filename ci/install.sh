@@ -26,6 +26,16 @@ python -m pip install git+https://github.com/hdl/conda-build-prepare@${_cbp_rev}
 # recipe's condarc supplies any other channels and its channel priority.
 additional_channels=()
 recipe_os=${OS_NAME/osx/macos}
+if [[ -n "${RECIPE_CONDARC_VARIANT:-}" ]]; then
+    # conda-build-prepare only recognizes the platform-specific and generic names.
+    variant_condarc="$PACKAGE/condarc_${recipe_os}_${RECIPE_CONDARC_VARIANT}"
+    if [[ ! -f "$variant_condarc" ]]; then
+        printf 'Missing variant configuration: %s\n' "$variant_condarc" >&2
+        exit 1
+    fi
+    rm -f "$PACKAGE/condarc_$recipe_os"
+    cp "$variant_condarc" "$PACKAGE/condarc_$recipe_os"
+fi
 if [[ ! -f "$PACKAGE/condarc_$recipe_os" && ! -f "$PACKAGE/condarc" ]]; then
     additional_channels+=(defaults)
 fi

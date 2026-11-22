@@ -28,7 +28,8 @@ requirements:
     - {{ cdt('libxau-devel') }}  # [linux]
     - {{ cdt('libxcb') }}  # [linux]
   host:
-    - tk
+    # Match Magic and the Tcl/Tk used by the LibreLane Python 3.15 stack.
+    - tk 8.6.*
 
 test:
   commands:

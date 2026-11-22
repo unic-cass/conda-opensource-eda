@@ -13,6 +13,7 @@ source:
   git_rev: 6dd3e6b
   patches:
     - force-python-dynamic-link.patch
+    - python-3.15-weakrefs.patch
     # librelane 3.0.17 parity (nix-eda patch): bbox-conversion cache perf fix
     # in dbHierNetworkProcessor (DRC engine)
     - performance_regression.patch
@@ -45,12 +46,24 @@ requirements:
     - {{ cdt('libpng') }}             [linux]
   host:
     - python {{ python_version }}
-    - ruby
+{% if python_version == '3.15' %}
+    - libpython {{ python_version }}
+{% endif %}
+{% if python_version in ('3.13', '3.14', '3.15') %}
+    - tk 8.6.*
+    # KLayout needs Qt libraries, not the WebEngine pulled in by `qt`.
+    - qt-main 5.15.2.*
+{% else %}
     - qt >=5.0,<6.0
+{% endif %}
+    - ruby
     - zlib
     - libgit2
   run:
     - {{ pin_compatible('python', min_pin='x.x', max_pin='x.x') }}
+{% if python_version == '3.15' %}
+    - libpython {{ python_version }}
+{% endif %}
     - libxcb
     - xcb-util
     - xcb-util-image

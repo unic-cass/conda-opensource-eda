@@ -35,7 +35,8 @@ def check_recipe(recipe):
     build = re.search(r"(?m)^build:[^\n]*\n(?:[ \t].*\n|\n|#.*\n)*", meta.read_text() + "\n")
     if (recipe / "build.sh").is_file() and build and re.search(r"(?m)^  script:", build[0]):
         raise ValueError(f"{meta}: use either build.sh or build/script, not both")
-    for condarc in (recipe / "condarc", recipe / "condarc_linux"):
+    variant_condarcs = sorted(recipe.glob("condarc_*_py*"))
+    for condarc in (recipe / "condarc", recipe / "condarc_linux", *variant_condarcs):
         if not condarc.exists():
             continue
         config = load_yaml(condarc)

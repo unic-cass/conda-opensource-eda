@@ -10,6 +10,8 @@
 #   klayout @ 0.30.7 (6dd3e6b10)
 #   magic-vlsi @ 8.3.698 (upstream pin: 8.3.623)
 #   netgen @ 1.5.316
+{% set test_python = PYTHON_VERSION | default('3.12') %}
+
 package:
   name: librelane
   version: "3.0.17"
@@ -73,6 +75,8 @@ requirements:
     - eqy
 
 test:
+  requires:
+    - python {{ test_python }}
   commands:
     - librelane --version
     - librelane.env_info

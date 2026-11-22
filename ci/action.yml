@@ -55,6 +55,6 @@ runs:
       if: ${{ failure() && !env.ACT }}
       uses: actions/upload-artifact@v4
       with:
-        name: conda-logs-${{ github.job }}-attempt-${{ github.run_attempt }}
+        name: conda-logs-${{ github.job }}-${{ env.PYTHON_VERSION || 'default' }}-attempt-${{ github.run_attempt }}
         path: ${{ runner.temp }}/conda-ci/*.log
         retention-days: 14

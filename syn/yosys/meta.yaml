@@ -66,6 +66,12 @@ requirements:
     - scikit-build
     - scikit-build-core
     - python {{ python_version }}
+{% if python_version == '3.15' %}
+    - libpython {{ python_version }}
+{% endif %}
+{% if python_version in ('3.13', '3.14', '3.15') %}
+    - tk 8.6.*
+{% endif %}
 
   host:
     - python {{ python_version }}
@@ -76,9 +82,22 @@ requirements:
     - m2-zlib              [win]
     - bison                [not win]
     - flex                 [not win]
+{% if python_version in ('3.13', '3.14', '3.15') %}
+    # Match the libffi ABI used by current Conda-forge Python and KLayout's Ruby.
+    - libffi 3.7.*         [not win]
+{% else %}
     - libffi               [not win]
+{% endif %}
     - pkg-config           [not win]
+{% if python_version == '3.15' %}
+    - libpython {{ python_version }}
+{% endif %}
+{% if python_version in ('3.13', '3.14', '3.15') %}
+    # Match the Tcl/Tk 8.6 ABI used by the rest of the LibreLane stack.
+    - tk 8.6.*             [not win]
+{% else %}
     - tk                   [not win]
+{% endif %}
     - zlib                 [not win]
     - gawk [osx]
   run:
@@ -87,6 +106,9 @@ requirements:
     - libffi
     - tk
     - python {{ python_version }}
+{% if python_version == '3.15' %}
+    - libpython {{ python_version }}
+{% endif %}
 
 about:
   home: http://www.clifford.at/yosys/

@@ -61,6 +61,19 @@ cmake -B build  -DBUILD_DEPS:BOOL=ON \
       ${CMAKE_PLATFORM_FLAGS[@]} .
 cmake --build build --config Release -j $CPU_COUNT --target install
 
+# CMake 3.31 does not search for Python 3.15 by default. Use the host
+# interpreter's headers and shared library rather than searching the build env.
+python_flags=()
+if [[ $OS == "Linux" ]]; then
+    python_include=$("$PYTHON" -c 'import sysconfig; print(sysconfig.get_path("include"))')
+    # Conda's Python can report a static LDLIBRARY even when the host provides
+    # the shared library that OpenROAD needs to embed Python.
+    python_ldversion=$("$PYTHON" -c 'import sysconfig; print(sysconfig.get_config_var("LDVERSION"))')
+    python_library="$PREFIX/lib/libpython${python_ldversion}.so"
+    test -f "$python_library"
+    python_flags=(-DPython3_INCLUDE_DIR="$python_include" -DPython3_LIBRARY="$python_library")
+fi
+
 ## there is a bug with SPDLOG 1.11 and fmt 0.9
 ## disable SPDLOG_FMT_EXTERNAL
 cd $SRC_DIR
@@ -76,6 +89,7 @@ cmake -B build -DTCL_LIB_PATHS="$BUILD_PREFIX;$PREFIX" \
       -DCMAKE_EXE_LINKER_FLAGS="-L$BUILD_PREFIX/lib -L$PREFIX/lib -lxcb-glx -lxcb-dri2" \
       -DENABLE_TESTS=OFF -DCMAKE_INSTALL_PREFIX=$PREFIX \
       -DFLEX_INCLUDE_DIR=$BUILD_PREFIX/include \
+      "${python_flags[@]}" \
       ${CMAKE_PLATFORM_FLAGS[@]} .
 
 cmake --build build -j $CPU_COUNT --target install
