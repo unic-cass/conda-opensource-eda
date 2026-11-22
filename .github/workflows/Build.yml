@@ -86,17 +86,39 @@ jobs:
       - run: bash ci/apt-install.sh $APT_REQUIREMENTS
       - uses: ./ci
 
-  symbiyosys-linux-modern-python:
+  symbiyosys-linux-py313:
     runs-on: 'ubuntu-22.04'
-    needs: [yosys-linux-modern-python]
-    strategy:
-      fail-fast: false
-      matrix:
-        python: ['3.13', '3.14', '3.15']
+    needs: [yosys-linux-py313]
     env:
       PACKAGE: "formal/symbiyosys"
       OS_NAME: "linux"
-      PYTHON_VERSION: ${{ matrix.python }}
+      PYTHON_VERSION: "3.13"
+      RECIPE_CONDARC_VARIANT: py313-plus
+    steps:
+      - uses: actions/checkout@v6
+      - run: bash ci/apt-install.sh $APT_REQUIREMENTS
+      - uses: ./ci
+
+  symbiyosys-linux-py314:
+    runs-on: 'ubuntu-22.04'
+    needs: [yosys-linux-py314]
+    env:
+      PACKAGE: "formal/symbiyosys"
+      OS_NAME: "linux"
+      PYTHON_VERSION: "3.14"
+      RECIPE_CONDARC_VARIANT: py313-plus
+    steps:
+      - uses: actions/checkout@v6
+      - run: bash ci/apt-install.sh $APT_REQUIREMENTS
+      - uses: ./ci
+
+  symbiyosys-linux-py315:
+    runs-on: 'ubuntu-22.04'
+    needs: [yosys-linux-py315]
+    env:
+      PACKAGE: "formal/symbiyosys"
+      OS_NAME: "linux"
+      PYTHON_VERSION: "3.15"
       RECIPE_CONDARC_VARIANT: py313-plus
     steps:
       - uses: actions/checkout@v6
@@ -140,19 +162,29 @@ jobs:
     runs-on: 'ubuntu-22.04'
     needs:
       - openroad-linux
-      - openroad-linux-modern-python
+      - openroad-linux-py313
+      - openroad-linux-py314
+      - openroad-linux-py315
       - yosys-linux
-      - yosys-linux-modern-python
+      - yosys-linux-py313
+      - yosys-linux-py314
+      - yosys-linux-py315
       - klayout-linux
-      - klayout-linux-modern-python
+      - klayout-linux-py313
+      - klayout-linux-py314
+      - klayout-linux-py315
       - magic-linux
       - netgen-linux
       - verilator-linux
       - symbiyosys-linux
-      - symbiyosys-linux-modern-python
+      - symbiyosys-linux-py313
+      - symbiyosys-linux-py314
+      - symbiyosys-linux-py315
       - eqy-linux
       - libparse-linux
-      - libparse-linux-modern-python
+      - libparse-linux-py313
+      - libparse-linux-py314
+      - libparse-linux-py315
       - ciel-linux
       - yamlcore-linux
     env:
@@ -264,18 +296,42 @@ jobs:
             ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/yosys-*.conda
           key: ${{ runner.os }}-cache-yosys-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/linux-64/yosys-*.conda', github.workspace)) }}
 
-  yosys-linux-modern-python:
+  yosys-linux-py313:
     runs-on: 'ubuntu-22.04'
     needs: validate
-    strategy:
-      fail-fast: false
-      matrix:
-        python: ['3.13', '3.14', '3.15']
     env:
       PACKAGE: "syn/yosys"
       OS_NAME: "linux"
       CONDA_BLD_PATH: "${{ github.workspace }}/workdir/conda-env/conda-bld"
-      PYTHON_VERSION: ${{ matrix.python }}
+      PYTHON_VERSION: "3.13"
+      RECIPE_CONDARC_VARIANT: py313-plus
+    steps:
+      - uses: actions/checkout@v6
+      - run: bash ci/apt-install.sh $APT_REQUIREMENTS
+      - uses: ./ci
+
+  yosys-linux-py314:
+    runs-on: 'ubuntu-22.04'
+    needs: validate
+    env:
+      PACKAGE: "syn/yosys"
+      OS_NAME: "linux"
+      CONDA_BLD_PATH: "${{ github.workspace }}/workdir/conda-env/conda-bld"
+      PYTHON_VERSION: "3.14"
+      RECIPE_CONDARC_VARIANT: py313-plus
+    steps:
+      - uses: actions/checkout@v6
+      - run: bash ci/apt-install.sh $APT_REQUIREMENTS
+      - uses: ./ci
+
+  yosys-linux-py315:
+    runs-on: 'ubuntu-22.04'
+    needs: validate
+    env:
+      PACKAGE: "syn/yosys"
+      OS_NAME: "linux"
+      CONDA_BLD_PATH: "${{ github.workspace }}/workdir/conda-env/conda-bld"
+      PYTHON_VERSION: "3.15"
       RECIPE_CONDARC_VARIANT: py313-plus
     steps:
       - uses: actions/checkout@v6
@@ -377,17 +433,45 @@ jobs:
             ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/openroad-*.conda
           key: ${{ runner.os }}-cache-openroad-py311-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/linux-64/openroad-*.conda', github.workspace)) }}
 
-  openroad-linux-modern-python:
+  openroad-linux-py313:
     runs-on: 'ubuntu-22.04'
     needs: validate
-    strategy:
-      fail-fast: false
-      matrix:
-        python: ['3.13', '3.14', '3.15']
     env:
       PACKAGE: "pnr/openroad"
       OS_NAME: "linux"
-      PYTHON_VERSION: ${{ matrix.python }}
+      PYTHON_VERSION: "3.13"
+      RECIPE_CONDARC_VARIANT: py313-plus
+    defaults:
+      run:
+        shell: bash -l {0}
+    steps:
+      - uses: actions/checkout@v6
+      - run: bash ci/apt-install.sh $APT_REQUIREMENTS libxml2
+      - uses: ./ci
+
+  openroad-linux-py314:
+    runs-on: 'ubuntu-22.04'
+    needs: validate
+    env:
+      PACKAGE: "pnr/openroad"
+      OS_NAME: "linux"
+      PYTHON_VERSION: "3.14"
+      RECIPE_CONDARC_VARIANT: py313-plus
+    defaults:
+      run:
+        shell: bash -l {0}
+    steps:
+      - uses: actions/checkout@v6
+      - run: bash ci/apt-install.sh $APT_REQUIREMENTS libxml2
+      - uses: ./ci
+
+  openroad-linux-py315:
+    runs-on: 'ubuntu-22.04'
+    needs: validate
+    env:
+      PACKAGE: "pnr/openroad"
+      OS_NAME: "linux"
+      PYTHON_VERSION: "3.15"
       RECIPE_CONDARC_VARIANT: py313-plus
     defaults:
       run:
@@ -925,17 +1009,37 @@ jobs:
             ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/libparse-*.conda
           key: ${{ runner.os }}-cache-libparse-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/linux-64/libparse-*.conda', github.workspace)) }}
 
-  libparse-linux-modern-python:
+  libparse-linux-py313:
     runs-on: 'ubuntu-22.04'
     needs: validate
-    strategy:
-      fail-fast: false
-      matrix:
-        python: ['3.13', '3.14', '3.15']
     env:
       PACKAGE: "misc/libparse"
       OS_NAME: "linux"
-      PYTHON_VERSION: ${{ matrix.python }}
+      PYTHON_VERSION: "3.13"
+    steps:
+      - uses: actions/checkout@v6
+      - run: bash ci/apt-install.sh $APT_REQUIREMENTS libxrender1
+      - uses: ./ci
+
+  libparse-linux-py314:
+    runs-on: 'ubuntu-22.04'
+    needs: validate
+    env:
+      PACKAGE: "misc/libparse"
+      OS_NAME: "linux"
+      PYTHON_VERSION: "3.14"
+    steps:
+      - uses: actions/checkout@v6
+      - run: bash ci/apt-install.sh $APT_REQUIREMENTS libxrender1
+      - uses: ./ci
+
+  libparse-linux-py315:
+    runs-on: 'ubuntu-22.04'
+    needs: validate
+    env:
+      PACKAGE: "misc/libparse"
+      OS_NAME: "linux"
+      PYTHON_VERSION: "3.15"
     steps:
       - uses: actions/checkout@v6
       - run: bash ci/apt-install.sh $APT_REQUIREMENTS libxrender1
@@ -995,17 +1099,39 @@ jobs:
             ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/klayout-*.conda
           key: ${{ runner.os }}-cache-klayout-py311-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/linux-64/klayout-*.conda', github.workspace)) }}
 
-  klayout-linux-modern-python:
+  klayout-linux-py313:
     runs-on: 'ubuntu-22.04'
     needs: validate
-    strategy:
-      fail-fast: false
-      matrix:
-        python: ['3.13', '3.14', '3.15']
     env:
       PACKAGE: "misc/klayout"
       OS_NAME: "linux"
-      PYTHON_VERSION: ${{ matrix.python }}
+      PYTHON_VERSION: "3.13"
+      RECIPE_CONDARC_VARIANT: py313-plus
+    steps:
+      - uses: actions/checkout@v6
+      - run: bash ci/apt-install.sh $APT_REQUIREMENTS
+      - uses: ./ci
+
+  klayout-linux-py314:
+    runs-on: 'ubuntu-22.04'
+    needs: validate
+    env:
+      PACKAGE: "misc/klayout"
+      OS_NAME: "linux"
+      PYTHON_VERSION: "3.14"
+      RECIPE_CONDARC_VARIANT: py313-plus
+    steps:
+      - uses: actions/checkout@v6
+      - run: bash ci/apt-install.sh $APT_REQUIREMENTS
+      - uses: ./ci
+
+  klayout-linux-py315:
+    runs-on: 'ubuntu-22.04'
+    needs: validate
+    env:
+      PACKAGE: "misc/klayout"
+      OS_NAME: "linux"
+      PYTHON_VERSION: "3.15"
       RECIPE_CONDARC_VARIANT: py313-plus
     steps:
       - uses: actions/checkout@v6
