@@ -3,15 +3,21 @@ name: tuttest
 on:
   pull_request:
     paths:
-    - 'syn/symbiflow-yosys/*'
-    - '.github/workflows/tuttest.yml'
-    - 'docs/DEVELOPMENT.md'
+      - 'ci/**'
+      - 'misc/yamlcore/**'
+      - '.github/workflows/tuttest.yml'
+      - 'docs/DEVELOPMENT.md'
   push:
+    branches: ['**']
     paths:
-    - 'syn/symbiflow-yosys/*'
-    - '.github/workflows/tuttest.yml'
-    - 'docs/DEVELOPMENT.md'
+      - 'ci/**'
+      - 'misc/yamlcore/**'
+      - '.github/workflows/tuttest.yml'
+      - 'docs/DEVELOPMENT.md'
   workflow_dispatch:
+
+permissions:
+  contents: read
 
 env:
   ARTIFACT_NAME: tuttest-script
@@ -32,37 +38,30 @@ jobs:
         run: tuttest --help
 
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
 
       - name: Grab install-prerequisites commands with tuttest
         run: |
-          echo "# docs/DEVELOPMENT.md/install-prerequisites" >$SCRIPT
-          echo >>$SCRIPT
-          # SED changes URL in case the CI is running on a fork
-          #   and adds conda-eda as a directory name
-          tuttest docs/DEVELOPMENT.md install-prerequisites | sed -e "s#git clone .*\.git.*#git clone https://github.com/$GITHUB_REPOSITORY.git conda-eda#" >>$SCRIPT
-          echo >>$SCRIPT
+          # Override the repository URL for forks, keeping the tutorial's directory name.
+          printf 'export REPO_URL=%q\n\n' "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY.git" > "$SCRIPT"
+          tuttest docs/DEVELOPMENT.md install-prerequisites >> "$SCRIPT"
+          printf '\n' >> "$SCRIPT"
 
       - name: Add checkout commands
         run: |
-          echo "# Checkout commands" >>$SCRIPT
-          echo >>$SCRIPT
-          _branch="$GITHUB_SHA"
-          if [ "${{ github.event_name }}" = "pull_request" ]; then
-            _branch="ci-pr-branch"
-            echo "git fetch origin $GITHUB_REF:${_branch}" >>$SCRIPT
+          if [[ "$GITHUB_EVENT_NAME" == pull_request ]]; then
+            printf 'git fetch origin %q\n' "$GITHUB_REF" >> "$SCRIPT"
           fi
-          echo "git checkout ${_branch}" >>$SCRIPT
-          echo >>$SCRIPT
+          printf 'git checkout --detach %q\n\n' "$GITHUB_SHA" >> "$SCRIPT"
 
       - name: Grab prepare-and-build commands with tuttest
         run: |
-          echo "# docs/DEVELOPMENT.md/prepare-and-build" >>$SCRIPT
-          echo >>$SCRIPT
-          tuttest docs/DEVELOPMENT.md prepare-and-build >>$SCRIPT
+          tuttest docs/DEVELOPMENT.md prepare-and-build >> "$SCRIPT"
 
       - name: Print ${{ env.SCRIPT }}
-        run: cat $SCRIPT
+        run: cat "$SCRIPT"
 
       - uses: actions/upload-artifact@v4
         with:
@@ -72,17 +71,16 @@ jobs:
   test-readme-commands:
     needs: grab-readme-commands
     runs-on: ubuntu-latest
-    container:
-      image: ${{ matrix.container-os }}
     strategy:
       fail-fast: false
       matrix:
         container-os:
-          - ubuntu:18.04
-          - ubuntu:20.04
-          - debian:8
-          - debian:9
-          - debian:10
+          - 'ubuntu:22.04'
+          - 'ubuntu:24.04'
+          - 'ubuntu:26.04'
+          - 'ubuntu:26.10'
+          - 'debian:12'
+          - 'debian:13'
     defaults:
       run:
         shell: bash
@@ -91,7 +89,9 @@ jobs:
         with:
           name: ${{ env.ARTIFACT_NAME }}
       - name: Test
+        env:
+          TEST_IMAGE: ${{ matrix.container-os }}
+        # Run actions on the hosted runner; the test image only needs Bash.
         run: |
-          set -e
-          set -x
-          source $SCRIPT
+          docker run --rm -i -e CI=true -e DEBIAN_FRONTEND=noninteractive \
+            "$TEST_IMAGE" bash -ex -o pipefail -s < "$SCRIPT"
