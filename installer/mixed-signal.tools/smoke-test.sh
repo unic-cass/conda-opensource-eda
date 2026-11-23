@@ -3,12 +3,23 @@ set -euo pipefail
 
 work=$(mktemp -d)
 trap 'rm -rf "$work"' EXIT
-prefix="$work/tools"
-bash "$1" -b -p "$prefix"
+base="$work/tools"
+prefix="$base/envs/eda"
+bash "$1" -b -p "$base"
 
-export PATH="$prefix/bin:$PATH"
+# Test the activation command from the release notes, using the bundled Conda.
+set +u
+source "$base/bin/activate" "$prefix"
+set -u
+test "$CONDA_PREFIX" = "$prefix"
+test "$CONDA_EXE" = "$base/bin/conda"
+conda --version
+(
+    conda activate base
+    conda update --name base conda --dry-run
+)
 export QT_QPA_PLATFORM=offscreen
-"$prefix/bin/python" - "${INCLUDE_LIBRELANE:-0}" <<'PY'
+python - "${INCLUDE_LIBRELANE:-0}" "$base" <<'PY'
 import json
 import sys
 from pathlib import Path
@@ -17,10 +28,16 @@ import klayout.db
 
 assert sys.version_info[:3] == (3, 15, 2)
 klayout.db.Layout()
-packages = {
-    json.loads(record.read_text())["name"]
-    for record in Path(sys.prefix, "conda-meta").glob("*.json")
-}
+def records(prefix):
+    packages = (json.loads(record.read_text()) for record in Path(prefix, "conda-meta").glob("*.json"))
+    return {package["name"]: package["version"] for package in packages}
+
+base = records(sys.argv[2])
+packages = records(sys.prefix)
+assert "conda" in base and "openroad" not in base
+assert "conda" not in packages and "openroad" in packages
+assert packages["spdlog"] == "1.15.3"
+assert base["spdlog"] != packages["spdlog"]
 assert ("librelane" in packages) == (sys.argv[1] == "1")
 assert not any(name == "open_pdks" or name.startswith("open_pdks.") for name in packages)
 PY
@@ -29,7 +46,7 @@ PY
 "$prefix/bin/ngspice" --version
 "$prefix/bin/netgen" -batch quit
 "$prefix/bin/yosys" -V
-"$prefix/bin/openroad" -version
+openroad -version
 "$prefix/bin/klayout" -v
 "$prefix/bin/Xyce" -v
 
