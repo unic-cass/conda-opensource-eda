@@ -588,6 +588,17 @@ jobs:
             ${{ github.workspace }}/workdir/conda-env/conda-bld/linux-64/qucs-s-*.conda
           key: ${{ runner.os }}-cache-qucs-s-py310-${{ hashFiles(format('{0}/workdir/conda-env/conda-bld/linux-64/qucs-s-*.conda', github.workspace)) }}
 
+  qucs-s-linux-qt5:
+    runs-on: 'ubuntu-22.04'
+    needs: validate
+    env:
+      PACKAGE: "misc/qucs-s-qt5"
+      OS_NAME: "linux"
+    steps:
+      - uses: actions/checkout@v6
+      - run: bash ci/apt-install.sh $APT_REQUIREMENTS
+      - uses: ./ci
+
   icarus-linux:
     runs-on: 'ubuntu-22.04'
     needs: validate

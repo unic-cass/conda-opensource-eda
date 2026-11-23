@@ -22,6 +22,14 @@
 * TODO: [GHDL](http://ghdl.free.fr/)
 * [Icarus Verilog](http://iverilog.icarus.com/)
 * [Verilator](https://www.veripool.org/wiki/verilator)
+* [Qucs-S](https://ra3xdh.github.io/) — to use Qt 5 on Linux x86-64, select the
+  Qt 5 build of [Qucs-S 24.4.1](https://github.com/ra3xdh/qucs_s/releases/tag/24.4.1):
+
+  ```bash
+  conda install -c unic-cass -c conda-forge 'unic-cass::qucs-s=24.4.1=*_qt5'
+  ```
+
+  Qucs-S 25.1 and newer require Qt 6.
 
 ## Formal
 
