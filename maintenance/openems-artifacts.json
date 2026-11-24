@@ -1,0 +1,20 @@
+[
+  {
+    "basename": "linux-64/openems-0.37.0-py313_defaults_1.conda",
+    "version": "0.37.0",
+    "size": 47001121,
+    "sha256": "cf4849747ddbff4e52f06d94034ee8dc699fb0591a3852f63e18033c7d537017"
+  },
+  {
+    "basename": "linux-64/openems-0.37.0-py314_defaults_1.conda",
+    "version": "0.37.0",
+    "size": 46904640,
+    "sha256": "7608d70aed782bf2526aa75f8d22dfef9d3265bc1d91633d5de0e5f4b242ca93"
+  },
+  {
+    "basename": "linux-64/openems-0.37.0-py315_defaults_1.conda",
+    "version": "0.37.0",
+    "size": 46834375,
+    "sha256": "cb6e49bb11b2bb87afcdf7b212730d3df9f31545e491cab872653b1178bfc6d5"
+  }
+]

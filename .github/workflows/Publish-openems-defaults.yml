@@ -1,0 +1,40 @@
+name: Publish openEMS defaults builds
+
+on:
+  push:
+    branches: [maintenance/publish-openems-defaults]
+
+permissions:
+  contents: read
+
+concurrency: unic-cass-openems-defaults-publish
+
+jobs:
+  publish:
+    if: github.repository == 'unic-cass/conda-opensource-eda'
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: conda-incubator/setup-miniconda@v3
+        if: ${{ !env.ACT }}
+        with:
+          activate-environment: quota-maintenance
+          miniconda-version: latest
+          python-version: '3.12'
+      - name: Install Anaconda client
+        if: ${{ !env.ACT }}
+        shell: bash -el {0}
+        run: conda install -y --override-channels -c defaults anaconda-client
+      - name: Fetch the three validated build archives
+        if: ${{ !env.ACT }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release download openems-0.37.0-defaults --pattern 'openems-0.37.0-py*_defaults_1.conda' --dir maintenance/artifacts
+      - name: Verify, reclaim space, and publish
+        shell: bash -el {0}
+        env:
+          ANACONDA_TOKEN: ${{ secrets.ANACONDA_TOKEN }}
+          ANACONDA_CLIENT_FORCE_STANDALONE: '1'
+        run: python3 -u maintenance/publish-openems-defaults.py

@@ -1,0 +1,498 @@
+[
+  {
+    "package": "eqy",
+    "basename": "linux-64/eqy-0.62_0_g91b2178-20261122_153213.conda",
+    "sha256": "f0c2ca893aa099bbefa8fa563b8dc388eae7b304064daf42c59574eb4f8b7c9a",
+    "size": 2434285,
+    "version": "0.62_0_g91b2178",
+    "labels": [
+      "main"
+    ]
+  },
+  {
+    "package": "gaw",
+    "basename": "linux-64/gaw-0.0_44_g731be0d-20261122_225830.conda",
+    "sha256": "a0e848762adbc573c9b7543950bcf25fed7f187c6eb2d575949e3d452851b3f5",
+    "size": 128055,
+    "version": "0.0_44_g731be0d",
+    "labels": [
+      "main"
+    ]
+  },
+  {
+    "package": "gaw2",
+    "basename": "linux-64/gaw2-20170605-20251012_104407.conda",
+    "sha256": "74495666aceec76a6f0455493af5eee6c9bd981d3c14c50707fcf3d9a5356aa4",
+    "size": 135400,
+    "version": "20170605",
+    "labels": [
+      "main"
+    ]
+  },
+  {
+    "package": "iverilog",
+    "basename": "linux-64/iverilog-0_8_8611_g00ecc1b08-20261122_225830.conda",
+    "sha256": "a65edf4bb63d46ee40a0f68b859e784235dfc6002510a200cf128b0739f86aa0",
+    "size": 2644105,
+    "version": "0_8_8611_g00ecc1b08",
+    "labels": [
+      "main"
+    ]
+  },
+  {
+    "package": "klayout",
+    "basename": "linux-64/klayout-0.30.7_0_g6dd3e6b10-20261122_153213_py315.conda",
+    "sha256": "4edd0ccc854d6180f196281eac749a732e6f1263357948006c90e2a51f78dc82",
+    "size": 24853264,
+    "version": "0.30.7_0_g6dd3e6b10",
+    "labels": [
+      "main"
+    ]
+  },
+  {
+    "package": "klayout",
+    "basename": "linux-64/klayout-0.30.7_0_g6dd3e6b10-20261123_094721_py310.conda",
+    "sha256": "f481f786c9cad331cac1c80828e24033eee35c4f9a8d362cf9dcd5dd83ad8410",
+    "size": 24827852,
+    "version": "0.30.7_0_g6dd3e6b10",
+    "labels": [
+      "ci-master-45150197139",
+      "main"
+    ]
+  },
+  {
+    "package": "klayout",
+    "basename": "linux-64/klayout-0.30.7_0_g6dd3e6b10-20261123_094721_py311.conda",
+    "sha256": "a931fca066c0c46be6eb738782a34f616924267676d80f903a718d1630f63e36",
+    "size": 24838362,
+    "version": "0.30.7_0_g6dd3e6b10",
+    "labels": [
+      "ci-master-45150197139",
+      "main"
+    ]
+  },
+  {
+    "package": "klayout",
+    "basename": "linux-64/klayout-0.30.7_0_g6dd3e6b10-20261123_094721_py312.conda",
+    "sha256": "f86bec11acbf56b1e7d7385b1cc1439bad9430e87e076fa1bfc233eabc1c03e9",
+    "size": 24863563,
+    "version": "0.30.7_0_g6dd3e6b10",
+    "labels": [
+      "ci-master-45150197139",
+      "main"
+    ]
+  },
+  {
+    "package": "klayout",
+    "basename": "linux-64/klayout-0.30.7_0_g6dd3e6b10-20261123_094721_py313.conda",
+    "sha256": "b6878f541f89811190318df51143a070b8441784d570b5bbc1e766dab24e44f7",
+    "size": 24812946,
+    "version": "0.30.7_0_g6dd3e6b10",
+    "labels": [
+      "ci-master-45150197139",
+      "main"
+    ]
+  },
+  {
+    "package": "klayout",
+    "basename": "linux-64/klayout-0.30.7_0_g6dd3e6b10-20261123_094721_py314.conda",
+    "sha256": "5e6066e6a9857bf01d10cdbc5e7dd17b7ef0ba991c0aa033c86bf1238b728b5d",
+    "size": 24847780,
+    "version": "0.30.7_0_g6dd3e6b10",
+    "labels": [
+      "ci-master-45150197139",
+      "main"
+    ]
+  },
+  {
+    "package": "libparse",
+    "basename": "linux-64/libparse-0.56.0-20261122_153213_py315.conda",
+    "sha256": "b562375d96fd1f361125f3d7961a3e7e7b43186279ef0ffe2ccd83bd49ef2529",
+    "size": 131547,
+    "version": "0.56.0",
+    "labels": [
+      "main"
+    ]
+  },
+  {
+    "package": "libparse",
+    "basename": "linux-64/libparse-0.56.0-20261122_225830_py312.conda",
+    "sha256": "f60c7975423f20f3233e6c38458be470d1a2f2ea981c226a1b9db46b39a40135",
+    "size": 131678,
+    "version": "0.56.0",
+    "labels": [
+      "main"
+    ]
+  },
+  {
+    "package": "libparse",
+    "basename": "linux-64/libparse-0.56.0-20261122_225830_py313.conda",
+    "sha256": "8fc16314c8acf330835c795cc1c6257df5c8093d4edeb5b8c84143e6db1015de",
+    "size": 131737,
+    "version": "0.56.0",
+    "labels": [
+      "main"
+    ]
+  },
+  {
+    "package": "libparse",
+    "basename": "linux-64/libparse-0.56.0-20261122_225830_py314.conda",
+    "sha256": "bc3d1606beb5b0dfb7ecc70c12eb7d96e9f4d2fdb78394b71ac8268212d7f700",
+    "size": 131894,
+    "version": "0.56.0",
+    "labels": [
+      "main"
+    ]
+  },
+  {
+    "package": "magic",
+    "basename": "linux-64/magic-8.3.698_0_g8d37ad4c-20261122_153213.conda",
+    "sha256": "d97c436696d35e3883406fc662ecae768e975e35e015de1d28492accaadb0e2e",
+    "size": 1846721,
+    "version": "8.3.698_0_g8d37ad4c",
+    "labels": [
+      "main"
+    ]
+  },
+  {
+    "package": "netgen",
+    "basename": "linux-64/netgen-1.5.316_0_gb76c9a1-20261122_153213.conda",
+    "sha256": "10900184d4c683831eda81e6f9caa35c153e6ebad7cd260a54c7398e5b8a2f8a",
+    "size": 698769,
+    "version": "1.5.316_0_gb76c9a1",
+    "labels": [
+      "main"
+    ]
+  },
+  {
+    "package": "ngspice",
+    "basename": "linux-64/ngspice-45.2_370_ga80f6e3e9-20261122_153213.conda",
+    "sha256": "59c578eaa8da7a7d91df49f22ef9e1216edd43977a6acaa2f8cdee9eddd7f695",
+    "size": 3230651,
+    "version": "45.2_370_ga80f6e3e9",
+    "labels": [
+      "main"
+    ]
+  },
+  {
+    "package": "openroad",
+    "basename": "linux-64/openroad-2.0_28825_gdcf36133a3-20261122_153213_py315.conda",
+    "sha256": "8cca484e1a0984f6bd96751ccee6dd2799dcfbe490278513cef887ea830834d3",
+    "size": 98211738,
+    "version": "2.0_28825_gdcf36133a3",
+    "labels": [
+      "main"
+    ]
+  },
+  {
+    "package": "openroad",
+    "basename": "linux-64/openroad-2.0_28825_gdcf36133a3-20261123_020929_py310.conda",
+    "sha256": "bd56029f76b9b3278da804dc40f80365635f80373d4fa866871938253a1e2165",
+    "size": 97038925,
+    "version": "2.0_28825_gdcf36133a3",
+    "labels": [
+      "main"
+    ]
+  },
+  {
+    "package": "openroad",
+    "basename": "linux-64/openroad-2.0_28825_gdcf36133a3-20261123_020929_py311.conda",
+    "sha256": "e0f29586f30aac8e7791f50653f3f19f2234ded4ff89e32a5ca8e6b1c3307407",
+    "size": 97907548,
+    "version": "2.0_28825_gdcf36133a3",
+    "labels": [
+      "main"
+    ]
+  },
+  {
+    "package": "openroad",
+    "basename": "linux-64/openroad-2.0_28825_gdcf36133a3-20261123_020929_py312.conda",
+    "sha256": "3507ce36391254bb07606a2ccf71f3987af519d7555c974d3a84b9cb760952f6",
+    "size": 96915792,
+    "version": "2.0_28825_gdcf36133a3",
+    "labels": [
+      "main"
+    ]
+  },
+  {
+    "package": "openroad",
+    "basename": "linux-64/openroad-2.0_28825_gdcf36133a3-20261123_020929_py313.conda",
+    "sha256": "26a31f6087ee614fc91f2f2166aeb1abd76c59ef4e655ceddbbe6aeff5d9cd98",
+    "size": 98718819,
+    "version": "2.0_28825_gdcf36133a3",
+    "labels": [
+      "main"
+    ]
+  },
+  {
+    "package": "openroad",
+    "basename": "linux-64/openroad-2.0_28825_gdcf36133a3-20261123_020929_py314.conda",
+    "sha256": "b5bc13ef32728501f190ed4a381da5cafad07d57b598100f82598febaaa52eac",
+    "size": 98785103,
+    "version": "2.0_28825_gdcf36133a3",
+    "labels": [
+      "main"
+    ]
+  },
+  {
+    "package": "qucs-s",
+    "basename": "linux-64/qucs-s-24.4.1-20261123_094721_qt5.conda",
+    "sha256": "ab70fb08e56670dda6a17b44b4cf23750b0b45592b119707899eb79d9de13ae5",
+    "size": 4880595,
+    "version": "24.4.1",
+    "labels": [
+      "ci-master-45150197139",
+      "main"
+    ]
+  },
+  {
+    "package": "qucs-s",
+    "basename": "linux-64/qucs-s-26.1.1_246_g941b4b2a-20261122_225830_py310.conda",
+    "sha256": "3966d6a10092d7e2f9bf2565c460f57c619d550db62e6f9d6abfb3d165b1452b",
+    "size": 10012880,
+    "version": "26.1.1_246_g941b4b2a",
+    "labels": [
+      "main"
+    ]
+  },
+  {
+    "package": "qucs-s",
+    "basename": "linux-64/qucs-s-26.1.1_246_g941b4b2a-20261122_225830_py311.conda",
+    "sha256": "4f208a766ad3e02df43ff06655d985c986b4549218dbc5ab05d7e88694df01b1",
+    "size": 9912969,
+    "version": "26.1.1_246_g941b4b2a",
+    "labels": [
+      "main"
+    ]
+  },
+  {
+    "package": "qucs-s",
+    "basename": "linux-64/qucs-s-26.1.1_246_g941b4b2a-20261122_225830_py312.conda",
+    "sha256": "a092b6d8af22463c7a87c96a599757d01b5040e35ebb93dd06e77809adc47dc8",
+    "size": 9966168,
+    "version": "26.1.1_246_g941b4b2a",
+    "labels": [
+      "main"
+    ]
+  },
+  {
+    "package": "symbiyosys",
+    "basename": "linux-64/symbiyosys-0.62_0_g1617168-20261122_153213_py315.conda",
+    "sha256": "2d1b226a5f05474b44430b1496d878be7d7cd5f944ebf6a03b48791801441858",
+    "size": 28280457,
+    "version": "0.62_0_g1617168",
+    "labels": [
+      "main"
+    ]
+  },
+  {
+    "package": "symbiyosys",
+    "basename": "linux-64/symbiyosys-0.62_0_g1617168-20261123_020929_py312.conda",
+    "sha256": "90db9a811e1c8ab4614cc5e9fe7c6658332710c0434a64ad19f3a63797ab1dfd",
+    "size": 28029149,
+    "version": "0.62_0_g1617168",
+    "labels": [
+      "main"
+    ]
+  },
+  {
+    "package": "symbiyosys",
+    "basename": "linux-64/symbiyosys-0.62_0_g1617168-20261123_020929_py313.conda",
+    "sha256": "2a507fab602b0e3cd16ee6b37cb1b6ada49f48e200a447750a716a5719962917",
+    "size": 27407083,
+    "version": "0.62_0_g1617168",
+    "labels": [
+      "main"
+    ]
+  },
+  {
+    "package": "symbiyosys",
+    "basename": "linux-64/symbiyosys-0.62_0_g1617168-20261123_020929_py314.conda",
+    "sha256": "89e7728002f2dbbaa34adcb4d686d7c2fc10df8441b42a112a3f7214ae4849cc",
+    "size": 27401579,
+    "version": "0.62_0_g1617168",
+    "labels": [
+      "main"
+    ]
+  },
+  {
+    "package": "verilator",
+    "basename": "linux-64/verilator-5.044_0_g8df584ca1-20261122_153213.conda",
+    "sha256": "3b41b5e011155c243a567cf3bc86994c09b8255e0a1593b860a1568b81a3ecb0",
+    "size": 85832383,
+    "version": "5.044_0_g8df584ca1",
+    "labels": [
+      "main"
+    ]
+  },
+  {
+    "package": "xschem",
+    "basename": "linux-64/xschem-3.4.7_365_g4961ee43-20260511_222327.conda",
+    "sha256": "0e2617435240828e80a220617b0d16321b9922bd09d13d36c7107aadb7c16114",
+    "size": 11829202,
+    "version": "3.4.7_365_g4961ee43",
+    "labels": [
+      "main"
+    ]
+  },
+  {
+    "package": "xschem",
+    "basename": "linux-64/xschem-3.4.7_750_gf36d748b-20261122_225830.conda",
+    "sha256": "57bba8b6cc0094a4522c47b13aea03828d971fa54bc873901bb736d08afd1264",
+    "size": 12567445,
+    "version": "3.4.7_750_gf36d748b",
+    "labels": [
+      "main"
+    ]
+  },
+  {
+    "package": "xyce",
+    "basename": "linux-64/xyce-7.10.0_234_g369a7be8-20261122_153213.conda",
+    "sha256": "98be6c32c7e6b30d277aa9069ff9903e15f0c6637353e79159fc56125dde6652",
+    "size": 46389015,
+    "version": "7.10.0_234_g369a7be8",
+    "labels": [
+      "main"
+    ]
+  },
+  {
+    "package": "yosys",
+    "basename": "linux-64/yosys-0.62_0_g7326bb7d6-20261122_153213_py315.conda",
+    "sha256": "68377509551907276e04d8731e0138a3c7a18ea051f0019247be1bd424f8f5fb",
+    "size": 27969611,
+    "version": "0.62_0_g7326bb7d6",
+    "labels": [
+      "main"
+    ]
+  },
+  {
+    "package": "yosys",
+    "basename": "linux-64/yosys-0.62_0_g7326bb7d6-20261122_225830_py310.conda",
+    "sha256": "4f6b6848b9c50c8895ba1875be9bb37200b93c671e3c4aab2f282ec7149d9e89",
+    "size": 27830531,
+    "version": "0.62_0_g7326bb7d6",
+    "labels": [
+      "main"
+    ]
+  },
+  {
+    "package": "yosys",
+    "basename": "linux-64/yosys-0.62_0_g7326bb7d6-20261122_225830_py312.conda",
+    "sha256": "ad21ef9c08f60b44e318709c972bd3d8f299070e3857dc44150afcd4c5e430e7",
+    "size": 27872513,
+    "version": "0.62_0_g7326bb7d6",
+    "labels": [
+      "main"
+    ]
+  },
+  {
+    "package": "yosys",
+    "basename": "linux-64/yosys-0.62_0_g7326bb7d6-20261122_225830_py313.conda",
+    "sha256": "ec716aeb3041dc7d7949347116ba5b1a5cefe5176d0444205fe3e1e3dd9206c0",
+    "size": 27926020,
+    "version": "0.62_0_g7326bb7d6",
+    "labels": [
+      "main"
+    ]
+  },
+  {
+    "package": "yosys",
+    "basename": "linux-64/yosys-0.62_0_g7326bb7d6-20261122_225830_py314.conda",
+    "sha256": "67d47d8efa179e0ebdfd5756cd873f3292571cc201c0c9d0ec1c84e27e337cfa",
+    "size": 27890490,
+    "version": "0.62_0_g7326bb7d6",
+    "labels": [
+      "main"
+    ]
+  },
+  {
+    "package": "yosys",
+    "basename": "linux-64/yosys-0.62_0_g7326bb7d6-20261123_020929_py311.conda",
+    "sha256": "d1d405931529fd04a7cb37f640307a4965f5c81952ab99b24cef84eedd8b96d9",
+    "size": 27860265,
+    "version": "0.62_0_g7326bb7d6",
+    "labels": [
+      "main"
+    ]
+  },
+  {
+    "package": "ciel",
+    "basename": "noarch/ciel-2.6.1-20261122_153213.conda",
+    "sha256": "23c83ea0af0ca5217ab1f493498b8861f83bcc6eaeaaf965ff6b21998deefba9",
+    "size": 35280,
+    "version": "2.6.1",
+    "labels": [
+      "main"
+    ]
+  },
+  {
+    "package": "librelane",
+    "basename": "noarch/librelane-3.0.17-20261122_153213.conda",
+    "sha256": "0ea48fb187bfeca77eeb4c9d227ade19e241db4cc2ced568c6a998b4205efd53",
+    "size": 265398,
+    "version": "3.0.17",
+    "labels": [
+      "main"
+    ]
+  },
+  {
+    "package": "open_pdks.gf180mcuc",
+    "basename": "noarch/open_pdks.gf180mcuc-1.0.541_0_g426f951-20250911_083820.conda",
+    "sha256": "facf7e66f727c5fd6a66c72fb259c4e899fc1046aa50a4999a11fcadabbad741",
+    "size": 105873561,
+    "version": "1.0.541_0_g426f951",
+    "labels": [
+      "main"
+    ]
+  },
+  {
+    "package": "open_pdks.gf180mcud",
+    "basename": "noarch/open_pdks.gf180mcud-1.0.541_0_g426f951-20250911_083820.conda",
+    "sha256": "9a0cd669bb7cf6477d13f48ae3d7417bdeda8e6bf1f507a1e17cfd0ae38d54f0",
+    "size": 104924455,
+    "version": "1.0.541_0_g426f951",
+    "labels": [
+      "main"
+    ]
+  },
+  {
+    "package": "open_pdks.ihp-sg13g2",
+    "basename": "noarch/open_pdks.ihp-sg13g2-0.2.0_644_gb9f5230-20251012_104407.conda",
+    "sha256": "eb2fa560af96cef22ce161e23e43cd2e39c87ddcdc536db3455fa75eed2289f3",
+    "size": 311872261,
+    "version": "0.2.0_644_gb9f5230",
+    "labels": [
+      "main"
+    ]
+  },
+  {
+    "package": "open_pdks.sky130a",
+    "basename": "noarch/open_pdks.sky130a-1.0.541_0_g426f951-20250911_083820.conda",
+    "sha256": "16d8347537474d60d6ad68cfcb92c0d411352200d9db805ab8dbd937b74e9c41",
+    "size": 813037987,
+    "version": "1.0.541_0_g426f951",
+    "labels": [
+      "main"
+    ]
+  },
+  {
+    "package": "tcllib",
+    "basename": "noarch/tcllib-2_0_4_g29bce268a-20261122_225830.conda",
+    "sha256": "150a36f456669f6f971de16c5e3046e8428bd4487e1746386b752e19dc9f4c1b",
+    "size": 1904171,
+    "version": "2_0_4_g29bce268a",
+    "labels": [
+      "main"
+    ]
+  },
+  {
+    "package": "yamlcore",
+    "basename": "noarch/yamlcore-0.0.4-20261122_153213.conda",
+    "sha256": "436cdcabd31ee31a50b01f510e3757955457174d459b97bfca3175e446df6d3d",
+    "size": 12266,
+    "version": "0.0.4",
+    "labels": [
+      "main"
+    ]
+  }
+]
