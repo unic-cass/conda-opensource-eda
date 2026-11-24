@@ -27,9 +27,15 @@
   x86-64 builds support Python 3.13, 3.14, and 3.15 and use Conda's `defaults`
   channel for dependencies.
 
+  Download `openems-0.37.0-defaults-linux-64-channel.tar.gz` from the
+  [GitHub release](https://github.com/unic-cass/conda-opensource-eda/releases/tag/openems-0.37.0-defaults).
+  Extract it and install from the local channel:
+
   ```bash
-  conda create -n openems --override-channels -c unic-cass -c defaults \
-    'unic-cass::openems=0.37.0' python=3.15.2
+  tar -xzf openems-0.37.0-defaults-linux-64-channel.tar.gz
+  conda create -n openems --override-channels \
+    -c "file://$PWD/openems-0.37.0-defaults-linux-64-channel" \
+    -c defaults openems=0.37.0 python=3.15.2
   conda activate openems
   ```
 
