@@ -26,13 +26,13 @@ jobs:
       - name: Install Anaconda client
         if: ${{ !env.ACT }}
         shell: bash -el {0}
-        run: conda install -y --override-channels -c defaults anaconda-client=1.15.0
+        run: conda install -y --override-channels -c defaults anaconda-client=1.16.0
       - name: Fetch the three validated build archives
         if: ${{ !env.ACT }}
         env:
           GH_TOKEN: ${{ github.token }}
         run: gh release download openems-0.37.0-defaults --pattern 'openems-0.37.0-py*_defaults_1.conda' --dir maintenance/artifacts
-      - name: Verify, reclaim space, and publish
+      - name: Verify and publish the tested archives
         shell: bash -el {0}
         env:
           ANACONDA_TOKEN: ${{ secrets.ANACONDA_TOKEN }}

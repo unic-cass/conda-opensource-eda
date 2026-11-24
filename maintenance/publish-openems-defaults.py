@@ -1,4 +1,4 @@
-"""Publish exact tested archives after pruning only approved, backed-up rebuilds."""
+"""Publish the exact tested archives without deleting any existing files."""
 
 from concurrent.futures import ThreadPoolExecutor
 import hashlib
@@ -23,7 +23,7 @@ def read(name):
     return json.loads((HERE / name).read_text())
 
 
-def api(path, method="GET", missing_ok=False, payload=None):
+def api(path, method="GET", payload=None):
     if method != "GET" and (DRY_RUN or not TOKEN):
         raise RuntimeError("Anaconda writes are disabled")
     headers = {"Accept": "application/json", "Cache-Control": "no-cache"}
@@ -41,8 +41,6 @@ def api(path, method="GET", missing_ok=False, payload=None):
             with urlopen(Request(url, body, headers=headers, method=method), timeout=45) as resp:
                 return json.load(resp) if method == "GET" else None
         except HTTPError as exc:
-            if exc.code == 404 and missing_ok:
-                return None
             if exc.code not in (429, 500, 502, 503, 504) or attempt == 3:
                 raise RuntimeError(f"{method} {path}: HTTP {exc.code}") from None
         except (URLError, TimeoutError):
@@ -58,10 +56,21 @@ def inventory():
         return {x["basename"]: x for package in data for x in package["files"]}
 
 
-def package_path(row):
-    return "dist/" + "/".join(quote(piece, safe="") for piece in (
-        OWNER, row["package"], row["version"], *row["basename"].split("/"),
-    ))
+def check_credentials():
+    if not TOKEN:
+        raise ValueError("ANACONDA_TOKEN is empty")
+    api("user")
+    print("Anaconda.org accepted the token for the current-user endpoint")
+    try:
+        scopes = api("authentication").get("scopes")
+    except RuntimeError as error:
+        print(f"Token scope lookup unavailable: {error}")
+        return
+    if isinstance(scopes, list):
+        documented = {"all", "api", "api:write", "conda"}
+        print("Recognized upload-related scopes:", ", ".join(s for s in sorted(documented) if s in scopes) or "none")
+    else:
+        print("Anaconda.org did not return a token scope list")
 
 
 def verify(row, live):
@@ -76,17 +85,12 @@ def count_bytes(live):
 
 
 def publish():
-    candidates, receipt = read("candidates.json"), read("verified-backup.json")
     artifacts = read("openems-artifacts.json")
     protected = read("protected.json")
     if {p["basename"] for p in artifacts} != {
         f"linux-64/openems-0.37.0-py{py}_defaults_1.conda" for py in (313, 314, 315)
     } or len(artifacts) != 3:
         raise ValueError("Unexpected build artifacts")
-    if receipt != {x["basename"]: x["sha256"] for x in candidates}:
-        raise ValueError("Backup receipt does not cover all deletion candidates")
-    if {p["basename"] for p in protected} & receipt.keys():
-        raise ValueError("Protected file in candidate list")
 
     files = {p["basename"]: HERE / "artifacts" / Path(p["basename"]).name for p in artifacts}
     for p in artifacts:
@@ -98,8 +102,7 @@ def publish():
         if file.stat().st_size != p["size"] or digest.hexdigest() != p["sha256"]:
             raise ValueError("Archive checksum mismatch: " + p["basename"])
     if not DRY_RUN:
-        # Fail before deleting if the publishing token cannot authenticate.
-        api("user")
+        check_credentials()
 
     live = inventory()
     for p in protected:
@@ -119,44 +122,12 @@ def publish():
             pending.append(p)
     today = count_bytes(live)
     projected = today + sum(x["size"] for x in pending)
-    remove = []
-    for row in candidates:
-        if projected <= TARGET:
-            break
-        name = row["basename"]
-        if name not in live:
-            continue
-        verify(row, live[name])
-        if set(live[name]["labels"]) != set(row["labels"]):
-            raise ValueError("File labels changed: " + name)
-        keep = row["replacement"]
-        verify(keep, live.get(keep["basename"]))
-        if keep["basename"] in receipt:
-            raise ValueError("Required replacement is a deletion candidate")
-        remove.append(row)
-        projected -= row["size"]
+    print(f"Channel: {today:,} bytes; upload {len(pending)} builds; projected {projected:,} bytes")
     if projected > TARGET:
-        raise ValueError("Approved duplicates cannot reclaim sufficient storage")
-    print(f"Channel: {today:,} bytes; plan: remove {len(remove)} files; publish {len(pending)} builds; final {projected:,} bytes")
+        raise ValueError("Channel does not have enough free space for the remaining builds")
     if DRY_RUN:
-        for row in remove:
-            print("Would remove", row["basename"], "keeping", row["replacement"]["basename"])
         return
 
-    for row in remove:
-        path = package_path(row)
-        current = api(path, missing_ok=True)
-        if current is None:
-            continue
-        verify(row, current)
-        if set(current["labels"]) != set(row["labels"]):
-            raise ValueError("File labels changed before deletion: " + row["basename"])
-        verify(row["replacement"], api(package_path(row["replacement"])))
-        api(path, "DELETE", missing_ok=True)
-        print("Removed", row["basename"])
-    before_upload = inventory()
-    if count_bytes(before_upload) + sum(x["size"] for x in pending) >= 3_000_000_000:
-        raise ValueError("Channel does not have room after pruning")
     for p in pending:
         subprocess.run(["python3", str(HERE / "upload-openems.py"), str(files[p["basename"]])], check=True)
     for p in pending + staged:
