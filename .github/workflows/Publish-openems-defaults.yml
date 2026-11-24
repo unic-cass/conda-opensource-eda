@@ -26,7 +26,7 @@ jobs:
       - name: Install Anaconda client
         if: ${{ !env.ACT }}
         shell: bash -el {0}
-        run: conda install -y --override-channels -c defaults anaconda-client
+        run: conda install -y --override-channels -c defaults anaconda-client=1.15.0
       - name: Fetch the three validated build archives
         if: ${{ !env.ACT }}
         env:
