@@ -1,0 +1,99 @@
+{% set version = '0.37.0' %}
+{% set python_version = PYTHON_VERSION | default('3.15') %}
+{% set python_abi = 'cp' ~ (python_version | replace('.', '')) %}
+
+package:
+  name: openems
+  version: {{ version }}
+
+# These five repositories are pinned to the gitlinks in openEMS-Project v0.37.0.
+source:
+  - url: https://codeload.github.com/thliebig/openEMS/tar.gz/305df56aa7df4d2f18c687083f484a96f9a22610
+    fn: openEMS-305df56a.tar.gz
+    sha256: 34cfc4132e97c311ad52401757db49f7f24a7c9b66b202e70dfd565843527455
+    folder: openEMS
+  - url: https://codeload.github.com/thliebig/CSXCAD/tar.gz/c46e3206f20027b0b4605c797d07bddab76de942
+    fn: CSXCAD-c46e3206.tar.gz
+    sha256: d1a2e032c3611a227252b860d727b926ebd8b311b505248f9f5c000aa8fced4c
+    folder: CSXCAD
+  - url: https://codeload.github.com/thliebig/fparser/tar.gz/4b9c845b449b520c4b8c5f23c74cd04820084f81
+    fn: fparser-4b9c845b.tar.gz
+    sha256: 07f320b67df0f80a13766b0a74b2372edcba465ee33366bc57962bdfb76c0d1b
+    folder: fparser
+  - url: https://codeload.github.com/thliebig/QCSXCAD/tar.gz/26d7ee13440cff0e5621a6b9d325ae31d118bc2d
+    fn: QCSXCAD-26d7ee13.tar.gz
+    sha256: 61d191326a39775540f021cfec2923d48985234dfd47ae972224750ce6538a64
+    folder: QCSXCAD
+  - url: https://codeload.github.com/thliebig/AppCSXCAD/tar.gz/f04d3a7d7cce31c57704f14abe46c66684c15c7d
+    fn: AppCSXCAD-f04d3a7d.tar.gz
+    sha256: 4f30bfbeaf83e280c4a3a076125d96847af2e2097823cc15f1083882a1af7b72
+    folder: AppCSXCAD
+
+build:
+  skip: true  # [not linux64]
+  number: 0
+  string: py{{ python_version | replace('.', '') }}_0
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+    - cmake 3.31.*
+    - ninja
+    - pkg-config
+  host:
+    - python {{ python_version }} *_{{ python_abi }}
+    - pip
+    - setuptools
+    - cython >=3.3.1
+    - numpy
+    - h5py * nompi_*
+    - cgal-cpp 6.2.*
+    - libboost-devel
+    - tinyxml 2.6.2
+    - hdf5 2.2.* nompi_*
+    - vtk-base 9.7.2
+    # The VTK metapackage provides the CMake development dependencies.
+    - vtk 9.7.2
+    - zlib
+    - libpng
+    - qt6-main
+    - libgl-devel
+  run:
+    - {{ pin_compatible('python', min_pin='x.x', max_pin='x.x') }}
+    - python_abi {{ python_version }}.* *_{{ python_abi }}
+    - numpy
+    - h5py * nompi_*
+    - matplotlib-base
+    - tinyxml 2.6.2
+    - {{ pin_compatible('vtk-base', max_pin='x.x.x') }}
+
+test:
+  requires:
+    - python {{ '3.15.2' if python_version == '3.15' else python_version }}
+  files:
+    - smoke.py
+  commands:
+    - python smoke.py
+    - test -x "$PREFIX/bin/AppCSXCAD"
+    - ldd -r "$PREFIX/bin/AppCSXCAD" > viewer-linkage.txt
+    - grep -F 'libQCSXCAD.so' viewer-linkage.txt
+    - '! grep -E "not found|undefined symbol" viewer-linkage.txt'
+
+about:
+  home: https://openems.de/
+  dev_url: https://github.com/thliebig/openEMS-Project
+  doc_url: https://docs.openems.de/
+  license: GPL-3.0-or-later AND LGPL-3.0-or-later
+  license_file:
+    - openEMS/COPYING
+    - CSXCAD/COPYING
+    - QCSXCAD/COPYING
+    - AppCSXCAD/COPYING
+    - fparser/docs/lgpl.txt
+    - fparser/docs/gpl.txt
+  summary: Open-source FDTD electromagnetic field solver and geometry viewer
+
+extra:
+  recipe-maintainers:
+    - duyhieubui
