@@ -28,11 +28,23 @@ source:
     fn: AppCSXCAD-f04d3a7d.tar.gz
     sha256: 4f30bfbeaf83e280c4a3a076125d96847af2e2097823cc15f1083882a1af7b72
     folder: AppCSXCAD
+  # Build only the required VTK C++ modules. Defaults' VTK includes Python
+  # bindings and does not have a CPython 3.15 build.
+  - url: https://codeload.github.com/Kitware/VTK/tar.gz/refs/tags/v9.7.2
+    fn: VTK-9.7.2.tar.gz
+    sha256: 405ae669bb7d5f10e03a5b9e2c0ce5b0f0707ef94b514e07c50020d5908bfd57
+    folder: vtk
+  - url: https://github.com/CGAL/cgal/releases/download/v6.2.1/CGAL-6.2.1.tar.xz
+    sha256: b6be77c60765a8456335de991eeaf6ffec55256984e4a9ecc6a97c37bbfe85bf
+    folder: cgal
+  - url: https://deb.debian.org/debian/pool/main/t/tinyxml/tinyxml_2.6.2.orig.tar.gz
+    sha256: 15bdfdcec58a7da30adc87ac2b078e4417dbe5392f3afb719f9ba6d062645593
+    folder: tinyxml
 
 build:
   skip: true  # [not linux64]
-  number: 0
-  string: py{{ python_version | replace('.', '') }}_0
+  number: 1
+  string: py{{ python_version | replace('.', '') }}_defaults_1
 
 requirements:
   build:
@@ -47,26 +59,26 @@ requirements:
     - setuptools
     - cython >=3.3.1
     - numpy
-    - h5py * nompi_*
-    - cgal-cpp 6.2.*
-    - libboost-devel
-    - tinyxml 2.6.2
-    - hdf5 2.2.* nompi_*
-    - vtk-base 9.7.2
-    # The VTK metapackage provides the CMake development dependencies.
-    - vtk 9.7.2
-    - zlib
-    - libpng
-    - qt6-main
+    - h5py 3.16.*
+    - gmp
+    - mpfr
+    - libboost-devel 1.88.*
+    - hdf5 2.0.*
+    - qtbase 6.12.*
+    - qtbase-devel 6.12.*
+    - qt5compat 6.12.*
     - libgl-devel
+    - libopengl-devel
+    - libegl-devel
+    - xorg-libx11
+    - xorg-libxt
   run:
     - {{ pin_compatible('python', min_pin='x.x', max_pin='x.x') }}
     - python_abi {{ python_version }}.* *_{{ python_abi }}
     - numpy
-    - h5py * nompi_*
+    - h5py >=3.16
     - matplotlib-base
-    - tinyxml 2.6.2
-    - {{ pin_compatible('vtk-base', max_pin='x.x.x') }}
+    - {{ pin_compatible('qt5compat', max_pin='x.x.x') }}
 
 test:
   requires:
@@ -84,7 +96,7 @@ about:
   home: https://openems.de/
   dev_url: https://github.com/thliebig/openEMS-Project
   doc_url: https://docs.openems.de/
-  license: GPL-3.0-or-later AND LGPL-3.0-or-later
+  license: GPL-3.0-or-later AND LGPL-3.0-or-later AND BSD-3-Clause AND Zlib
   license_file:
     - openEMS/COPYING
     - CSXCAD/COPYING
@@ -92,6 +104,10 @@ about:
     - AppCSXCAD/COPYING
     - fparser/docs/lgpl.txt
     - fparser/docs/gpl.txt
+    - cgal/LICENSE.GPL
+    - cgal/LICENSE.LGPL
+    - vtk/Copyright.txt
+    - tinyxml/readme.txt
   summary: Open-source FDTD electromagnetic field solver and geometry viewer
 
 extra:
