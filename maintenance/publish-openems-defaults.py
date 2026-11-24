@@ -23,18 +23,22 @@ def read(name):
     return json.loads((HERE / name).read_text())
 
 
-def api(path, method="GET", missing_ok=False):
+def api(path, method="GET", missing_ok=False, payload=None):
     if method != "GET" and (DRY_RUN or not TOKEN):
         raise RuntimeError("Anaconda writes are disabled")
     headers = {"Accept": "application/json", "Cache-Control": "no-cache"}
     if TOKEN:
         headers["Authorization"] = "token " + TOKEN
+    body = None
+    if payload is not None:
+        headers["Content-Type"] = "application/json"
+        body = json.dumps(payload).encode()
     url = "https://api.anaconda.org/" + path
     if method == "GET":
         url += "?check=" + str(time.time_ns())
     for attempt in range(4):
         try:
-            with urlopen(Request(url, headers=headers, method=method), timeout=45) as resp:
+            with urlopen(Request(url, body, headers=headers, method=method), timeout=45) as resp:
                 return json.load(resp) if method == "GET" else None
         except HTTPError as exc:
             if exc.code == 404 and missing_ok:
@@ -101,9 +105,16 @@ def publish():
     for p in protected:
         verify(p, live.get(p["basename"]))
     pending = []
+    staged = []
     for p in artifacts:
         if p["basename"] in live:
-            verify(p, live[p["basename"]])
+            if "main" in live[p["basename"]]["labels"]:
+                verify(p, live[p["basename"]])
+            elif live[p["basename"]]["labels"] == ["ci-openems-defaults"]:
+                verify(p, {**live[p["basename"]], "labels": ["main"]})
+                staged.append(p)
+            else:
+                raise ValueError("Unexpected labels for " + p["basename"])
         else:
             pending.append(p)
     today = count_bytes(live)
@@ -147,11 +158,12 @@ def publish():
     if count_bytes(before_upload) + sum(x["size"] for x in pending) >= 3_000_000_000:
         raise ValueError("Channel does not have room after pruning")
     for p in pending:
-        subprocess.run(["anaconda", "-t", TOKEN, "upload", "--no-progress", "--user", OWNER,
-                        "--label", "main", str(files[p["basename"]])], check=True)
+        subprocess.run(["python3", str(HERE / "upload-openems.py"), str(files[p["basename"]])], check=True)
+    for p in pending + staged:
+        api(f"channels/{OWNER}/main", "POST", payload={"package": "openems", "version": p["version"], "basename": p["basename"]})
     for attempt in range(10):
         live = inventory()
-        if all(p["basename"] in live for p in artifacts):
+        if all("main" in live.get(p["basename"], {}).get("labels", []) for p in artifacts):
             break
         time.sleep(3)
     for p in artifacts + protected:
