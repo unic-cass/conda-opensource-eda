@@ -24,6 +24,8 @@ jobs:
 
 
   Build:
+    # The nightly run is for retention, not timestamped rebuilds of every tool.
+    if: github.event_name != 'schedule'
     permissions:
       contents: read
     uses: ./.github/workflows/Build.yml

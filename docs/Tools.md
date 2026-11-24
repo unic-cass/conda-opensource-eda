@@ -23,9 +23,17 @@
 * [Icarus Verilog](http://iverilog.icarus.com/)
 * [Verilator](https://www.veripool.org/wiki/verilator)
 * [openEMS](https://openems.de/) — FDTD electromagnetic simulation, including
-  the AppCSXCAD viewer and the `openEMS` and `CSXCAD` Python modules. Linux x86-64
-  builds support Python 3.13, 3.14, and 3.15. See the
-  [openEMS recipe](../sim/openems) and the [local build guide](DEVELOPMENT.md).
+  the AppCSXCAD viewer and the `openEMS` and `CSXCAD` Python modules. The Linux
+  x86-64 builds support Python 3.13, 3.14, and 3.15 and use Conda's `defaults`
+  channel for dependencies.
+
+  ```bash
+  conda create -n openems --override-channels -c unic-cass -c defaults \
+    'unic-cass::openems=0.37.0' python=3.15.2
+  conda activate openems
+  ```
+
+  See the [openEMS recipe](../sim/openems) and the [local build guide](DEVELOPMENT.md).
 * [Qucs-S](https://ra3xdh.github.io/) — to use Qt 5 on Linux x86-64, select the
   Qt 5 build of [Qucs-S 24.4.1](https://github.com/ra3xdh/qucs_s/releases/tag/24.4.1):
 
