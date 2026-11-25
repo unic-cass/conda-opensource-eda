@@ -50,6 +50,29 @@ PY
 openroad -version
 "$prefix/bin/klayout" -v
 "$prefix/bin/Xyce" -v
+# The older Xyce package could silently pick up FFTW from the system.
+ldd "$prefix/bin/Xyce" > "$work/xyce-linkage.txt"
+fftw=$(awk '$1 == "libfftw3.so.3" && $2 == "=>" { print $3 }' "$work/xyce-linkage.txt")
+if [[ ! -f "$prefix/lib/libfftw3.so.3" || ! -f "$fftw" ||
+      $(readlink -f "$fftw") != "$(readlink -f "$prefix/lib/libfftw3.so.3")" ]]; then
+    cat "$work/xyce-linkage.txt"
+    echo 'Xyce must load FFTW from the bundled eda environment.' >&2
+    exit 1
+fi
+(
+    cd "$work"
+    cp "$repo/installer/mixed-signal.tools/test-data/voltage-divider.cir" .
+    Xyce voltage-divider.cir
+    python - <<'PY'
+import csv
+import math
+
+with open("voltage-divider.cir.csv", newline="") as stream:
+    values = [float(row["V(OUT)"]) for row in csv.DictReader(stream) if row.get("V(OUT)")]
+assert len(values) == 3 and all(math.isclose(a, b, abs_tol=1e-9)
+                                for a, b in zip(values, [0, 0.5, 1])), values
+PY
+)
 python "$repo/ci/check-glibc.py" "$base"
 python "$repo/ci/check-glibc.py" "$prefix"
 
@@ -76,7 +99,7 @@ PY
 
 if [[ ${INCLUDE_LIBRELANE:-0} == 1 ]]; then
     cd "$work"
-    "$prefix/bin/python" -c 'from importlib.metadata import version; assert version("librelane") == "3.0.17"'
+    "$prefix/bin/python" -c 'from libparse import LibertyParser; from importlib.metadata import version; assert version("librelane") == "3.0.17"'
     "$prefix/bin/yosys" -Q -m eqy_partition -p 'help eqy_partition'
     "$prefix/bin/librelane" --smoke-test --pdk sky130A
 fi

@@ -9,6 +9,17 @@ on:
     paths:
     - 'installer/mixed-signal.sky130a/*'
     - 'installer/mixed-signal.gf180mcuc/*'
+  pull_request:
+    paths:
+    - 'installer/mixed-signal.tools/**'
+    - '.github/workflows/Construct.yml'
+    - '.github/workflows/Installer-package.yml'
+    - 'ci/check-glibc.py'
+    - 'misc/eqy/**'
+    - 'misc/libparse/**'
+    - 'misc/magic/**'
+    - 'misc/netgen/**'
+    - 'sim/openems/**'
   workflow_dispatch:
     inputs:
       include_librelane:
@@ -133,7 +144,7 @@ jobs:
   #           ${{ vars.GITHUB_WORKSPACE }}/conda-eda/analog.sky130a-0-Linux-x86_64.sh
 
   mixed-signal-sky130a-installer:
-    if: ${{ !startsWith(github.ref, 'refs/tags/tools-') && !inputs.include_librelane && !inputs.tools_release_tag }}
+    if: ${{ github.event_name != 'pull_request' && !startsWith(github.ref, 'refs/tags/tools-') && !inputs.include_librelane && !inputs.tools_release_tag }}
     runs-on: 'ubuntu-22.04'
     env:
       PYTHON_VERSION: "3.13"
@@ -340,7 +351,7 @@ jobs:
   #           /home/runner/work/conda-eda/conda-eda/analog.gf180mcuc-0-Linux-x86_64.sh
 
   mixed-signal-gf180mcuc-installer:
-    if: ${{ !startsWith(github.ref, 'refs/tags/tools-') && !inputs.include_librelane && !inputs.tools_release_tag }}
+    if: ${{ github.event_name != 'pull_request' && !startsWith(github.ref, 'refs/tags/tools-') && !inputs.include_librelane && !inputs.tools_release_tag }}
     runs-on: 'ubuntu-22.04'
     defaults:
       run:
@@ -543,7 +554,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include_librelane: ${{ fromJSON((startsWith(github.ref, 'refs/tags/tools-') || inputs.tools_release_tag) && '[false,true]' || (inputs.include_librelane && '[true]' || '[false]')) }}
+        include_librelane: ${{ fromJSON((github.event_name == 'pull_request' || startsWith(github.ref, 'refs/tags/tools-') || inputs.tools_release_tag) && '[false,true]' || (inputs.include_librelane && '[true]' || '[false]')) }}
     env:
       INCLUDE_LIBRELANE: ${{ matrix.include_librelane && '1' || '0' }}
       INSTALLER: ${{ matrix.include_librelane && 'mixed-signal-librelane-3.0.17-Linux-x86_64.sh' || 'mixed-signal-tools-0-Linux-x86_64.sh' }}
@@ -584,14 +595,6 @@ jobs:
         if: ${{ env.ACT }}
         run: bash installer/mixed-signal.tools/smoke-test.sh "$INSTALLER"
 
-      - name: Smoke-test installed tools on AlmaLinux 8
-        if: ${{ !env.ACT }}
-        run: |
-          docker run --rm -v "$PWD:/repo:ro" -w /repo -e INCLUDE_LIBRELANE -e INSTALLER almalinux:8 \
-            bash -ec 'dnf -qy install binutils mesa-libGL mesa-libGLU libXext libXrender libXi libXrandr libXcursor libxkbcommon
-                      test "$(getconf GNU_LIBC_VERSION)" = "glibc 2.28"
-                      bash installer/mixed-signal.tools/smoke-test.sh "$INSTALLER"'
-
       - run: sha256sum "$INSTALLER" > "$INSTALLER.sha256"
 
       - name: archive installer
@@ -603,10 +606,44 @@ jobs:
             ${{ env.INSTALLER }}
             ${{ env.INSTALLER }}.sha256
           if-no-files-found: error
+          compression-level: 0
+
+  test-mixed-signal-installers:
+    name: ${{ matrix.include_librelane && 'LibreLane' || 'Tools only' }} on ${{ matrix.image }}
+    needs: mixed-signal-tools-installer
+    runs-on: ubuntu-22.04
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        image:
+          - 'almalinux:8'
+          - 'ubuntu:22.04'
+          - 'ubuntu:24.04'
+          - 'ubuntu:26.04'
+          - 'ubuntu:26.10'
+          - 'debian:12'
+          - 'debian:13'
+        include_librelane: ${{ fromJSON((github.event_name == 'pull_request' || startsWith(github.ref, 'refs/tags/tools-') || inputs.tools_release_tag) && '[false,true]' || (inputs.include_librelane && '[true]' || '[false]')) }}
+    env:
+      INCLUDE_LIBRELANE: ${{ matrix.include_librelane && '1' || '0' }}
+      INSTALLER: ${{ matrix.include_librelane && 'mixed-signal-librelane-3.0.17-Linux-x86_64.sh' || 'mixed-signal-tools-0-Linux-x86_64.sh' }}
+      TEST_IMAGE: ${{ matrix.image }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        if: ${{ !env.ACT }}
+        with:
+          name: ${{ matrix.include_librelane && 'mixed-signal-librelane-installer' || 'mixed-signal-tools-installer' }}
+      - name: Verify and smoke-test the release installer
+        if: ${{ !env.ACT }}
+        run: bash installer/mixed-signal.tools/test-distribution.sh "$TEST_IMAGE" "$INSTALLER"
 
   release-tools:
     if: ${{ (startsWith(github.ref, 'refs/tags/tools-') && github.event_name == 'push') || (github.ref == 'refs/heads/master' && inputs.tools_release_tag) }}
-    needs: mixed-signal-tools-installer
+    needs: test-mixed-signal-installers
     runs-on: ubuntu-22.04
     permissions:
       contents: write
@@ -650,9 +687,9 @@ jobs:
             mixed-signal-librelane-3.0.17-Linux-x86_64.sh{,.sha256}
 
   release:
-    if: ${{ !startsWith(github.ref, 'refs/tags/tools-') && !inputs.include_librelane && !inputs.tools_release_tag }}
+    if: ${{ github.event_name != 'pull_request' && !startsWith(github.ref, 'refs/tags/tools-') && !inputs.include_librelane && !inputs.tools_release_tag }}
     needs:
-      - mixed-signal-tools-installer
+      - test-mixed-signal-installers
   #     - analog-sky130a-installer
       - mixed-signal-sky130a-installer
   #     - digital-gf180mcuc-installer

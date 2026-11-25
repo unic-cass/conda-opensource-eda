@@ -36,6 +36,8 @@ extra_envs:
       - unic-cass::openroad=2.0_28825_gdcf36133a3=20261122_153213_py315
       - unic-cass::klayout=0.30.7_0_g6dd3e6b10=20261122_153213_py315
       - unic-cass::xyce=7.10.0_234_g369a7be8=20261122_153213
+      # The pinned Xyce archive predates its FFTW runtime dependency fix.
+      - fftw
 {% if environ.get('INCLUDE_LIBRELANE') == '1' %}
       - unic-cass::librelane=3.0.17=20261122_153213
       - {{ (local_channel ~ '::libparse=0.56.0=*_py315') | tojson }}

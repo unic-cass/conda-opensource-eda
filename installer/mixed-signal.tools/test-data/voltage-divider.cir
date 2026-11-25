@@ -1,0 +1,7 @@
+Voltage divider smoke test
+Vinput in 0 DC 0
+R1 in out 1k
+R2 out 0 1k
+.DC Vinput 0 2 1
+.PRINT DC FORMAT=CSV V(out)
+.END

@@ -55,5 +55,16 @@ selection and how to run a complete job locally with `act`.
 Linux x86-64 mixed-signal installers target EL8 (glibc 2.28). Build native
 Python extensions from source with Conda's activated compiler and a compatible
 sysroot. `CI_CHECK_EL8_ABI=true` makes `ci/script.sh` reject newer glibc symbol
-requirements in the installed package. The installer workflow checks the
-bundled environments and runs the smoke tests on AlmaLinux 8 before release.
+requirements in the installed package. Both mixed-signal installer editions
+must pass fresh-install tests on AlmaLinux 8, Ubuntu 22.04, 24.04, 26.04 and
+26.10, and Debian 12 and 13 before release. The tests run on the checksummed
+release artifacts and exercise the bundled tools, the Xyce and openEMS
+solvers, and (for the LibreLane edition) the Sky130A flow.
+
+Run the same test locally with Docker and the installer and its `.sha256`
+file in the same directory:
+
+```bash
+INCLUDE_LIBRELANE=1 bash installer/mixed-signal.tools/test-distribution.sh \
+  almalinux:8 mixed-signal-librelane-3.0.17-Linux-x86_64.sh
+```

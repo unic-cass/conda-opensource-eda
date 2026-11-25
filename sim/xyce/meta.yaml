@@ -54,13 +54,14 @@ requirements:
     - git
     - perl-xml-libxml
     - pkg-config
-    - fftw
     - {{ compiler('cxx') }}
     - {{ compiler('fortran') }}
   host:
+    - fftw
     - libgfortran5
     - libgfortran-ng
   run:
+    - fftw
     - {{ compiler('cxx') }}
 
 test:
