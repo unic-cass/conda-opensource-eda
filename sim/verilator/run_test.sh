@@ -4,6 +4,7 @@ set -e
 set -x
 
 export CONDA_BUILD_SYSROOT=/Users/runner/sdk/MacOSX10.9.sdk
+test -x "$PREFIX/bin/perl"
 $PREFIX/bin/verilator -V
 #$PREFIX/bin/verilator --help || true
 

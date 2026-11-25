@@ -44,6 +44,8 @@ extra_envs:
       - unic-cass::symbiyosys=0.62_0_g1617168=20261122_153213_py315
       - {{ (local_channel ~ '::eqy=0.62_0_g91b2178') | tojson }}
       - unic-cass::verilator=5.044_0_g8df584ca1=20261122_153213
+      # The pinned Verilator archive predates its Perl runtime dependency fix.
+      - perl
       - unic-cass::ciel=2.6.1=20261122_153213
       - unic-cass::yamlcore=0.0.4=20261122_153213
 {% endif %}

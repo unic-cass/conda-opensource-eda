@@ -27,11 +27,13 @@ requirements:
     - autoconf
     - make
     - help2man
+    - perl
   host:
     - bison
     - flex
     - zlib
   run:
+    - perl
     - {{ compiler('cxx') }}
     - gxx_linux-64 >=8      [linux]
     - bison

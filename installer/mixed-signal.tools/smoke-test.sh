@@ -100,6 +100,8 @@ PY
 if [[ ${INCLUDE_LIBRELANE:-0} == 1 ]]; then
     cd "$work"
     "$prefix/bin/python" -c 'from libparse import LibertyParser; from importlib.metadata import version; assert version("librelane") == "3.0.17"'
+    test "$(command -v perl)" = "$prefix/bin/perl"
+    "$prefix/bin/verilator" --version
     "$prefix/bin/yosys" -Q -m eqy_partition -p 'help eqy_partition'
     "$prefix/bin/librelane" --smoke-test --pdk sky130A
 fi
