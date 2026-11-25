@@ -13,8 +13,6 @@ case "${UNAME_OUT}" in
                 exit;;
 esac
 
-export
-
 echo
 echo PREFIX
 echo "---------------------"
@@ -27,7 +25,10 @@ echo CPPFLAGS="$CPPFLAGS"
 cp $BUILD_PREFIX/share/autoconf/build-aux/config.* scripts
 
 if [ "$OS" = "Linux" ]; then
-	CC="/usr/bin/gcc" ./configure \
+	: "${CC:?Conda C compiler is not activated}"
+	[[ $(command -v "$CC") == "$BUILD_PREFIX"/* ]]
+	# Upstream still uses C17's unprototyped function declarations.
+	CFLAGS="${CFLAGS:-} -std=gnu17" ./configure \
 		--prefix="${PREFIX}" \
 		--with-tk="${PREFIX}" \
 		--with-tcl="${PREFIX}" \

@@ -3,6 +3,7 @@
 Standalone mixed-signal EDA tools for Linux x86-64: Xschem, Magic, ngspice,
 Netgen, Yosys, OpenROAD, KLayout, and Xyce. The tools use Python 3.15.2 in
 the `eda` environment. The installer includes neither LibreLane nor a PDK.
+Both installers are tested on AlmaLinux 8 (glibc 2.28).
 
 ```bash
 sha256sum -c mixed-signal-tools-0-Linux-x86_64.sh.sha256

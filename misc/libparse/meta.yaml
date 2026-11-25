@@ -19,24 +19,26 @@ build:
   number: {{ environ.get('DATE_NUM') }}
   # string: 20180305_0325
   string: {{ environ.get('DATE_STR') }}_{{ py_suffix }}
-  script: $PYTHON -m pip install . --no-deps --ignore-installed -vv
   script_env:
     - CI
     - CONDA_OUT
     - TEST_PACKAGE
 
 requirements:
-  # NOTE: compilers live in `host` (not `build`) — conda-build 26 crashes
-  # silently when a separate _build_env is present for this recipe.
-  host:
+  build:
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
+    - sysroot_linux-64 2.28.*  # [linux64]
+  host:
     - python {{ python_version }}
     - pip
     - setuptools >=42
-    - pybind11 >=2.10.0
+    - wheel
+    - pybind11 >=3.0
   run:
-    - python
+    - {{ pin_compatible('python', min_pin='x.x', max_pin='x.x') }}
+    - wheel  # Upstream lln-libparse declares this in install_requires.
+    - __glibc >=2.28  # [linux64]
 
 test:
   commands:

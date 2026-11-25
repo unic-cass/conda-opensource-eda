@@ -48,15 +48,22 @@ for artifact in "${artifacts[@]}"; do
     name_version=${filename%-*}
     specs+=("$channel_url::${name_version%-*}==${name_version##*-}=$build")
 done
+check_el8_abi() {
+    if [[ ${CI_CHECK_EL8_ABI:-false} == true ]]; then
+        python "$CI_SCRIPTS_PATH/check-glibc.py" "$1" --package "${PACKAGE##*/}"
+    fi
+}
 if [[ -n ${CI_INSTALL_PYTHONS:-} ]]; then
     for version in $CI_INSTALL_PYTHONS; do
         prefix="$PWD/workdir/install-test-${version//./}"
         conda create --yes --no-default-packages --prefix "$prefix" \
             "${channels[@]}" "${specs[@]}" "python=$version"
+        check_el8_abi "$prefix"
     done
 else
     conda create --yes --no-default-packages --prefix "$PWD/workdir/install-test" \
         "${channels[@]}" "${specs[@]}"
+    check_el8_abi "$PWD/workdir/install-test"
 fi
 end_section "conda.install"
 

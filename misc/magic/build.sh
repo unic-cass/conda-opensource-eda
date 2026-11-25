@@ -14,9 +14,11 @@ case "${UNAME_OUT}" in
 esac
 
 if [ "$OS" = "Linux" ]; then
-    # tcl/tk headers live in the host prefix, not in system paths
-    CC="/usr/bin/gcc" CPPFLAGS="-I$PREFIX/include" \
-      ./configure --prefix="${PREFIX}" --with-cairo="${BUILD_PREFIX}/include" \
+    : "${CC:?Conda C compiler is not activated}"
+    [[ $(command -v "$CC") == "$BUILD_PREFIX"/* ]]
+    # Tcl/Tk and Cairo headers live in the host prefix.
+    CFLAGS="${CFLAGS:-} -std=gnu17" CPPFLAGS="${CPPFLAGS:-} -I$PREFIX/include" \
+      ./configure --prefix="${PREFIX}" --with-cairo="${PREFIX}/include" \
         --with-tcl="${PREFIX}/lib" --with-tk="${PREFIX}/lib"
 elif [ "$OS" = "Mac" ]; then
     ./configure --prefix="${PREFIX}" --without-cairo --without-opengl --without-x

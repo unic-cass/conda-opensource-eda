@@ -1,0 +1,52 @@
+name: Build an installer package
+
+on:
+  workflow_call:
+    inputs:
+      recipe:
+        required: true
+        type: string
+      python:
+        default: '3.12'
+        type: string
+      test_python:
+        default: ''
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    env:
+      PACKAGE: ${{ inputs.recipe }}
+      OS_NAME: linux
+      PYTHON_VERSION: ${{ inputs.python }}
+      CI_INSTALL_PYTHONS: ${{ inputs.test_python }}
+      CI_CHECK_EL8_ABI: 'true'
+      UPLOAD: no-upload
+    steps:
+      - uses: actions/checkout@v6
+        if: ${{ !env.ACT }}
+        with:
+          persist-credentials: false
+      - run: bash ci/apt-install.sh binutils build-essential csh curl git libgl1 libxrender1 pkg-config sudo wget libc6-dev
+        if: ${{ !env.ACT }}
+      - uses: ./ci
+        if: ${{ !env.ACT }}
+      - name: Stage the tested Conda package
+        id: stage
+        if: ${{ !env.ACT }}
+        run: |
+          export CI_SCRIPTS_PATH="$PWD/ci"
+          source "$CI_SCRIPTS_PATH/common.sh"
+          mkdir -p installer-package
+          cp -- "$CONDA_OUT" installer-package/
+          echo "name=${PACKAGE##*/}" >> "$GITHUB_OUTPUT"
+      - uses: actions/upload-artifact@v4
+        if: ${{ !env.ACT }}
+        with:
+          name: installer-package-${{ steps.stage.outputs.name }}
+          path: installer-package/*.conda
+          if-no-files-found: error

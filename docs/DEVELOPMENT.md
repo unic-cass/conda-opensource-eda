@@ -51,3 +51,9 @@ package, set `PACKAGE` to its recipe directory and check the corresponding job
 in {ghsrc}`.github/workflows/Build.yml` for additional system dependencies and
 variables such as `PYTHON_VERSION`. See {ghsrc}`ci/README.md` for channel
 selection and how to run a complete job locally with `act`.
+
+Linux x86-64 mixed-signal installers target EL8 (glibc 2.28). Build native
+Python extensions from source with Conda's activated compiler and a compatible
+sysroot. `CI_CHECK_EL8_ABI=true` makes `ci/script.sh` reject newer glibc symbol
+requirements in the installed package. The installer workflow checks the
+bundled environments and runs the smoke tests on AlmaLinux 8 before release.

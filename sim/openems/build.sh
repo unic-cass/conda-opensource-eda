@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 set -ex
 
+: "${CC:?Conda C compiler is not activated}" "${CXX:?Conda C++ compiler is not activated}"
+[[ $(command -v "$CC") == "$BUILD_PREFIX"/* ]]
+[[ $(command -v "$CXX") == "$BUILD_PREFIX"/* ]]
+
 # CGAL compilation is memory-intensive, particularly on GitHub-hosted runners.
 jobs=${CPU_COUNT:-2}
 if (( jobs > 2 )); then jobs=2; fi

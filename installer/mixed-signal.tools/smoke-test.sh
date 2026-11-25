@@ -50,6 +50,8 @@ PY
 openroad -version
 "$prefix/bin/klayout" -v
 "$prefix/bin/Xyce" -v
+python "$repo/ci/check-glibc.py" "$base"
+python "$repo/ci/check-glibc.py" "$prefix"
 
 (
     conda activate openems
@@ -65,6 +67,7 @@ packages = {p["name"]: p for p in records}
 assert packages.pop("openems")["build"] == "py315_defaults_1"
 assert all(p["url"].startswith("https://repo.anaconda.com/pkgs/") for p in packages.values())
 PY
+    python "$repo/ci/check-glibc.py" "$CONDA_PREFIX"
     python "$repo/sim/openems/smoke.py"
     ldd -r "$CONDA_PREFIX/bin/AppCSXCAD" > "$work/viewer-linkage.txt"
     grep -Fq 'libvtkGUISupportQt-openems' "$work/viewer-linkage.txt"
@@ -74,5 +77,6 @@ PY
 if [[ ${INCLUDE_LIBRELANE:-0} == 1 ]]; then
     cd "$work"
     "$prefix/bin/python" -c 'from importlib.metadata import version; assert version("librelane") == "3.0.17"'
+    "$prefix/bin/yosys" -Q -m eqy_partition -p 'help eqy_partition'
     "$prefix/bin/librelane" --smoke-test --pdk sky130A
 fi

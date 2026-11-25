@@ -1,6 +1,9 @@
 #!/bin/bash
 set -ex
 
+: "${CXX:?Conda C++ compiler is not activated}"
+[[ $(command -v "$CXX") == "$BUILD_PREFIX"/* ]]
+
 # Packaged yosys-config --build points at the compiler in Yosys's old build
 # environment. Keep its plugin flags, but use the compiler from this build.
 cat > eqy-yosys-config <<'EOF'

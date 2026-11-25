@@ -23,11 +23,13 @@ requirements:
   build:
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
+    - sysroot_linux-64 2.28.*  # [linux64]
     - make
   host:
     # eqy builds its yosys plugins with `yosys-config` from the host yosys
     - yosys
   run:
+    - __glibc >=2.28  # [linux64]
     - yosys
     - click
     # librelane's eqy strategies use `sby` (symbiyosys) and, for the

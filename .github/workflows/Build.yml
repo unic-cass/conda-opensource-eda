@@ -131,6 +131,7 @@ jobs:
     env:
       PACKAGE: "misc/eqy"
       OS_NAME: "linux"
+      CI_CHECK_EL8_ABI: 'true'
     steps:
       - uses: actions/checkout@v6
       - run: bash ci/apt-install.sh $APT_REQUIREMENTS
@@ -212,6 +213,7 @@ jobs:
     env:
       PACKAGE: "misc/magic"
       OS_NAME: "linux"
+      CI_CHECK_EL8_ABI: 'true'
       CONDA_BLD_PATH: "${{ github.workspace }}/workdir/conda-env/conda-bld"
     steps:
       - uses: actions/checkout@v6
@@ -230,10 +232,11 @@ jobs:
     env:
       PACKAGE: "misc/netgen"
       OS_NAME: "linux"
+      CI_CHECK_EL8_ABI: 'true'
       CONDA_BLD_PATH: "${{ github.workspace }}/workdir/conda-env/conda-bld"
     steps:
       - uses: actions/checkout@v6
-      - run: bash ci/apt-install.sh git wget
+      - run: bash ci/apt-install.sh binutils git wget
       - uses: ./ci
       - uses: actions/cache/save@v4
         id: cache-netgen
@@ -605,6 +608,7 @@ jobs:
     env:
       PACKAGE: sim/openems
       OS_NAME: linux
+      CI_CHECK_EL8_ABI: 'true'
       PYTHON_VERSION: '3.13'
     steps:
       - uses: actions/checkout@v6
@@ -617,6 +621,7 @@ jobs:
     env:
       PACKAGE: sim/openems
       OS_NAME: linux
+      CI_CHECK_EL8_ABI: 'true'
       PYTHON_VERSION: '3.14'
     steps:
       - uses: actions/checkout@v6
@@ -629,6 +634,7 @@ jobs:
     env:
       PACKAGE: sim/openems
       OS_NAME: linux
+      CI_CHECK_EL8_ABI: 'true'
       PYTHON_VERSION: '3.15'
       CI_INSTALL_PYTHONS: '3.15.2'
     steps:
@@ -1045,6 +1051,7 @@ jobs:
     env:
       PACKAGE: "misc/libparse"
       OS_NAME: "linux"
+      CI_CHECK_EL8_ABI: 'true'
       PYTHON_VERSION: "3.12"
     steps:
       - uses: actions/checkout@v6
@@ -1063,6 +1070,7 @@ jobs:
     env:
       PACKAGE: "misc/libparse"
       OS_NAME: "linux"
+      CI_CHECK_EL8_ABI: 'true'
       PYTHON_VERSION: "3.13"
     steps:
       - uses: actions/checkout@v6
@@ -1075,6 +1083,7 @@ jobs:
     env:
       PACKAGE: "misc/libparse"
       OS_NAME: "linux"
+      CI_CHECK_EL8_ABI: 'true'
       PYTHON_VERSION: "3.14"
     steps:
       - uses: actions/checkout@v6
@@ -1087,7 +1096,9 @@ jobs:
     env:
       PACKAGE: "misc/libparse"
       OS_NAME: "linux"
+      CI_CHECK_EL8_ABI: 'true'
       PYTHON_VERSION: "3.15"
+      CI_INSTALL_PYTHONS: '3.15.2'
     steps:
       - uses: actions/checkout@v6
       - run: bash ci/apt-install.sh $APT_REQUIREMENTS libxrender1

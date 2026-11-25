@@ -18,7 +18,7 @@ build:
   noarch: python
   number: {{ environ.get('DATE_NUM') }}
   string: {{ environ.get('DATE_STR') }}
-  script: $PYTHON -m pip install . --no-deps --ignore-installed -vv
+  script: $PYTHON -m pip install . --no-build-isolation --no-deps --ignore-installed -vv
   script_env:
     - CI
     - CONDA_OUT
@@ -29,7 +29,7 @@ requirements:
     - python >=3.8
     - pip
     - setuptools
-    - poetry-core
+    - poetry-core >=1.0.0
   run:
     - python >=3.8
     - click >=8,<8.5

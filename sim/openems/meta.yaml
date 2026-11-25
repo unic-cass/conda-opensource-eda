@@ -50,6 +50,7 @@ requirements:
   build:
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
+    - sysroot_linux-64 2.28.*
     - cmake 3.31.*
     - ninja
     - pkg-config

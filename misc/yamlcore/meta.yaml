@@ -15,7 +15,7 @@ build:
   noarch: python
   number: {{ environ.get('DATE_NUM') }}
   string: {{ environ.get('DATE_STR') }}
-  script: $PYTHON -m pip install . --no-deps --ignore-installed -vv
+  script: $PYTHON -m pip install . --no-build-isolation --no-deps --ignore-installed -vv
   script_env:
     - CI
     - CONDA_OUT
@@ -25,7 +25,7 @@ requirements:
   host:
     - python
     - pip
-    - setuptools
+    - setuptools >=61
   run:
     - python
     - pyyaml

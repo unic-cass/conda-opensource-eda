@@ -5,6 +5,7 @@ version: 3.0.17
 name: mixed-signal-tools
 version: 0
 {% endif %}
+{% set local_channel = environ['INSTALLER_CHANNEL_URL'] %}
 
 channels:
   - https://conda.anaconda.org/conda-forge
@@ -19,6 +20,7 @@ user_requested_specs:
 extra_envs:
   eda:
     channels:
+      - {{ local_channel | tojson }}
       - https://conda.anaconda.org/unic-cass
       - https://conda.anaconda.org/conda-forge
       - https://repo.anaconda.com/pkgs/main/
@@ -27,18 +29,18 @@ extra_envs:
       - python=3.15.2
       # This is the latest published native Xschem build that uses Tcl/Tk 8.6.
       - unic-cass::xschem=3.4.7_365_g4961ee43=20260511_222327
-      - unic-cass::magic=8.3.698_0_g8d37ad4c=20261122_153213
+      - {{ (local_channel ~ '::magic=8.3.698_0_g8d37ad4c') | tojson }}
       - unic-cass::ngspice=45.2_370_ga80f6e3e9=20261122_153213
-      - unic-cass::netgen=1.5.316_0_gb76c9a1=20261122_153213
+      - {{ (local_channel ~ '::netgen=1.5.316_0_gb76c9a1') | tojson }}
       - unic-cass::yosys=0.62_0_g7326bb7d6=20261122_153213_py315
       - unic-cass::openroad=2.0_28825_gdcf36133a3=20261122_153213_py315
       - unic-cass::klayout=0.30.7_0_g6dd3e6b10=20261122_153213_py315
       - unic-cass::xyce=7.10.0_234_g369a7be8=20261122_153213
 {% if environ.get('INCLUDE_LIBRELANE') == '1' %}
       - unic-cass::librelane=3.0.17=20261122_153213
-      - unic-cass::libparse=0.56.0=20261122_153213_py315
+      - {{ (local_channel ~ '::libparse=0.56.0=*_py315') | tojson }}
       - unic-cass::symbiyosys=0.62_0_g1617168=20261122_153213_py315
-      - unic-cass::eqy=0.62_0_g91b2178=20261122_153213
+      - {{ (local_channel ~ '::eqy=0.62_0_g91b2178') | tojson }}
       - unic-cass::verilator=5.044_0_g8df584ca1=20261122_153213
       - unic-cass::ciel=2.6.1=20261122_153213
       - unic-cass::yamlcore=0.0.4=20261122_153213
@@ -47,7 +49,7 @@ extra_envs:
   # Keep the defaults-based Qt, HDF5 and Python stack separate from eda.
   openems:
     channels:
-      - {{ environ['OPENEMS_CHANNEL_URL'] | tojson }}
+      - {{ local_channel | tojson }}
       - https://repo.anaconda.com/pkgs/main/
       - https://repo.anaconda.com/pkgs/r/
     specs:
