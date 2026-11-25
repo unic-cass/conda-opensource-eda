@@ -8,3 +8,8 @@ channels:
   - defaults
 channel_priority: flexible
 EOF
+cat > "$PREFIX/envs/openems/.condarc" <<'EOF'
+channels:  #!final
+  - defaults
+channel_priority: strict
+EOF

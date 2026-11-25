@@ -15,6 +15,10 @@ on:
         description: 'Build only the mixed-signal installer with LibreLane'
         type: boolean
         default: false
+      tools_release_tag:
+        description: 'From master, publish both installers under a new tools-* tag'
+        type: string
+        default: ''
 
 permissions:
   contents: read
@@ -129,7 +133,7 @@ jobs:
   #           ${{ vars.GITHUB_WORKSPACE }}/conda-eda/analog.sky130a-0-Linux-x86_64.sh
 
   mixed-signal-sky130a-installer:
-    if: ${{ !startsWith(github.ref, 'refs/tags/tools-') && !inputs.include_librelane }}
+    if: ${{ !startsWith(github.ref, 'refs/tags/tools-') && !inputs.include_librelane && !inputs.tools_release_tag }}
     runs-on: 'ubuntu-22.04'
     env:
       PYTHON_VERSION: "3.13"
@@ -336,7 +340,7 @@ jobs:
   #           /home/runner/work/conda-eda/conda-eda/analog.gf180mcuc-0-Linux-x86_64.sh
 
   mixed-signal-gf180mcuc-installer:
-    if: ${{ !startsWith(github.ref, 'refs/tags/tools-') && !inputs.include_librelane }}
+    if: ${{ !startsWith(github.ref, 'refs/tags/tools-') && !inputs.include_librelane && !inputs.tools_release_tag }}
     runs-on: 'ubuntu-22.04'
     defaults:
       run:
@@ -504,15 +508,48 @@ jobs:
   #         name: 'mixed-signal-installer'
   #         path: |
   #           /home/runner/work/conda-eda/conda-eda/mixed-signal-0-Linux-x86_64.sh
+  openems-linux-py315:
+    runs-on: ubuntu-22.04
+    env:
+      PACKAGE: sim/openems
+      OS_NAME: linux
+      PYTHON_VERSION: '3.15'
+      CI_INSTALL_PYTHONS: '3.15.2'
+      UPLOAD: no-upload
+    steps:
+      - uses: actions/checkout@v6
+        if: ${{ !env.ACT }}
+        with:
+          persist-credentials: false
+      - run: bash ci/apt-install.sh binutils build-essential csh curl git libgl1 pkg-config sudo wget libc6-dev
+        if: ${{ !env.ACT }}
+      - uses: ./ci
+        if: ${{ !env.ACT }}
+      - name: Stage the tested package for both installers
+        if: ${{ !env.ACT }}
+        run: |
+          export CI_SCRIPTS_PATH="$PWD/ci"
+          source "$CI_SCRIPTS_PATH/common.sh"
+          mkdir -p openems-channel/linux-64
+          cp -- "$CONDA_OUT" openems-channel/linux-64/
+      - uses: actions/upload-artifact@v4
+        if: ${{ !env.ACT }}
+        with:
+          name: openems-conda-py315
+          path: openems-channel/linux-64/openems-0.37.0-py315_defaults_1.conda
+          if-no-files-found: error
+
   mixed-signal-tools-installer:
     runs-on: 'ubuntu-22.04'
+    needs: openems-linux-py315
     strategy:
       fail-fast: false
       matrix:
-        include_librelane: ${{ fromJSON(startsWith(github.ref, 'refs/tags/tools-') && '[false,true]' || (inputs.include_librelane && '[true]' || '[false]')) }}
+        include_librelane: ${{ fromJSON((startsWith(github.ref, 'refs/tags/tools-') || inputs.tools_release_tag) && '[false,true]' || (inputs.include_librelane && '[true]' || '[false]')) }}
     env:
       INCLUDE_LIBRELANE: ${{ matrix.include_librelane && '1' || '0' }}
       INSTALLER: ${{ matrix.include_librelane && 'mixed-signal-librelane-3.0.17-Linux-x86_64.sh' || 'mixed-signal-tools-0-Linux-x86_64.sh' }}
+      OPENEMS_CHANNEL_DIR: ${{ github.workspace }}/openems-channel
     defaults:
       run:
         shell: bash -el {0}
@@ -527,12 +564,20 @@ jobs:
           miniconda-version: latest
           python-version: '3.12'
 
+      - uses: actions/download-artifact@v4
+        if: ${{ !env.ACT }}
+        with:
+          name: openems-conda-py315
+          path: ${{ env.OPENEMS_CHANNEL_DIR }}/linux-64
+
       - name: Build mixed-signal installer
         env:
           CONDA_CHANNEL_PRIORITY: flexible
           CONDA_REMOTE_MAX_RETRIES: '5'
         run: |
-          conda install --yes --override-channels -c defaults constructor=3.17.3
+          conda install --yes --override-channels -c defaults constructor=3.17.3 conda-index
+          conda index "$OPENEMS_CHANNEL_DIR"
+          export OPENEMS_CHANNEL_URL=$(python -c 'import os; from pathlib import Path; print(Path(os.environ["OPENEMS_CHANNEL_DIR"]).resolve().as_uri())')
           constructor installer/mixed-signal.tools
 
       - name: Smoke-test installed tools
@@ -551,7 +596,7 @@ jobs:
           if-no-files-found: error
 
   release-tools:
-    if: ${{ startsWith(github.ref, 'refs/tags/tools-') && github.event_name == 'push' }}
+    if: ${{ (startsWith(github.ref, 'refs/tags/tools-') && github.event_name == 'push') || (github.ref == 'refs/heads/master' && inputs.tools_release_tag) }}
     needs: mixed-signal-tools-installer
     runs-on: ubuntu-22.04
     permissions:
@@ -569,18 +614,34 @@ jobs:
         if: ${{ !env.ACT }}
         env:
           GH_TOKEN: ${{ github.token }}
+          TOOLS_RELEASE_TAG: ${{ inputs.tools_release_tag }}
         run: |
           sha256sum --check mixed-signal-tools-0-Linux-x86_64.sh.sha256
           sha256sum --check mixed-signal-librelane-3.0.17-Linux-x86_64.sh.sha256
           { cat installer/mixed-signal.tools/release-notes.md; printf '\n'; cat installer/mixed-signal.tools/release-notes-librelane.md; } > release-notes.md
-          gh release create "$GITHUB_REF_NAME" --verify-tag \
-            --title "Mixed-signal EDA tools (${GITHUB_REF_NAME#tools-})" \
+          if [[ -n "$TOOLS_RELEASE_TAG" ]]; then
+            [[ "$TOOLS_RELEASE_TAG" =~ ^tools-[a-zA-Z0-9][a-zA-Z0-9._-]*$ ]]
+            # --target sets the exact release commit; reject existing tags.
+            if git ls-remote --exit-code --tags origin "refs/tags/$TOOLS_RELEASE_TAG"; then
+              echo "Tag already exists: $TOOLS_RELEASE_TAG" >&2
+              exit 1
+            else
+              [[ $? == 2 ]]
+            fi
+            tag="$TOOLS_RELEASE_TAG"
+            target=(--target "$GITHUB_SHA")
+          else
+            tag="$GITHUB_REF_NAME"
+            target=(--verify-tag)
+          fi
+          gh release create "$tag" "${target[@]}" \
+            --title "Mixed-signal EDA tools (${tag#tools-})" \
             --notes-file release-notes.md \
             mixed-signal-tools-0-Linux-x86_64.sh{,.sha256} \
             mixed-signal-librelane-3.0.17-Linux-x86_64.sh{,.sha256}
 
   release:
-    if: ${{ !startsWith(github.ref, 'refs/tags/tools-') && !inputs.include_librelane }}
+    if: ${{ !startsWith(github.ref, 'refs/tags/tools-') && !inputs.include_librelane && !inputs.tools_release_tag }}
     needs:
       - mixed-signal-tools-installer
   #     - analog-sky130a-installer

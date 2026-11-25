@@ -44,6 +44,16 @@ extra_envs:
       - unic-cass::yamlcore=0.0.4=20261122_153213
 {% endif %}
 
+  # Keep the defaults-based Qt, HDF5 and Python stack separate from eda.
+  openems:
+    channels:
+      - {{ environ['OPENEMS_CHANNEL_URL'] | tojson }}
+      - https://repo.anaconda.com/pkgs/main/
+      - https://repo.anaconda.com/pkgs/r/
+    specs:
+      - python=3.15.2
+      - openems=0.37.0=py315_defaults_1
+
 condarc:
   channels:
     - conda-forge

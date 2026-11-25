@@ -14,6 +14,20 @@ openroad -version
 
 The Xschem build was selected for compatibility with the bundle's Tcl/Tk 8.6.
 
+## openEMS (both installers)
+
+Both installers include openEMS 0.37.0, its `openEMS` and `CSXCAD` Python
+bindings, and AppCSXCAD in a preinstalled `openems` environment. It uses Conda
+`defaults` and Python 3.15.2. From an activated installation:
+
+```bash
+conda activate openems
+python -c 'from openEMS import openEMS; from CSXCAD import ContinuousStructure'
+```
+
+AppCSXCAD requires a graphical session. Run `conda activate eda` to return to
+the other EDA tools.
+
 ## Updating Conda (both installers)
 
 Each installer bundles Conda in `base` so its solver and OpenROAD can use

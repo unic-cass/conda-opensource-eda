@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+repo=$(cd "$(dirname "$0")/../.." && pwd)
 work=$(mktemp -d)
 trap 'rm -rf "$work"' EXIT
 base="$work/tools"
@@ -49,6 +50,26 @@ PY
 openroad -version
 "$prefix/bin/klayout" -v
 "$prefix/bin/Xyce" -v
+
+(
+    conda activate openems
+    test "$CONDA_PREFIX" = "$base/envs/openems"
+    python - <<'PY'
+import json
+import sys
+from pathlib import Path
+
+assert sys.version_info[:3] == (3, 15, 2)
+records = (json.loads(p.read_text()) for p in Path(sys.prefix, "conda-meta").glob("*.json"))
+packages = {p["name"]: p for p in records}
+assert packages.pop("openems")["build"] == "py315_defaults_1"
+assert all(p["url"].startswith("https://repo.anaconda.com/pkgs/") for p in packages.values())
+PY
+    python "$repo/sim/openems/smoke.py"
+    ldd -r "$CONDA_PREFIX/bin/AppCSXCAD" > "$work/viewer-linkage.txt"
+    grep -Fq 'libvtkGUISupportQt-openems' "$work/viewer-linkage.txt"
+    if grep -E 'not found|undefined symbol' "$work/viewer-linkage.txt"; then exit 1; fi
+)
 
 if [[ ${INCLUDE_LIBRELANE:-0} == 1 ]]; then
     cd "$work"
