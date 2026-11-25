@@ -14,6 +14,11 @@ on:
       - '.github/workflows/tuttest.yml'
       - 'README.md'
   workflow_dispatch:
+    inputs:
+      cleanup_preview:
+        description: 'Preview scheduled Anaconda cleanup without deleting packages'
+        type: boolean
+        default: false
   schedule:
     - cron: '0 23 * * *' # run daily at 23:00 (UTC)
 
@@ -25,7 +30,7 @@ jobs:
 
   Build:
     # The nightly run is for retention, not timestamped rebuilds of every tool.
-    if: github.event_name != 'schedule'
+    if: github.event_name != 'schedule' && !inputs.cleanup_preview
     permissions:
       contents: read
     uses: ./.github/workflows/Build.yml
@@ -52,8 +57,9 @@ jobs:
 
 
   Cleanup:
-    if: github.event_name == 'schedule'
+    if: github.event_name == 'schedule' || (github.ref == 'refs/heads/master' && inputs.cleanup_preview)
     runs-on: ubuntu-22.04
+    concurrency: anaconda-cleanup
     steps:
       - uses: actions/checkout@v6
       - name: Cleanup Anaconda
@@ -65,3 +71,4 @@ jobs:
         env:
           ANACONDA_TOKEN: ${{ secrets.ANACONDA_TOKEN }}
           ANACONDA_USER: ${{ secrets.ANACONDA_USER }}
+          CLEANUP_DRY_RUN: ${{ inputs.cleanup_preview || false }}
