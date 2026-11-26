@@ -20,7 +20,7 @@ The Xschem build was selected for compatibility with the bundle's Tcl/Tk 8.6.
 
 Both installers include openEMS 0.37.0, its `openEMS` and `CSXCAD` Python
 bindings, and AppCSXCAD in a preinstalled `openems` environment. It uses Conda
-`defaults` and Python 3.15.2. From an activated installation:
+`defaults`, Python 3.15.2, and OpenBLAS. From an activated installation:
 
 ```bash
 conda activate openems

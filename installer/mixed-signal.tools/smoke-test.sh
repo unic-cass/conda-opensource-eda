@@ -89,6 +89,8 @@ records = (json.loads(p.read_text()) for p in Path(sys.prefix, "conda-meta").glo
 packages = {p["name"]: p for p in records}
 assert packages.pop("openems")["build"] == "py315_defaults_1"
 assert all(p["url"].startswith("https://repo.anaconda.com/pkgs/") for p in packages.values())
+assert packages["blas"]["build"] == "openblas"
+assert "mkl" not in packages and "intel-openmp" not in packages
 PY
     python "$repo/ci/check-glibc.py" "$CONDA_PREFIX"
     python "$repo/sim/openems/smoke.py"

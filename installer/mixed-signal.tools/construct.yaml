@@ -59,6 +59,8 @@ extra_envs:
     specs:
       - python=3.15.2
       - openems=0.37.0=py315_defaults_1
+      # Select the defaults OpenBLAS builds of NumPy instead of bundling MKL.
+      - nomkl
 
 condarc:
   channels:
