@@ -1,5 +1,6 @@
 # Use `conda-build-prepare` before building for a better version string.
 {% set version = '%s.0_%04i_%s'|format(GIT_DESCRIBE_TAG|replace('v', '') or '0.X.X', GIT_DESCRIBE_NUMBER|int, GIT_DESCRIBE_HASH or 'gUNKNOWN') %}
+{% set installer = environ.get('RECIPE_CONDARC_VARIANT') == 'installer' %}
 
 package:
   name: verilator
@@ -14,7 +15,7 @@ build:
   # number: 201803050325
   number: {{ environ.get('DATE_NUM') }}
   # string: 20180305_0325
-  string: {{ environ.get('DATE_STR') }}
+  string: {{ environ.get('DATE_STR') }}{{ '_installer' if installer else '' }}
   script_env:
     - CI
 
@@ -24,6 +25,9 @@ requirements:
     #   executables which are common since v8. They're required for verilation.
     - {{ compiler('cxx') }}
     - gxx_linux-64 >=8      [linux]
+{% if installer %}
+    - sysroot_linux-64 2.28.*
+{% endif %}
     - autoconf
     - make
     - help2man
@@ -42,6 +46,10 @@ requirements:
     - ncurses
 
 test:
+{% if installer %}
+  commands:
+    - verilator --debug --version
+{% endif %}
   requires:
     - make
   files:

@@ -10,6 +10,10 @@ jobs=${CPU_COUNT:-2}
 if (( jobs > 2 )); then jobs=2; fi
 
 export VTK_INSTALL_DIR="$SRC_DIR/vtk-install"
+case "$PKG_BUILD_STRING" in
+    *_installer_qt5_*) export OPENEMS_QT_MAJOR=5 ;;
+    *) export OPENEMS_QT_MAJOR=6 ;;
+esac
 bash "$RECIPE_DIR/build-vtk.sh"
 
 # TinyXML is private to this package. Statically link the PIC library into the
@@ -36,6 +40,7 @@ for component in fparser CSXCAD openEMS QCSXCAD AppCSXCAD; do
         -DHDF5_ROOT="$PREFIX" \
         -DCGAL_DIR="$SRC_DIR/cgal" \
         -DVTK_DIR="$VTK_INSTALL_DIR/lib/cmake/vtk-9.7" \
+        -DVTK_QT_VERSION="$OPENEMS_QT_MAJOR" \
         -DTinyXML_INCLUDE_DIR="$SRC_DIR/tinyxml" \
         -DTinyXML_LIBRARY="$SRC_DIR/build/tinyxml/libtinyxml.a"
     cmake --build "build/$component" --parallel "$jobs"

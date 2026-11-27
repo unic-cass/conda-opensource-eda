@@ -27,7 +27,7 @@ cmake ${CMAKE_ARGS:-} -G Ninja -S vtk -B build/vtk \
     -DVTK_GROUP_ENABLE_Rendering=DONT_WANT \
     -DVTK_GROUP_ENABLE_Qt=DONT_WANT \
     -DVTK_USE_X=ON \
-    -DVTK_QT_VERSION=6 \
+    -DVTK_QT_VERSION="$OPENEMS_QT_MAJOR" \
     "${options[@]}"
 jobs=${CPU_COUNT:-2}
 available=$(nproc)

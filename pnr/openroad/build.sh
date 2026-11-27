@@ -41,6 +41,19 @@ fi
 
 CMAKE_PLATFORM_FLAGS+=(-DCMAKE_TOOLCHAIN_FILE="${RECIPE_DIR}/cross-linux.cmake")
 
+# The installer needs the executables and shared libraries, not OpenROAD's
+# C/C++ SDK. Record the host files first so only our files are removed.
+sdk_files() {
+    (set -o pipefail; cd "$PREFIX"; find lib include share -mindepth 1 \( -type f -o -type l \) \
+        \( -path 'include/*' -o -path 'lib/cmake/*' -o -path 'lib/pkgconfig/*' \
+           -o -path 'share/pkgconfig/*' -o -path 'lib/*.a' -o -path 'lib/*.la' \) \
+        -print0 | LC_ALL=C sort -z)
+}
+if [[ "$PKG_BUILD_STRING" == *_installer_py* ]]; then
+    mkdir -p "$PREFIX"/{lib,include,share}
+    sdk_files > "$SRC_DIR/sdk-before.list"
+fi
+
 cd $SRC_DIR/third_party/lemon
 cmake -B build  -DCMAKE_INSTALL_PREFIX=$PREFIX ${CMAKE_PLATFORM_FLAGS[@]} .
 cmake --build build -j $CPU_COUNT --target install
@@ -93,3 +106,9 @@ cmake -B build -DTCL_LIB_PATHS="$BUILD_PREFIX;$PREFIX" \
       ${CMAKE_PLATFORM_FLAGS[@]} .
 
 cmake --build build -j $CPU_COUNT --target install
+
+if [[ "$PKG_BUILD_STRING" == *_installer_py* ]]; then
+    sdk_files > "$SRC_DIR/sdk-after.list"
+    (set -o pipefail; cd "$PREFIX"; LC_ALL=C comm -z -13 "$SRC_DIR/sdk-before.list" "$SRC_DIR/sdk-after.list" \
+        | xargs -0 -r rm --)
+fi

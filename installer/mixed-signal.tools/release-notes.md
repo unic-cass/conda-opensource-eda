@@ -1,46 +1,44 @@
 ## Tools-only installer
 
 Standalone mixed-signal EDA tools for Linux x86-64: Xschem, Magic, ngspice,
-Netgen, Yosys, OpenROAD, KLayout, and Xyce. The tools use Python 3.15.2 in
-the `eda` environment. The installer includes neither LibreLane nor a PDK.
+Netgen, Yosys, OpenROAD, KLayout, and Xyce. All tools, openEMS, and Conda
+share a single Python 3.15.2 environment. The installer includes neither
+LibreLane nor a PDK.
 Both installers are tested on AlmaLinux 8 (glibc 2.28), Ubuntu 22.04, 24.04,
 26.04 and 26.10, and Debian 12 and 13.
 
 ```bash
 sha256sum -c mixed-signal-tools-0-Linux-x86_64.sh.sha256
 bash mixed-signal-tools-0-Linux-x86_64.sh -b -p "$HOME/unic-cass-eda"
-source "$HOME/unic-cass-eda/bin/activate" "$HOME/unic-cass-eda/envs/eda"
+source "$HOME/unic-cass-eda/bin/activate" "$HOME/unic-cass-eda"
 yosys -V
 openroad -version
 ```
 
 The Xschem build was selected for compatibility with the bundle's Tcl/Tk 8.6.
+The bundled OpenROAD includes its executables and Python bindings; the C/C++
+development files are available in the regular OpenROAD Conda package.
 
 ## openEMS (both installers)
 
-Both installers include openEMS 0.37.0, its `openEMS` and `CSXCAD` Python
-bindings, and AppCSXCAD in a preinstalled `openems` environment. It uses Conda
-`defaults`, Python 3.15.2, and OpenBLAS. From an activated installation:
+Both installers include openEMS 0.37.0, the `openEMS` and `CSXCAD` Python
+bindings, and AppCSXCAD. AppCSXCAD shares Qt 5 with OpenROAD and KLayout,
+and the NumPy stack uses OpenBLAS. From an activated installation:
 
 ```bash
-conda activate openems
 python -c 'from openEMS import openEMS; from CSXCAD import ContinuousStructure'
 ```
 
-AppCSXCAD requires a graphical session. Run `conda activate eda` to return to
-the other EDA tools.
+AppCSXCAD requires a graphical session.
 
 ## Updating Conda (both installers)
 
-Each installer bundles Conda in `base` so its solver and OpenROAD can use
-different versions of `spdlog`. After activating either installation, update
-Conda without changing the `eda` environment:
+Conda and OpenROAD share the conda-forge `spdlog` 1.17 ABI. To update Conda
+without replacing the installed EDA packages, activate the installation and run:
 
 ```bash
-conda activate base
-conda update --name base conda
-conda activate eda
+conda update --name base conda --freeze-installed
 ```
 
-For an older installer that did not include Conda, choose a fresh install
-directory with `-p` instead of installing over the old layout.
+Choose a fresh install directory with `-p` when migrating from an older installer
+with separate environments.

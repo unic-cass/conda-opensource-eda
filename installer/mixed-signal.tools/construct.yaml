@@ -8,63 +8,55 @@ version: 0
 {% set local_channel = environ['INSTALLER_CHANNEL_URL'] %}
 
 channels:
+  - {{ local_channel | tojson }}
+  - https://conda.anaconda.org/unic-cass
   - https://conda.anaconda.org/conda-forge
+  - https://repo.anaconda.com/pkgs/main/
+  - https://repo.anaconda.com/pkgs/r/
 
+# One runtime for the package manager, EDA tools, and openEMS.
 specs:
-  - python=3.14
-  - conda=26.10.0
-user_requested_specs:
-  - conda
-
-# Keep OpenROAD's spdlog 1.15 ABI separate from Conda's libmamba solver.
-extra_envs:
-  eda:
-    channels:
-      - {{ local_channel | tojson }}
-      - https://conda.anaconda.org/unic-cass
-      - https://conda.anaconda.org/conda-forge
-      - https://repo.anaconda.com/pkgs/main/
-      - https://repo.anaconda.com/pkgs/r/
-    specs:
-      - python=3.15.2
-      # This is the latest published native Xschem build that uses Tcl/Tk 8.6.
-      - unic-cass::xschem=3.4.7_365_g4961ee43=20260511_222327
-      - {{ (local_channel ~ '::magic=8.3.698_0_g8d37ad4c') | tojson }}
-      - unic-cass::ngspice=45.2_370_ga80f6e3e9=20261122_153213
-      - {{ (local_channel ~ '::netgen=1.5.316_0_gb76c9a1') | tojson }}
-      - unic-cass::yosys=0.62_0_g7326bb7d6=20261122_153213_py315
-      - unic-cass::openroad=2.0_28825_gdcf36133a3=20261122_153213_py315
-      - unic-cass::klayout=0.30.7_0_g6dd3e6b10=20261122_153213_py315
-      - unic-cass::xyce=7.10.0_234_g369a7be8=20261122_153213
-      # The pinned Xyce archive predates its FFTW runtime dependency fix.
-      - fftw
+  - conda-forge::python=3.15.2
+  - conda-forge::conda=26.10.0
+  - conda-forge::libffi=3.7.*
+  - conda-forge::spdlog=1.17.*
+  - conda-forge::libblas=*=*openblas
+  # This is the latest published native Xschem build that uses Tcl/Tk 8.6.
+  - unic-cass::xschem=3.4.7_365_g4961ee43=20260511_222327
+  - {{ (local_channel ~ '::magic=8.3.698_0_g8d37ad4c') | tojson }}
+  - unic-cass::ngspice=45.2_370_ga80f6e3e9=20261122_153213
+  - {{ (local_channel ~ '::netgen=1.5.316_0_gb76c9a1') | tojson }}
+  - unic-cass::yosys=0.62_0_g7326bb7d6=20261122_153213_py315
+  - {{ (local_channel ~ '::openroad=2.0_28825_gdcf36133a3=*_installer_py315') | tojson }}
+  - unic-cass::klayout=0.30.7_0_g6dd3e6b10=20261122_153213_py315
+  - unic-cass::xyce=7.10.0_234_g369a7be8=20261122_153213
+  - {{ (local_channel ~ '::openems=0.37.0=py315_installer_qt5_2') | tojson }}
+  # The pinned Xyce archive predates its FFTW runtime dependency fix.
+  - fftw
 {% if environ.get('INCLUDE_LIBRELANE') == '1' %}
-      - unic-cass::librelane=3.0.17=20261122_153213
-      - {{ (local_channel ~ '::libparse=0.56.0=*_py315') | tojson }}
-      - unic-cass::symbiyosys=0.62_0_g1617168=20261122_153213_py315
-      - {{ (local_channel ~ '::eqy=0.62_0_g91b2178') | tojson }}
-      - unic-cass::verilator=5.044_0_g8df584ca1=20261122_153213
-      # The pinned Verilator archive predates its Perl runtime dependency fix.
-      - perl
-      - unic-cass::ciel=2.6.1=20261122_153213
-      - unic-cass::yamlcore=0.0.4=20261122_153213
+  - unic-cass::librelane=3.0.17=20261122_153213
+  - {{ (local_channel ~ '::libparse=0.56.0=*_py315') | tojson }}
+  - unic-cass::symbiyosys=0.62_0_g1617168=20261122_153213_py315
+  - {{ (local_channel ~ '::eqy=0.62_0_g91b2178') | tojson }}
+  - {{ (local_channel ~ '::verilator=5.044_0_g8df584ca1=*_installer') | tojson }}
+  - unic-cass::ciel=2.6.1=20261122_153213
+  - unic-cass::yamlcore=0.0.4=20261122_153213
 {% endif %}
 
-  # Keep the defaults-based Qt, HDF5 and Python stack separate from eda.
-  openems:
-    channels:
-      - {{ local_channel | tojson }}
-      - https://repo.anaconda.com/pkgs/main/
-      - https://repo.anaconda.com/pkgs/r/
-    specs:
-      - python=3.15.2
-      - openems=0.37.0=py315_defaults_1
-      # Select the defaults OpenBLAS builds of NumPy instead of bundling MKL.
-      - nomkl
+# The staged build channel only exists on the builder. Keep it out of the
+# installed environment's requested specs so Conda remains upgradable.
+user_requested_specs:
+  - conda-forge::conda
+  - conda-forge::python=3.15.2
+  - conda-forge::libffi=3.7.*
+  - conda-forge::spdlog=1.17.*
+  - conda-forge::libblas=*=*openblas
 
 condarc:
   channels:
+    - unic-cass
     - conda-forge
+    - defaults
+  channel_priority: flexible
   auto_activate: false
 initialize_by_default: false
-post_install: post_install.sh

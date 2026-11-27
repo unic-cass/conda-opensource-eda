@@ -1,6 +1,7 @@
 {% set version = '0.37.0' %}
 {% set python_version = PYTHON_VERSION | default('3.15') %}
 {% set python_abi = 'cp' ~ (python_version | replace('.', '')) %}
+{% set installer_qt5 = environ.get('RECIPE_CONDARC_VARIANT') == 'installer-qt5' %}
 
 package:
   name: openems
@@ -43,8 +44,13 @@ source:
 
 build:
   skip: true  # [not linux64]
+{% if installer_qt5 %}
+  number: 2
+  string: py{{ python_version | replace('.', '') }}_installer_qt5_2
+{% else %}
   number: 1
   string: py{{ python_version | replace('.', '') }}_defaults_1
+{% endif %}
 
 requirements:
   build:
@@ -60,14 +66,20 @@ requirements:
     - setuptools
     - cython >=3.3.1
     - numpy
-    - h5py 3.16.*
     - gmp
     - mpfr
     - libboost-devel 1.88.*
+{% if installer_qt5 %}
+    - h5py 3.16.* nompi_*
+    - conda-forge::hdf5 2.2.* nompi_*
+    - conda-forge::qt-main 5.15.15.*
+{% else %}
+    - h5py 3.16.*
     - hdf5 2.0.*
     - qtbase 6.12.*
     - qtbase-devel 6.12.*
     - qt5compat 6.12.*
+{% endif %}
     - libgl-devel
     - libopengl-devel
     - libegl-devel
@@ -77,9 +89,15 @@ requirements:
     - {{ pin_compatible('python', min_pin='x.x', max_pin='x.x') }}
     - python_abi {{ python_version }}.* *_{{ python_abi }}
     - numpy
+{% if installer_qt5 %}
+    - h5py >=3.16 nompi_*
+    - {{ pin_compatible('hdf5', max_pin='x.x') }}
+    - {{ pin_compatible('qt-main', max_pin='x.x') }}
+{% else %}
     - h5py >=3.16
-    - matplotlib-base
     - {{ pin_compatible('qt5compat', max_pin='x.x.x') }}
+{% endif %}
+    - matplotlib-base
 
 test:
   requires:

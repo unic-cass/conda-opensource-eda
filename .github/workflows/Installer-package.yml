@@ -12,6 +12,9 @@ on:
       test_python:
         default: ''
         type: string
+      recipe_variant:
+        default: ''
+        type: string
 
 permissions:
   contents: read
@@ -24,14 +27,16 @@ jobs:
       OS_NAME: linux
       PYTHON_VERSION: ${{ inputs.python }}
       CI_INSTALL_PYTHONS: ${{ inputs.test_python }}
+      RECIPE_CONDARC_VARIANT: ${{ inputs.recipe_variant }}
       CI_CHECK_EL8_ABI: 'true'
+      CONDA_OVERRIDE_GLIBC: '2.28'
       UPLOAD: no-upload
     steps:
       - uses: actions/checkout@v6
         if: ${{ !env.ACT }}
         with:
           persist-credentials: false
-      - run: bash ci/apt-install.sh binutils build-essential csh curl git libgl1 libxrender1 pkg-config sudo wget libc6-dev
+      - run: bash ci/apt-install.sh binutils build-essential csh curl git libgl1 libxrender1 pkg-config sudo wget libc6-dev libxml2
         if: ${{ !env.ACT }}
       - uses: ./ci
         if: ${{ !env.ACT }}

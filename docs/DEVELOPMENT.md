@@ -61,6 +61,16 @@ must pass fresh-install tests on AlmaLinux 8, Ubuntu 22.04, 24.04, 26.04 and
 release artifacts and exercise the bundled tools, the Xyce and openEMS
 solvers, and (for the LibreLane edition) the Sky130A flow.
 
+The single-environment installer builds OpenROAD against the same conda-forge
+`spdlog` and `fmt` ABIs as Conda's solver. Its openEMS variant uses the same
+Qt 5 and `libffi` stack as the rest of the tools. The separate defaults-based
+openEMS recipe build still uses Qt 6.
+
+To reduce download size, the installer OpenROAD build keeps executables,
+shared libraries, and Python bindings, and omits its C/C++ development files.
+The installer Verilator build strips debug symbols while keeping the debug-mode
+executables. The tests exercise OpenROAD's Python bindings and Verilator's debug lint.
+
 Run the same test locally with Docker and the installer and its `.sha256`
 file in the same directory:
 
